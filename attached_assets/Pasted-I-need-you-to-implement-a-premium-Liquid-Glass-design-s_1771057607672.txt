@@ -1,0 +1,45 @@
+I need you to implement a premium "Liquid Glass" design system (Apple-style) for my legal studio site. Please perform the following 3 tasks in a single pass to get this working immediately:
+
+TASK 1: Update Global CSS
+Append these classes to `src/index.css` (inside @layer components) to define the glass physics:
+
+.liquid-glass {
+  background: radial-gradient(120% 120% at 0% 0%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  @apply transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)];
+}
+.liquid-glass:hover {
+  transform: translateY(-3px);
+  background: radial-gradient(120% 120% at 0% 0%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 100%);
+  box-shadow: 0 25px 55px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.liquid-glass:active {
+  transform: scale(0.98);
+  transition-duration: 100ms;
+}
+
+TASK 2: Create the Component
+Create a new file `src/components/LiquidGlassCTA.tsx` with this code:
+
+import React from 'react';
+export const LiquidGlassCTA = ({ label = "Richiedi Consulenza", onClick }: { label?: string, onClick?: () => void }) => {
+  return (
+    <div className="flex flex-col items-center gap-6 z-10 relative mt-8">
+      {/* Badge */}
+      <div className="liquid-glass px-5 py-2 rounded-full text-xs text-gray-200 tracking-widest uppercase font-semibold">
+        Partner nei tuoi diritti
+      </div>
+      {/* Main Button */}
+      <button onClick={onClick} className="liquid-glass group relative flex items-center justify-center gap-3 px-8 py-4 rounded-full outline-none">
+        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <span className="text-white font-medium tracking-wide text-lg">{label}</span>
+      </button>
+    </div>
+  );
+};
+
+TASK 3: Integrate into Hero
+Find my `Hero.tsx` (or the main landing component). Import `LiquidGlassCTA` and replace the existing generic "Contact" button with this new component so it appears immediately under the main headline.

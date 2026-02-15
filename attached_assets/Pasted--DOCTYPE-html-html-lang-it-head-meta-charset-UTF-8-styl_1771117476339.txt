@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<style>
+  body {
+    font-family: 'Helvetica', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    margin: 0;
+  }
+
+  /* Contenitore principale */
+  .header-container {
+    position: relative;
+    font-size: 60px;
+    font-weight: 900;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+
+  /* 1. IL TESTO BASE (BLU) */
+  /* Questo è il testo che rimane visibile quando la barra non c'è */
+  .text-base {
+    color: #2e6685; /* Il tuo colore blu */
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 2. LA BARRA CHE SI MUOVE (IL CONTENITORE MASCHERA) */
+  .overlay-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%; /* Parte da larghezza 0 */
+    background-color: #2e6685; /* Colore della barra (uguale al testo base) */
+    white-space: nowrap;
+    overflow: hidden; /* Fondamentale: nasconde il testo bianco finché la barra non passa */
+    z-index: 2;
+    
+    /* Animazione della barra */
+    animation: swipe-animation 4s ease-in-out infinite;
+  }
+
+  /* 3. IL TESTO BIANCO (DENTRO LA BARRA) */
+  /* Deve essere IDENTICO al testo base e posizionato esattamente sopra */
+  .text-white {
+    color: #ffffff;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* DEFINIZIONE DELL'ANIMAZIONE */
+  @keyframes swipe-animation {
+    0% {
+      width: 0%; /* Inizio: barra invisibile a sinistra */
+      left: 0;
+    }
+    40% {
+      width: 100%; /* La barra copre tutto -> Testo diventa bianco */
+      left: 0;
+    }
+    60% {
+      width: 100%; /* Pausa breve */
+      left: 0;
+    }
+    100% {
+      width: 0%; /* La barra si ritira verso destra */
+      left: 100%; 
+    }
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="header-container">
+    <div class="text-base">LE NOSTRE SEDI</div>
+    
+    <div class="overlay-bar">
+      <div class="text-white">LE NOSTRE SEDI</div>
+    </div>
+  </div>
+
+</body>
+</html>

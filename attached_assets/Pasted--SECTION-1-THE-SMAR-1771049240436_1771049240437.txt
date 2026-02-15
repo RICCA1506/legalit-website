@@ -1,0 +1,154 @@
+==============================================================================
+SECTION 1: THE "SMART ARCHITECT" PROMPT
+(Copy and paste the text below directly into the Replit Agent chat)
+==============================================================================
+
+Act as a Senior Creative Frontend Engineer. I want to build a high-performance text animation demo.
+
+**Stack Requirements:**
+1. Use **Vite** with **Vanilla JavaScript** (No React/Next.js).
+2. Use **GSAP** (GreenSock) for animation timelines to ensure precise sequencing.
+3. Use SCSS or modern CSS for styling.
+
+**Architectural Plan:**
+* Create a clean folder structure (`/src/styles`, `/src/scripts`).
+* Prioritize hardware-accelerated properties (`transform`, `opacity`) over geometry properties (`top`, `left`) to ensure 60fps performance.
+
+**The Implementation Task:**
+Create a text element inside a container with the following two-step animation sequence:
+
+**1. Setup:**
+* Create a container with `overflow: hidden` to mask the entrance.
+* Target element: A `<span>` or `<div>` with the text "Creative Design".
+* Decoration: Use a `::after` pseudo-element for the color sweep bar.
+
+**2. Animation Definitions (GSAP Timeline):**
+* **Step A (Entrance):** The text element slides in from above the viewport (`y: -100%` to `0%`) while fading in (`opacity: 0` to `1`).
+    * Duration: 0.8s
+    * Easing: `power2.out`
+* **Step B (Color Sweep):** A solid color bar (`#083b6e`) overlay starts from the left (`x: -100%`), sweeps completely across the text, and exits to the right (`x: 100%`).
+    * Duration: 1.2s
+    * Easing: `power2.inOut`
+    * **Timing:** This must start exactly **0.3s after** Step A completes.
+
+**Output:**
+Generate the complete, working code for `index.html`, `style.css`, and `main.js`.
+
+
+==============================================================================
+SECTION 2: REFERENCE CODE (EMBEDDABLE)
+(If you want to paste the code manually instead of using the Agent)
+==============================================================================
+
+--- FILE: index.html ---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Animation Demo</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="animation-container">
+        <div class="text-wrapper">
+          <span class="reveal-text">Creative Design</span>
+        </div>
+      </div>
+    </div>
+    <script src="./main.js"></script>
+  </body>
+</html>
+
+
+--- FILE: style.css ---
+
+:root {
+  --primary-color: #083b6e;
+  --text-color: #1a1a1a;
+  --bg-color: #f4f4f5;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.animation-container {
+  padding: 2rem;
+}
+
+/* Wrapper creates the "mask" for the text to slide out from */
+.text-wrapper {
+  overflow: hidden;
+  position: relative;
+  display: inline-block;
+  padding: 0.2em 0; /* Slight padding to avoid clipping descenders */
+}
+
+.reveal-text {
+  display: block;
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--text-color);
+  line-height: 1;
+  position: relative;
+  
+  /* Initial State: Hidden above and invisible */
+  /* We set this here so it doesn't flash before JS loads */
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+/* The Color Sweep Bar (Pseudo-element) */
+.reveal-text::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--primary-color);
+  z-index: 10;
+  
+  /* Initial State: Sitting completely to the left */
+  transform: translateX(-101%);
+}
+
+
+--- FILE: main.js ---
+
+document.addEventListener('DOMContentLoaded', () => {
+  
+  // Create a timeline to manage the sequence
+  // Assumes GSAP is loaded via CDN in index.html
+  const tl = gsap.timeline({
+    defaults: { ease: 'power2.out' }
+  });
+
+  tl
+    // Step 1: Entrance Animation
+    // Slides text down to natural position (y: 0) and fades in
+    .to('.reveal-text', {
+      y: '0%',
+      opacity: 1,
+      duration: 0.8,
+      ease: 'power2.out'
+    })
+
+    // Step 2: Color Sweep
+    // Starts 0.3 seconds AFTER the previous animation ends ('+=0.3')
+    .to('.reveal-text::after', {
+      x: '101%', // Moves 100% to the right + 1% extra to clear it
+      duration: 1.2,
+      ease: 'power2.inOut'
+    }, '+=0.3');
+});

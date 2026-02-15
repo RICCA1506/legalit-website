@@ -1,0 +1,103 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Helvetica",
+      "role": "body"
+    },
+    {
+      "family": "Arial",
+      "role": "body"
+    },
+    {
+      "family": "Lucida",
+      "role": "body"
+    },
+    {
+      "family": "Play",
+      "role": "display"
+    },
+    {
+      "family": "Numans",
+      "role": "body"
+    }
+  ],
+  "colors": {
+    "primary": "#2E6284",
+    "accent": "#08396B",
+    "background": "#FFFFFF",
+    "textPrimary": "#08396B",
+    "link": "#08396B"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Helvetica",
+      "heading": "Play"
+    },
+    "fontStacks": {
+      "heading": [
+        "Play",
+        "Helvetica",
+        "Arial",
+        "Lucida",
+        "sans-serif"
+      ],
+      "body": [
+        "Play",
+        "Helvetica",
+        "Arial",
+        "Lucida",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Play",
+        "Helvetica",
+        "Arial",
+        "Lucida",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "37px",
+      "h2": "26px",
+      "body": "15px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "3px"
+  },
+  "components": {
+    "input": {
+      "borderColor": "#CCCCCC",
+      "borderRadius": "3px"
+    }
+  },
+  "images": {
+    "logo": "https://www.legalit.it/wp-content/uploads/2021/01/LEGALIT_Avvocati_associati.png",
+    "favicon": "https://www.legalit.it/wp-content/uploads/2021/01/cropped-LEGALIT-32x32.png",
+    "ogImage": "https://www.legalit.it/wp-content/uploads/2021/01/cropped-LEGALIT.png"
+  },
+  "__framework_hints": [
+    "Divi v.4.25.0"
+  ],
+  "__llm_logo_reasoning": {
+    "selectedIndex": 0,
+    "reasoning": "The logo matches the brand name 'Legalit' and is located in the header, linking to the homepage, making it the primary brand logo.",
+    "confidence": 0.95
+  },
+  "personality": {
+    "tone": "professional",
+    "energy": "medium",
+    "targetAudience": "Legal professionals and clients seeking legal services."
+  },
+  "designSystem": {
+    "framework": "unknown",
+    "componentLibrary": null
+  },
+  "confidence": {
+    "buttons": 0.9,
+    "colors": 0.95,
+    "overall": 0.925
+  }
+}

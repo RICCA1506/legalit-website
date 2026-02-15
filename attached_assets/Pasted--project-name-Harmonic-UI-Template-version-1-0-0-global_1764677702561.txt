@@ -1,0 +1,106 @@
+{
+  "project_name": "Harmonic_UI_Template",
+  "version": "1.0.0",
+  "global_design_system": {
+    "palette": {
+      "background": "#0F172A",
+      "surface": "#1E293B",
+      "primary": "#38BDF8",
+      "text_main": "#F8FAFC",
+      "text_muted": "#94A3B8"
+    },
+    "typography": {
+      "font_family": "Inter, sans-serif",
+      "headers": { "weight": 700, "letter_spacing": "-0.02em" }
+    }
+  },
+  "animation_system": {
+    "description": "Defines the 'intesa' (harmony) across all interfaces",
+    "easing": {
+      "smooth_out": "cubic-bezier(0.215, 0.61, 0.355, 1)",
+      "bouncy": "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+    },
+    "timing": {
+      "fast": "0.3s",
+      "medium": "0.6s",
+      "slow": "1.2s"
+    },
+    "orchestration": {
+      "page_load_stagger": 0.1,
+      "section_transition_delay": 0.2
+    }
+  },
+  "layout": [
+    {
+      "component": "Navbar",
+      "id": "nav_01",
+      "initial_state": { "opacity": 0, "y": -20 },
+      "animate_state": { "opacity": 1, "y": 0 },
+      "transition": { "duration": "0.6s", "ease": "smooth_out" }
+    },
+    {
+      "component": "Hero_Section",
+      "id": "hero_01",
+      "elements": [
+        {
+          "type": "Headline",
+          "content": "Digital Harmony",
+          "animation": {
+            "type": "fade_slide_up",
+            "delay": 0.2
+          }
+        },
+        {
+          "type": "Subtext",
+          "content": "Experience the flow between interfaces.",
+          "animation": {
+            "type": "fade_slide_up",
+            "delay": 0.3
+          }
+        },
+        {
+          "type": "CTA_Button",
+          "content": "Get Started",
+          "style": "primary",
+          "interactions": {
+            "hover": {
+              "scale": 1.05,
+              "box_shadow": "0px 10px 20px rgba(56, 189, 248, 0.4)",
+              "transition": "0.3s cubic-bezier(0.25, 1, 0.5, 1)"
+            },
+            "tap": { "scale": 0.95 }
+          },
+          "animation": {
+            "type": "fade_slide_up",
+            "delay": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "component": "Feature_Grid",
+      "id": "features_01",
+      "properties": {
+        "layout_type": "grid_3_col",
+        "stagger_children": 0.15
+      },
+      "cards": [
+        {
+          "title": "Fluid Motion",
+          "icon": "wave",
+          "entry_animation": "slide_in_bottom"
+        },
+        {
+          "title": "Connected States",
+          "icon": "link",
+          "entry_animation": "slide_in_bottom"
+        },
+        {
+          "title": "Smart Easing",
+          "icon": "chart",
+          "entry_animation": "slide_in_bottom"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+You are an expert front‑end engineer working inside Replit.
+I want to recreate the high‑quality, lightweight vector animations (like the “track highlight” and signature line) seen on the LandoNorris.com site as explained in a Syntax video.
+​
+
+Project environment:
+
+Run this as a small web project on Replit (static HTML/JS/CSS, no build step required).
+
+All code should be directly usable in Replit’s default web server setup.
+
+Goals:
+
+Use Rive (or a similar vector animation tool) to achieve video‑like quality with very small assets.
+
+Integrate one sample animation into a web page and control it with hover and scroll.
+
+Tasks:
+
+Choose a minimal stack that works well on Replit:
+
+Suggest the Rive web runtime (CDN script) and any lightweight helper library if needed.
+​
+
+No complex bundlers; everything must run via a simple index.html.
+
+Provide complete example files:
+
+index.html with a canvas/container for the Rive animation and basic layout.
+
+styles.css with minimal styling to center and display the animation.
+
+script.js that:
+
+Loads a sample .riv file from a URL or local /public folder.
+
+Sets up the Rive instance.
+
+Hooks hover events to toggle animation states.
+
+Demonstrates scroll‑based scrubbing or progress control where possible.
+​
+
+Rive integration details:
+
+Show how to reference the .riv asset (assume I will upload it to the Replit project).
+
+Example of setting up state machine inputs (e.g., “hover”, “progress”).
+
+Explain where in the code I should change artboard names, state machine names, and input names.
+
+Replit‑specific instructions:
+
+Explain exactly where to place each file in a Replit web project.
+
+Include any required script tags (Rive CDN) and how to run/preview the project.
+
+Output format:
+
+First, list the libraries/CDN links you are using.
+
+Then output full code blocks for index.html, styles.css, and script.js.
+
+Add short comments in the code where I need to customize things (artboard/state machine/input names, asset paths).

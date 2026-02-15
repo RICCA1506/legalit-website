@@ -1,0 +1,80 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #222; /* Dark background to make it pop */
+}
+
+/* --- The Environment --- */
+.scene {
+  width: 200px;
+  height: 200px;
+  /* Perspective is crucial: it creates the 3D vanishing point. 
+     Lower numbers = more dramatic perspective. */
+  perspective: 600px;
+}
+
+/* --- The 3D Object Wrapper --- */
+.cube {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  /* This tells the browser to render children in 3D space rather than flattening them */
+  transform-style: preserve-3d;
+  /* Apply the continuous rotation animation defined below */
+  animation: rotateCube 8s infinite linear;
+}
+
+/* --- Styling the Faces --- */
+.cube__face {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border: 2px solid black;
+  line-height: 200px;
+  font-size: 40px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  /* Make faces slightly transparent so we can see the 3D structure */
+  opacity: 0.7;
+}
+
+/* Colors for different faces */
+.cube__face--front  { background: hsla(  0, 100%, 50%, 0.7); }
+.cube__face--right  { background: hsla( 60, 100%, 50%, 0.7); }
+.cube__face--back   { background: hsla(120, 100%, 50%, 0.7); }
+.cube__face--left   { background: hsla(180, 100%, 50%, 0.7); }
+.cube__face--top    { background: hsla(240, 100%, 50%, 0.7); }
+.cube__face--bottom { background: hsla(300, 100%, 50%, 0.7); }
+
+/* --- Positioning the Faces in 3D Space --- */
+/* We move the faces apart by half the width of the cube (100px) */
+
+/* Front: Move forward 100px */
+.cube__face--front  { transform: rotateY(  0deg) translateZ(100px); }
+/* Back: Rotate 180deg, move forward 100px */
+.cube__face--back   { transform: rotateY(180deg) translateZ(100px); }
+
+/* Right: Rotate 90deg right, move forward 100px */
+.cube__face--right  { transform: rotateY( 90deg) translateZ(100px); }
+/* Left: Rotate 90deg left, move forward 100px */
+.cube__face--left   { transform: rotateY(-90deg) translateZ(100px); }
+
+/* Top: Rotate 90deg up, move forward 100px */
+.cube__face--top    { transform: rotateX( 90deg) translateZ(100px); }
+/* Bottom: Rotate 90deg down, move forward 100px */
+.cube__face--bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+/* --- The Animation Keyframes --- */
+/* Define the rotation path */
+@keyframes rotateCube {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  100% {
+    /* Rotate fully around both axes to show all sides */
+    transform: rotateX(360deg) rotateY(360deg);
+  }
+}

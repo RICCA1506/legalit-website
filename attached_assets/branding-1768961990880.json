@@ -1,0 +1,95 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Verdana",
+      "count": 83
+    },
+    {
+      "family": "Arial",
+      "count": 83
+    },
+    {
+      "family": "Helvetica",
+      "count": 83
+    },
+    {
+      "family": "sans-serif",
+      "count": 83
+    }
+  ],
+  "colors": {
+    "primary": "#AD1839",
+    "accent": "#EF6B51",
+    "background": "#E6E6E6",
+    "textPrimary": "#000000",
+    "link": "#EF6B51"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Verdana",
+      "heading": "Verdana"
+    },
+    "fontStacks": {
+      "body": [
+        "Verdana",
+        "Arial",
+        "Helvetica",
+        "sans-serif"
+      ],
+      "heading": [
+        "Verdana",
+        "Arial",
+        "Helvetica",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Verdana",
+        "Arial",
+        "Helvetica",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "91px",
+      "h2": "91px",
+      "body": "17px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "28px"
+  },
+  "components": {},
+  "images": {
+    "logo": "File saved at: attached_assets/logo.svg",
+    "favicon": "File saved at: attached_assets/favicon.ico",
+    "ogImage": null
+  },
+  "__framework_hints": [
+    "TYPO3 CMS"
+  ],
+  "__llm_logo_reasoning": {
+    "selectedIndex": 0,
+    "reasoning": "Strong indicators: header logo linking to homepage, header location, visible, src contains logo, class contains logo, reasonable size. Score: 100 (clear winner by 53 points)",
+    "confidence": 0.9
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "LLM failed"
+    },
+    "confidence": 0
+  },
+  "confidence": {
+    "buttons": 0,
+    "colors": 0,
+    "overall": 0
+  }
+}

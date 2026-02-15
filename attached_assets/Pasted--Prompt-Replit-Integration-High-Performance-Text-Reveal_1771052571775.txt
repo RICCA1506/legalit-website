@@ -1,0 +1,68 @@
+🚀 Prompt: Replit Integration - High Performance Text Reveal
+Ruolo: Sei un Senior React Developer specializzato in animazioni 60FPS.
+Contesto: Stiamo lavorando sul progetto https://legalit.replit.app.
+
+Il Tuo Compito:
+Ho un componente React già scritto e ultra-ottimizzato (basato sulla tecnica "CSS Masking & Stagger" di landonorris.com). Voglio che tu prenda questo codice e lo integri nel mio progetto.
+
+Ecco il Componente (Già Ottimizzato):
+Non modificarne la logica, è già perfetta per performance.
+
+JavaScript
+// components/LandoReveal.jsx
+import React from 'react';
+
+export const LandoReveal = ({ text, className = "", delay = 0 }) => {
+  // Dividiamo il testo in parole e poi in caratteri per gestire gli spazi
+  const words = text.split(" ");
+
+  return (
+    <h2 className={`font-bold leading-tight ${className}`} aria-label={text}>
+      {words.map((word, wordIndex) => (
+        <span key={wordIndex} className="inline-block whitespace-nowrap mr-[0.25em]">
+          {word.split("").map((char, charIndex) => {
+            // Calcolo indice globale approssimativo per l'effetto onda
+            const globalIndex = wordIndex * 5 + charIndex;
+            return (
+              <span
+                key={charIndex}
+                className="inline-block overflow-hidden align-bottom" // MASKING (Il segreto di Lando)
+              >
+                <span
+                  className="inline-block translate-y-[-110%] opacity-0 animate-reveal"
+                  style={{
+                    animationDelay: `${delay + globalIndex * 0.03}s`, // Stagger puro CSS
+                    willChange: 'transform',
+                  }}
+                >
+                  {char}
+                </span>
+              </span>
+            );
+          })}
+        </span>
+      ))}
+      {/* Definizione Animation Keyframes locale per portabilità */}
+      <style jsx>{`
+        @keyframes reveal {
+          0% { transform: translateY(-110%); opacity: 0; }
+          100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-reveal {
+          animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; // Curve 'Quint' per effetto smooth
+        }
+      `}</style>
+    </h2>
+  );
+};
+Istruzioni di Integrazione:
+
+Crea il file components/LandoReveal.jsx con il codice sopra.
+
+Importalo e usalo all'interno del file/sezione che ti indico qui sotto.
+
+Assicurati che il testo passato come prop sia visibile e contrastato rispetto allo sfondo.
+
+DOVE IMPLEMENTARLO:
+Voglio che sostituisci il titolo principale o il testo in questa specifica sezione del sito:
+[ INSERISCI QUI LA SEZIONE: es. "Hero Section al posto del titolo H1" oppure "Nella card 'Chi Siamo'" ]

@@ -1,0 +1,121 @@
+Act as a Senior Creative Developer. I need to replace the previous loader with a "Logo Zoom-Through" effect, heavily inspired by the Lando Norris intro.
+
+### THE GOAL
+1. Start with a black screen and a central vector Logo (use text "LN4" or "NORRIS" as SVG).
+2. The background behind the loader is the Hero Image (already loaded but hidden by the black overlay).
+3. ANIMATION:
+   - The Logo scales up massively (from scale: 1 to scale: 50).
+   - As it zooms, the user "flies through" the negative space of the letters, revealing the Hero Image underneath.
+   - Easing must be aggressive (`expo.inOut`).
+
+### TASK: Update `src/components/Preloader.jsx`
+Replace the entire file with this logic:
+
+'''jsx
+import React, { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+const Preloader = ({ onComplete }) => {
+  const containerRef = useRef(null);
+  const logoRef = useRef(null);
+  const wrapperRef = useRef(null);
+
+  useGSAP(() => {
+    const tl = gsap.timeline({
+      onComplete: () => {
+        if (onComplete) onComplete();
+      }
+    });
+
+    // Initial state
+    gsap.set(containerRef.current, { zIndex: 9999 });
+
+    tl.to(logoRef.current, {
+      scale: 100, // MASSIVE ZOOM
+      duration: 2,
+      ease: "expo.inOut",
+      transformOrigin: "center center", // Zoom into the center
+    })
+    .to(wrapperRef.current, {
+      opacity: 0,
+      duration: 0.5,
+      ease: "power2.inOut"
+    }, "-=0.8"); // Start fading out the black wrapper while zooming finishes
+
+  }, { scope: containerRef });
+
+  return (
+    <div ref={containerRef} className="fixed inset-0 w-full h-full pointer-events-none">
+      {/* Wrapper Nero che copre tutto */}
+      <div 
+        ref={wrapperRef}
+        className="absolute inset-0 bg-[#050505] flex items-center justify-center overflow-hidden"
+      >
+        {/* SVG Logo - Must be SVG for infinite scaling sharpness */}
+        <svg 
+          ref={logoRef}
+          viewBox="0 0 200 100" 
+          className="w-[200px] md:w-[400px] fill-[#C4F934]" // Colore Giallo Neon
+        >
+          {/* Simple Heavy Font Path for "LN4" or "NORRIS" */}
+          <text 
+            x="50%" 
+            y="50%" 
+            dominantBaseline="middle" 
+            textAnchor="middle" 
+            fontSize="80" 
+            fontWeight="900" 
+            fontFamily="Arial, sans-serif" 
+            className="tracking-tighter italic"
+          >
+            NORRIS
+          </text>
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+export default Preloader;
+'''
+
+### TASK: Update `src/App.jsx`
+Ensure the Hero Image is FIXED behind the loader so it is revealed properly.
+
+'''jsx
+import React, { useState } from 'react';
+import Preloader from './components/Preloader';
+
+export default function App() {
+  const [introDone, setIntroDone] = useState(false);
+
+  return (
+    <div className="relative min-h-screen bg-black text-white overflow-x-hidden">
+      
+      {/* 1. HERO IMAGE (FIXED BACKGROUND) */}
+      <div className="fixed inset-0 z-0">
+        <img 
+          src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=2070&auto=format&fit=crop" 
+          alt="Hero Background" 
+          className="w-full h-full object-cover opacity-60"
+        />
+      </div>
+
+      {/* 2. PRELOADER (Z-INDEX 9999) */}
+      {!introDone && (
+        <Preloader onComplete={() => setIntroDone(true)} />
+      )}
+
+      {/* 3. CONTENT (Starts appearing after) */}
+      {introDone && (
+        <main className="relative z-10 flex flex-col items-center justify-center h-screen">
+          <h1 className="text-8xl font-black italic text-white mix-blend-overlay animate-pulse">
+            RACE READY
+          </h1>
+        </main>
+      )}
+    </div>
+  );
+}
+'''

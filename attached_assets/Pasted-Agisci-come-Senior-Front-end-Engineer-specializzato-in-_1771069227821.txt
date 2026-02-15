@@ -1,0 +1,48 @@
+Agisci come Senior Front-end Engineer specializzato in animazioni ad alte prestazioni.
+
+Crea il componente `src/components/ProfessionalsReel.jsx`.
+
+**OBIETTIVO:** Un reel di professionisti a scorrimento automatico con una specifica animazione 3D di profondità.
+**PERFORMANCE:** Deve essere ultra-ottimizzato (stile landonorris.com), usando solo CSS transform/opacity e la proprietà `will-change` per garantire 60fps stabili. Niente JS pesante.
+
+**SPECIFICHE FUNZIONALI:**
+1. Accetta una prop `columns` (numero) per definire quante card mostrare in parallelo.
+2. Usa un array interno di almeno 8-10 oggetti professionista (id, nome, ruolo, immagine).
+3. Ogni 3 secondi, aggiorna le card visibili.
+4. **VINCOLO CRUCIALE:** I professionisti mostrati contemporaneamente devono essere sempre UNICI (nessun duplicato nella vista corrente).
+
+**SPECIFICHE ANIMAZIONE (Coreografia 3D "Front-to-Back"):**
+L'utente richiede: "Entrata da DAVANTI (vicino allo spettatore) e uscita verso SOPRA e DIETRO (lontano dallo spettatore)".
+
+Usa `AnimatePresence` con `mode='popLayout'` e `motion.div` con queste esatte varianti:
+
+* **INITIAL (La nuova card che entra):**
+    * Deve sembrare "davanti" e in basso.
+    * `y: "100%"` (Parte dal basso, fuori vista)
+    * `scale: 1.15` (È più grande perché è più vicina alla "telecamera")
+    * `zIndex: 20` (È nel livello più alto, davanti a tutto)
+    * `opacity: 0` (Inizia invisibile per pulizia)
+
+* **ANIMATE (La card attiva al centro):**
+    * Si posiziona nel piano intermedio.
+    * `y: "0%"` (Centrata nel contenitore)
+    * `scale: 1` (Dimensione naturale)
+    * `zIndex: 10`
+    * `opacity: 1`
+
+* **EXIT (La vecchia card che se ne va):**
+    * Si sposta in alto e "dietro".
+    * `y: "-100%"` (Esce verso l'alto)
+    * `scale: 0.85` (Si rimpicciolisce allontanandosi nello sfondo)
+    * `zIndex: 0` (Va dietro la card che sta entrando)
+    * `opacity: 0.6` (Si dissolve leggermente mentre si allontana)
+
+**FISICA E FEELING "VIVO":**
+Usa una molla morbida e un ritardo a cascata per evitare l'effetto robotico uniforme.
+`transition: { type: "spring", stiffness: 80, damping: 16, mass: 1.1, delay: index * 0.18 }`
+
+**STRUTTURA HTML/TAILWIND:**
+* Il contenitore padre di ogni colonna deve avere `relative h-64 overflow-hidden` (questa è la "linea" dietro cui spariscono).
+* Le card `motion.div` devono avere `absolute inset-0 w-full h-full will-change-transform`.
+
+Genera il codice completo del componente pronto all'uso.

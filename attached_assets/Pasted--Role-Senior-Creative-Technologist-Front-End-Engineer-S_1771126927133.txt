@@ -1,0 +1,149 @@
+# Role: Senior Creative Technologist / Front-End Engineer
+# Stack: React 18 + TypeScript + Vite 5 + TailwindCSS + Three.js
+# Routing: wouter
+# Visual theme: Legal Studio Professional (subtle, clean, premium; NOT gamer/sci-fi)
+
+## Goal
+Replace the existing topographic/WebGL background implementation (wherever the old one currently lives/used) with an upgraded version, and also render the same background on the Loading page/screen. On the Loading screen specifically, the mouse interaction must be disabled (no cursor ripple/UV distortion).
+
+## Hard Requirements
+- Base accent color: `#2e6884`.
+- In the fragment shader, generate 2–3 tonal variations (lighter + darker) **within the same blue family** so contour lines are not flat; contrast should come mainly from brightness, not hue shifts.
+- Background must be transparent (or visually match global `#FAFAFA`), with low-opacity contour lines (roughly 0.2–0.4 range, subtle).
+- Slow animation over time (`u_time`) and gentle mouse-driven ripple (`u_mouse`) everywhere EXCEPT Loading screen where interaction is blocked.
+- Full cleanup for React Strict Mode (cancel RAF, remove listeners, dispose geometry/material/renderer, remove canvas).
+
+---
+
+## Step 1 — Implement/Replace Component
+### File: `client/src/components/TopographicBackground.tsx` (create if missing, otherwise REPLACE existing)
+Implement a Three.js full-screen quad using `OrthographicCamera` + `PlaneGeometry(2,2)` + `ShaderMaterial`.
+
+### Component API
+```ts
+type TopographicBackgroundProps = {
+  interactive?: boolean; // default true
+};
+When interactive === false:
+
+Do not attach the mousemove listener.
+
+Keep u_mouse fixed at (0, 0) in [-1..1] space (or center), and do not apply cursor ripple.
+
+Container styling
+The React root element must be:
+
+className="fixed inset-0 pointer-events-none z-0"
+
+aria-hidden="true"
+
+Renderer
+alpha: true, antialias: true, powerPreference: 'high-performance'
+
+setPixelRatio(Math.min(devicePixelRatio, 2))
+
+setSize(innerWidth, innerHeight)
+
+Uniforms
+u_time: float
+
+u_mouse: vec2 in [-1..1]
+
+u_resolution: vec2
+
+u_color: vec3 from #2e6884
+
+Shader behavior (GLSL)
+Vertex: pass-through full-screen quad.
+
+Fragment:
+
+Build a pseudo height map using layered 2D noise.
+
+Render anti-aliased contour lines (isolines) from the height map (minor + major lines).
+
+Use u_color as base, but compute:
+
+dark = base * 0.72
+
+light = mix(base, vec3(1.0), 0.35)
+
+A smooth tonal selector noise to blend dark → base → light so contour lines vary subtly but remain in the same blue family.
+
+Mouse ripple:
+
+Create a soft ripple around cursor using distance falloff and a sine term, and apply a very small domain warp.
+
+Must feel “fluid” and gentle, not a harsh displacement.
+
+Alpha:
+
+Only lines should contribute alpha.
+
+Keep overall opacity subtle; minor+major combined should stay in the ~0.2–0.35 feel (not opaque).
+
+Cleanup (Strict Mode safe)
+In the useEffect return:
+
+remove resize listener
+
+remove mousemove listener (only if attached)
+
+cancelAnimationFrame
+
+geometry.dispose()
+
+material.dispose()
+
+renderer.dispose()
+
+remove renderer.domElement from container
+
+Step 2 — App Integration (replace old usage)
+File: client/src/App.tsx
+Mount <TopographicBackground /> as the first child inside the main app wrapper.
+
+Rules:
+
+Background is behind everything (z-0).
+
+Header is above it (keep Header at high z-index e.g. z-50).
+
+Ensure the main content wrapper is above the background, e.g. relative z-10.
+
+Remove/avoid opaque background classes (e.g. bg-white) on route wrappers that would hide the canvas; use bg-transparent where needed so the background stays visible.
+
+Example structure (adapt to actual codebase):
+
+tsx
+<div className="min-h-screen w-full relative">
+  <TopographicBackground />
+  <div className="relative z-10 flex flex-col min-h-screen">
+    <Header />
+    <main className="flex-grow">{/* routes */}</main>
+    <Footer />
+  </div>
+</div>
+Step 3 — Loading Screen Integration (mouse blocked)
+Find the Loading page/screen in this codebase (common locations: client/src/pages/Loading.tsx, client/src/components/LoadingScreen.tsx, or a route like /loading).
+
+Implement the same background there too:
+
+Mount <TopographicBackground interactive={false} /> as the first child of the loading screen wrapper.
+
+Ensure spinner/text sits above it (relative z-10), and loading wrapper doesn’t have an opaque background that hides the canvas.
+
+If the loading screen is an overlay modal, keep background fixed behind overlay contents but still visible.
+
+Acceptance Checks
+Background visible on all main pages AND on the Loading screen.
+
+Mouse ripple works on main pages, but does NOTHING on Loading screen (no listener, no distortion).
+
+No WebGL context leak on hot reload / route switches; canvas removed and Three objects disposed on unmount.
+
+Visual is subtle and “legal studio” professional: thin contour lines, low opacity, tonal variation within blue family.
+
+text
+
+React 18 StrictMode can intentionally trigger effect setup/cleanup more than once in development, so the “dispose + remove listeners + remove canvas” cleanup must be fully correct and idempotent.[1]
