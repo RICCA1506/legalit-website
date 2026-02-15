@@ -56,7 +56,7 @@ export default function OfficesPreview() {
           </div>
         </AnimatedElement>
         
-        <StaggerContainer staggerDelay={0.1} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6">
+        <StaggerContainer staggerDelay={0.1} className="grid grid-cols-5 gap-3 md:gap-6">
           {offices.map((office) => {
             const isLatina = office.id === "latina";
             return (
