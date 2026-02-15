@@ -11,12 +11,10 @@ import { offices } from "@/lib/data";
 import { useLanguage } from "@/lib/i18n";
 import romaImage from "@assets/optimized/WhatsApp_Image_2026-01-26_at_11.49.10_1769431461365.webp";
 import milanoImage from "@assets/optimized/WhatsApp_Image_2026-01-26_at_11.49.07_1769431461365.webp";
-import napoliImage from "@assets/optimized/WhatsApp_Image_2026-01-26_at_11.49.08_1769431461366.webp";
 import palermoImage from "@assets/optimized/WhatsApp_Image_2026-01-26_at_11.49.09_1769431461366.webp";
 import latinaImage from "@assets/optimized/piazza-del-popolo_1769377725579.webp";
 import romaImageAvif from "@assets/optimized/WhatsApp_Image_2026-01-26_at_11.49.10_1769431461365.avif";
 import milanoImageAvif from "@assets/optimized/WhatsApp_Image_2026-01-26_at_11.49.07_1769431461365.avif";
-import napoliImageAvif from "@assets/optimized/WhatsApp_Image_2026-01-26_at_11.49.08_1769431461366.avif";
 import palermoImageAvif from "@assets/optimized/WhatsApp_Image_2026-01-26_at_11.49.09_1769431461366.avif";
 import latinaImageAvif from "@assets/optimized/piazza-del-popolo_1769377725579.avif";
 
@@ -24,7 +22,6 @@ const cityImages: Record<string, { webp: string; avif: string }> = {
   roma: { webp: romaImage, avif: romaImageAvif },
   milano: { webp: milanoImage, avif: milanoImageAvif },
   palermo: { webp: palermoImage, avif: palermoImageAvif },
-  napoli: { webp: napoliImage, avif: napoliImageAvif },
   latina: { webp: latinaImage, avif: latinaImageAvif },
 };
 
@@ -56,7 +53,7 @@ export default function OfficesPreview() {
           </div>
         </AnimatedElement>
         
-        <StaggerContainer staggerDelay={0.1} className="grid grid-cols-5 gap-3 md:gap-6">
+        <StaggerContainer staggerDelay={0.1} className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
           {offices.map((office) => {
             const isLatina = office.id === "latina";
             return (
