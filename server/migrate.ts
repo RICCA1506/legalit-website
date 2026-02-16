@@ -186,6 +186,7 @@ export async function ensureSchema() {
     await addColumnIfNotExists(pool, 'news_categories', 'name_en', 'VARCHAR(100)');
     await addColumnIfNotExists(pool, 'professionals', 'image_position', "VARCHAR(20) DEFAULT 'center'");
     await addColumnIfNotExists(pool, 'professionals', 'image_zoom', "INTEGER DEFAULT 100");
+    await addColumnIfNotExists(pool, 'news_articles', 'linked_professional_ids', 'TEXT[]');
 
     console.log("Database schema verified and up to date");
   } catch (err) {

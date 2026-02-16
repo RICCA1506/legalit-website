@@ -89,6 +89,7 @@ export const newsArticles = pgTable("news_articles", {
   macroCategory: varchar("macro_category", { length: 100 }),
   microCategory: varchar("micro_category", { length: 100 }),
   linkedProfessionalId: varchar("linked_professional_id", { length: 50 }),
+  linkedProfessionalIds: text("linked_professional_ids").array(),
   linkedPracticeArea: varchar("linked_practice_area", { length: 100 }),
   tags: text("tags").array(),
   linkedinUrl: varchar("linkedin_url", { length: 500 }),

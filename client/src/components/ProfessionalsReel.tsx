@@ -10,6 +10,7 @@ import { useLanguage } from "@/lib/i18n";
 interface ProfessionalsReelProps {
   columns: number;
   filterByAreas?: string[];
+  filterByIds?: string[];
   highlightAuthor?: string | null;
   onProfessionalClick?: (id: string | number) => void;
   interval?: number;
@@ -180,6 +181,7 @@ function ReelSlot({
 export default function ProfessionalsReel({
   columns,
   filterByAreas,
+  filterByIds,
   highlightAuthor,
   onProfessionalClick,
   interval = 3500,
@@ -195,6 +197,9 @@ export default function ProfessionalsReel({
     dbProfessionals.length > 0 ? dbProfessionals : staticProfessionals;
 
   const pool = useMemo(() => {
+    if (filterByIds && filterByIds.length > 0) {
+      return allProfessionals.filter((p) => filterByIds.includes(String(p.id)));
+    }
     if (filterByAreas && filterByAreas.length > 0) {
       return allProfessionals.filter((p) => {
         const specs = p.specializations || [];
@@ -202,7 +207,7 @@ export default function ProfessionalsReel({
       });
     }
     return allProfessionals;
-  }, [allProfessionals, filterByAreas]);
+  }, [allProfessionals, filterByAreas, filterByIds]);
 
   const cleanName = (n: string) =>
     n

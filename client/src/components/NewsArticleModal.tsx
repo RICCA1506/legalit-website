@@ -376,10 +376,11 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
               })()}
 
               {(() => {
+                const linkedIds: string[] = article.linkedProfessionalIds || (article.linkedProfessionalId ? [article.linkedProfessionalId] : []);
                 const allAreaIds: string[] = [];
                 if (article.linkedPracticeArea) allAreaIds.push(article.linkedPracticeArea);
                 if (article.tags) article.tags.forEach(t => { if (!allAreaIds.includes(t)) allAreaIds.push(t); });
-                if (allAreaIds.length === 0) return null;
+                if (linkedIds.length === 0 && allAreaIds.length === 0) return null;
 
                 return (
                   <div className="mt-8 pt-6 border-t">
@@ -388,8 +389,9 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
                       {language === "it" ? "I Nostri Professionisti" : "Our Professionals"}
                     </h3>
                     <ProfessionalsReel
-                      columns={3}
-                      filterByAreas={allAreaIds}
+                      columns={Math.min(linkedIds.length || 3, 3)}
+                      filterByIds={linkedIds.length > 0 ? linkedIds : undefined}
+                      filterByAreas={linkedIds.length === 0 ? allAreaIds : undefined}
                       highlightAuthor={article.authorName}
                       onProfessionalClick={(id) => {
                         onClose();

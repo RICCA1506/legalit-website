@@ -50,6 +50,7 @@ interface ArticleForm {
   category: string;
   newsType: string;
   linkedProfessionalId: string;
+  linkedProfessionalIds: string[];
   linkedPracticeArea: string;
   linkedinUrl: string;
   linkedinSummary: string;
@@ -68,6 +69,7 @@ const emptyForm: ArticleForm = {
   category: "",
   newsType: "studio",
   linkedProfessionalId: "",
+  linkedProfessionalIds: [],
   linkedPracticeArea: "",
   linkedinUrl: "",
   linkedinSummary: "",
@@ -760,6 +762,7 @@ export default function Admin() {
       category: article.category,
       newsType: article.newsType || "studio",
       linkedProfessionalId: article.linkedProfessionalId || "",
+      linkedProfessionalIds: article.linkedProfessionalIds || (article.linkedProfessionalId ? [article.linkedProfessionalId] : []),
       linkedPracticeArea: article.linkedPracticeArea || "",
       linkedinUrl: article.linkedinUrl || "",
       linkedinSummary: article.linkedinSummary || "",
@@ -2289,24 +2292,36 @@ export default function Admin() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="linkedProfessionalId">Professionista Collegato</Label>
-                <Select value={form.linkedProfessionalId || "none"} onValueChange={(v) => setForm({ ...form, linkedProfessionalId: v === "none" ? "" : v })}>
-                  <SelectTrigger data-testid="select-linked-professional">
-                    <SelectValue placeholder="Seleziona professionista" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">-- Nessuno --</SelectItem>
-                    {professionals?.map((prof) => (
-                      <SelectItem key={prof.id} value={String(prof.id)}>{prof.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">
-                  Per riconoscimenti, estratti o documenti di un professionista specifico.
-                </p>
+            <div className="space-y-2">
+              <Label>Professionisti Collegati</Label>
+              <div className="border rounded-md p-3 max-h-48 overflow-y-auto space-y-1" data-testid="checkbox-linked-professionals">
+                {professionals?.map((prof) => {
+                  const profId = String(prof.id);
+                  const isChecked = form.linkedProfessionalIds.includes(profId);
+                  return (
+                    <label key={prof.id} className="flex items-center gap-2 py-1 px-1 rounded hover-elevate cursor-pointer" data-testid={`checkbox-pro-${prof.id}`}>
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {
+                          const ids = isChecked
+                            ? form.linkedProfessionalIds.filter(id => id !== profId)
+                            : [...form.linkedProfessionalIds, profId];
+                          setForm({ ...form, linkedProfessionalIds: ids, linkedProfessionalId: ids[0] || "" });
+                        }}
+                        className="h-4 w-4 rounded border-muted-foreground/50 accent-primary"
+                      />
+                      <span className="text-sm">{prof.name}</span>
+                      <span className="text-xs text-muted-foreground ml-auto">{prof.office}</span>
+                    </label>
+                  );
+                })}
               </div>
+              {form.linkedProfessionalIds.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  {form.linkedProfessionalIds.length} professionista/i selezionato/i
+                </p>
+              )}
             </div>
 
             {form.newsType === "studio" && (

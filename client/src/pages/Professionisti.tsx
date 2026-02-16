@@ -96,7 +96,9 @@ export default function Professionisti() {
   const getRelatedNews = (professionalId: number | string, professionalName: string) => {
     return newsArticles
       .filter(article => {
-        // Match by linkedProfessionalId
+        if (article.linkedProfessionalIds && article.linkedProfessionalIds.includes(String(professionalId))) {
+          return true;
+        }
         if (article.linkedProfessionalId && String(article.linkedProfessionalId) === String(professionalId)) {
           return true;
         }
