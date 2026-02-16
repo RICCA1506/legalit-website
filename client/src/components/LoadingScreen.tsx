@@ -22,7 +22,7 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
 
   const logoPixelSize = vw >= 768 ? 380 : 280;
   const cx = vw / 2;
-  const cy = vh / 2;
+  const cy = vh / 2 - 20;
 
   const dr = 200 * logoPixelSize / 1470;
   const logoX = cx - logoPixelSize / 2;
@@ -193,7 +193,7 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
         <div
           className="absolute overflow-hidden"
           style={{
-            top: `${cy + logoPixelSize / 2 + 16}px`,
+            top: `${cy + logoPixelSize / 2 + 8}px`,
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 2,
