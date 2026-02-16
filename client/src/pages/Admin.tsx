@@ -755,6 +755,22 @@ export default function Admin() {
 
   const openEditArticle = (article: NewsArticle) => {
     setEditingArticle(article);
+
+    let resolvedIds: string[] = article.linkedProfessionalIds || [];
+    if (resolvedIds.length === 0 && article.linkedProfessionalId) {
+      resolvedIds = [article.linkedProfessionalId];
+    }
+    if (resolvedIds.length === 0 && professionals) {
+      const areaIds: string[] = [];
+      if (article.linkedPracticeArea) areaIds.push(article.linkedPracticeArea);
+      if (article.tags) article.tags.forEach(t => { if (!areaIds.includes(t)) areaIds.push(t); });
+      if (areaIds.length > 0) {
+        resolvedIds = professionals
+          .filter(p => (p.specializations || []).some(s => areaIds.includes(s)))
+          .map(p => String(p.id));
+      }
+    }
+
     setForm({
       title: article.title,
       content: article.content,
@@ -762,7 +778,7 @@ export default function Admin() {
       category: article.category,
       newsType: article.newsType || "studio",
       linkedProfessionalId: article.linkedProfessionalId || "",
-      linkedProfessionalIds: article.linkedProfessionalIds || (article.linkedProfessionalId ? [article.linkedProfessionalId] : []),
+      linkedProfessionalIds: resolvedIds,
       linkedPracticeArea: article.linkedPracticeArea || "",
       linkedinUrl: article.linkedinUrl || "",
       linkedinSummary: article.linkedinSummary || "",
