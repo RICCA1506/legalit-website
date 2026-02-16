@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import helmet from "helmet";
+import compression from "compression";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { seedAdminUser } from "./seed";
@@ -12,6 +13,15 @@ const app = express();
 const isProduction = process.env.NODE_ENV === "production";
 
 app.set("trust proxy", 1);
+
+app.use(compression({
+  level: 6,
+  threshold: 1024,
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) return false;
+    return compression.filter(req, res);
+  },
+}));
 
 app.use(helmet({
   contentSecurityPolicy: isProduction ? {
