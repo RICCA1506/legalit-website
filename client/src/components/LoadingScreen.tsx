@@ -203,7 +203,7 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
             ref={brandImageRef}
             src={logoImage}
             alt="LEGALIT Società tra Avvocati"
-            className="w-[290px] md:w-[390px] lg:w-[490px] h-auto"
+            className="w-[232px] md:w-[312px] lg:w-[392px] h-auto"
             style={{ opacity: 0, transform: 'translateY(100%)' }}
           />
         </div>
