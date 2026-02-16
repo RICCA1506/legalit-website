@@ -280,7 +280,7 @@ export default function AttivitaDetail() {
                         <img 
                           src={article.imageUrl}
                           alt={article.title}
-                          loading="eager"
+                          loading="lazy"
                           decoding="async"
                           className="w-full h-full object-cover"
                           data-testid={`img-news-${article.id}`}

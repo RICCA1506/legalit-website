@@ -44,7 +44,7 @@ function PracticeAreaCard({ area, language }: PracticeAreaCardProps) {
                 src={area.image} 
                 alt={language === "it" ? area.titleIT : area.titleEN}
                 className="w-full h-full object-cover object-center"
-                loading="eager"
+                loading="lazy"
                 decoding="async"
                 data-testid={`img-practice-area-${area.id}`}
               />

@@ -307,6 +307,8 @@ export default function Newsletter() {
                       src={benefit.image} 
                       alt={benefit.title}
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex items-center justify-center w-20 h-20 rounded-full bg-background shadow-lg">
@@ -374,11 +376,15 @@ export default function Newsletter() {
                   src={featureImage1}
                   alt="Legal insights"
                   className="rounded-lg shadow-lg w-full h-48 object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <img
                   src={featureImage2}
                   alt="Professional team"
                   className="rounded-lg shadow-lg w-full h-48 object-cover mt-8"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </motion.div>

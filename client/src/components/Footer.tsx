@@ -95,7 +95,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           <div>
             <Link href="/" className="flex items-center mb-6" data-testid="link-footer-logo">
-              <img src={legalitLogo} alt="Legalit - Società tra Avvocati" className="h-14 w-auto brightness-0 invert" />
+              <img src={legalitLogo} alt="Legalit - Società tra Avvocati" className="h-14 w-auto brightness-0 invert" loading="lazy" decoding="async" />
             </Link>
             <div className="flex gap-4">
               <Button 

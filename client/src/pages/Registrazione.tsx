@@ -122,7 +122,7 @@ export default function Registrazione() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
-              <img src={legalitLogo} alt="Legalit" className="h-12 w-auto" />
+              <img src={legalitLogo} alt="Legalit" className="h-12 w-auto" loading="lazy" decoding="async" />
             </div>
             <div>
               <CardTitle className="text-2xl">{t("register.invalidInvite")}</CardTitle>
@@ -152,7 +152,7 @@ export default function Registrazione() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center space-y-4">
             <div className="flex justify-center">
-              <img src={legalitLogo} alt="Legalit" className="h-12 w-auto" />
+              <img src={legalitLogo} alt="Legalit" className="h-12 w-auto" loading="lazy" decoding="async" />
             </div>
             <div>
               <CardTitle className="text-2xl">Sei già connesso</CardTitle>
@@ -195,7 +195,7 @@ export default function Registrazione() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
-            <img src={legalitLogo} alt="Legalit" className="h-12 w-auto" />
+            <img src={legalitLogo} alt="Legalit" className="h-12 w-auto" loading="lazy" decoding="async" />
           </div>
           <div>
             <CardTitle className="text-2xl">{t("register.title")}</CardTitle>

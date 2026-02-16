@@ -1206,6 +1206,8 @@ export default function Admin() {
                               alt={article.title}
                               className="w-full h-full object-cover"
                               style={getImageCropStyle(article.imagePosition, article.imageZoom)}
+                              loading="lazy"
+                              decoding="async"
                             />
                             <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors flex items-center justify-center">
                               <Maximize className="h-6 w-6 text-white opacity-0 group-hover/img:opacity-100 transition-opacity drop-shadow-lg" />
@@ -1355,6 +1357,8 @@ export default function Admin() {
                             alt={professional.name}
                             className={`w-full h-full ${isLogoPlaceholderCheck(professional.imageUrl) ? 'object-contain p-6 bg-white' : 'object-cover'}`}
                             style={isLogoPlaceholderCheck(professional.imageUrl) ? {} : getImageCropStyle(professional.imagePosition, professional.imageZoom)}
+                            loading="lazy"
+                            decoding="async"
                           />
                           <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors flex items-center justify-center">
                             <Maximize className="h-6 w-6 text-white opacity-0 group-hover/img:opacity-100 transition-opacity drop-shadow-lg" />
@@ -2143,7 +2147,7 @@ export default function Admin() {
                       
                       <div className="flex flex-col items-center gap-4">
                         <div className="p-4 bg-white rounded-lg">
-                          <img src={twoFactorSetup.qrCodeUrl} alt="QR Code 2FA" className="w-48 h-48" />
+                          <img src={twoFactorSetup.qrCodeUrl} alt="QR Code 2FA" className="w-48 h-48" loading="lazy" decoding="async" />
                         </div>
                         <p className="text-xs text-muted-foreground text-center">
                           Se non riesci a scansionare il QR code, inserisci manualmente questa chiave:<br />
@@ -2916,6 +2920,8 @@ export default function Admin() {
             src={lightboxImage}
             alt="Anteprima"
             className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+            loading="lazy"
+            decoding="async"
             onClick={(e) => e.stopPropagation()}
           />
           <Button

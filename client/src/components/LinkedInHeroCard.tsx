@@ -27,7 +27,7 @@ export default function LinkedInHeroCard({ followerCount = "853" }: LinkedInHero
           >
             <div className="pt-4 px-4 pb-3">
               <div className="mb-3">
-                <img src={legalitLogo} alt="Legalit" className="h-12 w-auto object-contain mix-blend-multiply" />
+                <img src={legalitLogo} alt="Legalit" className="h-12 w-auto object-contain mix-blend-multiply" loading="lazy" decoding="async" />
               </div>
               <h3 className="font-bold text-gray-900 text-base leading-tight">Legalit - Società tra Avvocati</h3>
               <p className="text-gray-500 text-xs mt-0.5">
