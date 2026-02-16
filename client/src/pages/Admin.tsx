@@ -2310,34 +2310,43 @@ export default function Admin() {
 
             <div className="space-y-2">
               <Label>Professionisti Collegati</Label>
-              <div className="border rounded-md p-3 max-h-48 overflow-y-auto space-y-1" data-testid="checkbox-linked-professionals">
-                {professionals?.map((prof) => {
-                  const profId = String(prof.id);
-                  const isChecked = form.linkedProfessionalIds.includes(profId);
-                  return (
-                    <label key={prof.id} className="flex items-center gap-2 py-1 px-1 rounded hover-elevate cursor-pointer" data-testid={`checkbox-pro-${prof.id}`}>
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => {
-                          const ids = isChecked
-                            ? form.linkedProfessionalIds.filter(id => id !== profId)
-                            : [...form.linkedProfessionalIds, profId];
-                          setForm({ ...form, linkedProfessionalIds: ids, linkedProfessionalId: ids[0] || "" });
-                        }}
-                        className="h-4 w-4 rounded border-muted-foreground/50 accent-primary"
-                      />
-                      <span className="text-sm">{prof.name}</span>
-                      <span className="text-xs text-muted-foreground ml-auto">{prof.office}</span>
-                    </label>
-                  );
-                })}
-              </div>
-              {form.linkedProfessionalIds.length > 0 && (
-                <p className="text-xs text-muted-foreground">
-                  {form.linkedProfessionalIds.length} professionista/i selezionato/i
-                </p>
-              )}
+              <Collapsible>
+                <CollapsibleTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between" type="button" data-testid="toggle-linked-professionals">
+                    <span className="text-sm">
+                      {form.linkedProfessionalIds.length > 0
+                        ? `${form.linkedProfessionalIds.length} professionista/i selezionato/i`
+                        : "Seleziona professionisti"}
+                    </span>
+                    <ChevronDown className="h-4 w-4 opacity-50" />
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="border rounded-md p-3 mt-2 max-h-48 overflow-y-auto space-y-1" data-testid="checkbox-linked-professionals">
+                    {professionals?.map((prof) => {
+                      const profId = String(prof.id);
+                      const isChecked = form.linkedProfessionalIds.includes(profId);
+                      return (
+                        <label key={prof.id} className="flex items-center gap-2 py-1 px-1 rounded hover-elevate cursor-pointer" data-testid={`checkbox-pro-${prof.id}`}>
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => {
+                              const ids = isChecked
+                                ? form.linkedProfessionalIds.filter(id => id !== profId)
+                                : [...form.linkedProfessionalIds, profId];
+                              setForm({ ...form, linkedProfessionalIds: ids, linkedProfessionalId: ids[0] || "" });
+                            }}
+                            className="h-4 w-4 rounded border-muted-foreground/50 accent-primary"
+                          />
+                          <span className="text-sm">{prof.name}</span>
+                          <span className="text-xs text-muted-foreground ml-auto">{prof.office}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
 
             {form.newsType === "studio" && (
