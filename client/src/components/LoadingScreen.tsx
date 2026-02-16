@@ -113,9 +113,9 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
     }, {
       y: 0,
       opacity: 1,
-      duration: 0.45,
+      duration: 0.4,
       ease: "power3.out",
-    }, "-=0.3");
+    }, "-=0.55");
   }, [tryReveal]);
 
   return (
@@ -203,7 +203,7 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
             ref={brandImageRef}
             src={logoImage}
             alt="LEGALIT Società tra Avvocati"
-            className="w-[340px] md:w-[440px] lg:w-[540px] h-auto"
+            className="w-[290px] md:w-[390px] lg:w-[490px] h-auto"
             style={{ opacity: 0, transform: 'translateY(100%)' }}
           />
         </div>
