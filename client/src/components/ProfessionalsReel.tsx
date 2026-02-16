@@ -211,20 +211,27 @@ export default function ProfessionalsReel({
 
   const cleanName = (n: string) =>
     n
-      .replace(/^(Avv\.\s*|Prof\.\s*|Dott\.\s*|Dott\.ssa\s*)/i, "")
+      .replace(/^(Avv\.\s*|Prof\.\s*|Dott\.\s*|Dott\.ssa\s*)+/gi, "")
+      .replace(/\s+/g, " ")
       .toLowerCase()
       .trim();
 
   const isAuthor = useCallback(
     (name: string) => {
       if (!highlightAuthor) return false;
-      const authorCleaned = cleanName(highlightAuthor);
-      const c = cleanName(name);
-      return (
-        c === authorCleaned ||
-        c.includes(authorCleaned) ||
-        authorCleaned.includes(c)
-      );
+      const a = cleanName(highlightAuthor);
+      const p = cleanName(name);
+      if (!a || !p) return false;
+      if (a === p) return true;
+      const aWords = a.split(" ").filter(Boolean);
+      const pWords = p.split(" ").filter(Boolean);
+      if (aWords.length >= 2 && pWords.length >= 2) {
+        const aFirst = aWords[0], aLast = aWords[aWords.length - 1];
+        const pFirst = pWords[0], pLast = pWords[pWords.length - 1];
+        if (aFirst === pFirst && aLast === pLast) return true;
+        if (aLast === pLast && (pWords.includes(aFirst) || aWords.includes(pFirst))) return true;
+      }
+      return false;
     },
     [highlightAuthor],
   );
@@ -268,6 +275,7 @@ export default function ProfessionalsReel({
       } else {
         selected = [authorPro, ...others];
       }
+      selected.sort(() => Math.random() - 0.5);
     } else {
       const fresh = pickRandom(count, prevIds.current);
       if (fresh.length < count) {
