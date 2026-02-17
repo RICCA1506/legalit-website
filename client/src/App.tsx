@@ -16,7 +16,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import LoadingScreen from "@/components/LoadingScreen";
 import { LoadingContext } from "@/contexts/LoadingContext";
 
-const TopographicBackground = lazy(() => import("@/components/TopographicBackground"));
+import TopographicBackground from "@/components/TopographicBackground";
 const Attivita = lazy(() => import("@/pages/Attivita"));
 const AttivitaDetail = lazy(() => import("@/pages/AttivitaDetail"));
 const Professionisti = lazy(() => import("@/pages/Professionisti"));
@@ -105,9 +105,7 @@ function AppContentInner() {
       <SmoothScroll />
       <AnalyticsTracker />
       {!shouldShowLoading && (
-        <Suspense fallback={null}>
-          <TopographicBackground interactive={true} />
-        </Suspense>
+        <TopographicBackground interactive={true} />
       )}
       {shouldShowLoading && (
         <LoadingScreen
