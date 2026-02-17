@@ -37,45 +37,40 @@
         position: fixed;
         inset: 0;
         z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         background: #0a0a0a;
-        transition: opacity 0.5s ease;
-        overflow: hidden;
+        transition: opacity 0.3s ease;
       }
       #app-preloader.fade-out {
         opacity: 0;
         pointer-events: none;
       }
-      #app-preloader svg {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.18;
+      #app-preloader .preloader-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 24px;
+        opacity: 0.9;
+      }
+      #app-preloader .preloader-spinner {
+        width: 32px;
+        height: 32px;
+        border: 2px solid rgba(126,184,229,0.2);
+        border-top-color: #7eb8e5;
+        border-radius: 50%;
+        animation: preloader-spin 0.8s linear infinite;
+      }
+      @keyframes preloader-spin {
+        to { transform: rotate(360deg); }
       }
     </style>
   </head>
   <body>
     <div id="app-preloader">
-      <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 800">
-        <defs>
-          <filter id="topo-blur"><feGaussianBlur stdDeviation="0.8"/></filter>
-        </defs>
-        <g fill="none" stroke="#2e6884" filter="url(#topo-blur)">
-          <path stroke-width="1.2" d="M-50,200 Q150,120 350,210 T750,180 T1100,220 T1300,190" opacity="0.9"/>
-          <path stroke-width="0.6" d="M-50,230 Q180,160 380,240 T780,210 T1100,250 T1300,220" opacity="0.5"/>
-          <path stroke-width="1.2" d="M-50,350 Q200,280 400,360 T800,320 T1150,370 T1300,340" opacity="0.85"/>
-          <path stroke-width="0.6" d="M-50,380 Q220,310 430,390 T830,350 T1150,400 T1300,370" opacity="0.45"/>
-          <path stroke-width="1.2" d="M-50,500 Q250,430 450,510 T850,470 T1200,520 T1300,490" opacity="0.8"/>
-          <path stroke-width="0.6" d="M-50,530 Q270,460 470,540 T870,500 T1200,550 T1300,520" opacity="0.4"/>
-          <path stroke-width="1.0" d="M-50,100 Q100,50 300,110 T700,80 T1050,120 T1300,95" opacity="0.7"/>
-          <path stroke-width="0.5" d="M-50,130 Q120,75 320,135 T720,105 T1060,145 T1300,120" opacity="0.35"/>
-          <path stroke-width="1.0" d="M-50,650 Q300,580 500,660 T900,620 T1250,670 T1300,640" opacity="0.75"/>
-          <path stroke-width="0.5" d="M-50,680 Q320,610 530,690 T920,650 T1250,700 T1300,670" opacity="0.35"/>
-          <path stroke-width="0.8" d="M200,0 Q260,100 240,250 T290,450 T250,650 T270,850" opacity="0.6"/>
-          <path stroke-width="0.8" d="M600,0 Q650,120 630,280 T680,480 T640,680 T660,850" opacity="0.6"/>
-          <path stroke-width="0.8" d="M950,0 Q1000,90 980,240 T1030,440 T990,640 T1010,850" opacity="0.55"/>
-        </g>
-      </svg>
+      <img class="preloader-logo" src="/favicon.png" alt="" width="80" height="80" />
+      <div class="preloader-spinner"></div>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
@@ -84,19 +79,19 @@
         var rootEl = document.getElementById('root');
         var preloader = document.getElementById('app-preloader');
         if (!rootEl || !preloader) return;
-        function fadeOut() {
-          preloader.classList.add('fade-out');
-          setTimeout(function() { preloader.remove(); }, 600);
-        }
         var observer = new MutationObserver(function() {
           if (rootEl.children.length > 0) {
             observer.disconnect();
-            setTimeout(fadeOut, 200);
+            preloader.classList.add('fade-out');
+            setTimeout(function() { preloader.remove(); }, 350);
           }
         });
         observer.observe(rootEl, { childList: true });
         setTimeout(function() {
-          if (preloader.parentNode) fadeOut();
+          if (preloader.parentNode) {
+            preloader.classList.add('fade-out');
+            setTimeout(function() { preloader.remove(); }, 350);
+          }
         }, 15000);
       })();
     </script>

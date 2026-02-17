@@ -1,11 +1,11 @@
 import { Switch, Route, useLocation } from "wouter";
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/lib/i18n";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 import { ScrollProvider } from "@/contexts/ScrollContext";
 import { LinkedInCardProvider } from "@/contexts/LinkedInCardContext";
 import Header from "@/components/Header";
@@ -13,8 +13,10 @@ import Footer from "@/components/Footer";
 import Home from "@/pages/Home";
 import CookieConsent from "@/components/CookieConsent";
 import SmoothScroll from "@/components/SmoothScroll";
+import LoadingScreen from "@/components/LoadingScreen";
 import { LoadingContext } from "@/contexts/LoadingContext";
-import TopographicBackground from "@/components/TopographicBackground";
+
+const TopographicBackground = lazy(() => import("@/components/TopographicBackground"));
 const Attivita = lazy(() => import("@/pages/Attivita"));
 const AttivitaDetail = lazy(() => import("@/pages/AttivitaDetail"));
 const Professionisti = lazy(() => import("@/pages/Professionisti"));
@@ -90,11 +92,32 @@ function Router() {
 }
 
 function AppContentInner() {
+  const [location] = useLocation();
+  const { currentTheme } = useTheme();
+  const [loadingComplete, setLoadingComplete] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
+  const isHomePage = location === "/";
+
+  const shouldShowLoading = isHomePage && showLoading && !loadingComplete;
+
   return (
-    <LoadingContext.Provider value={{ loadingComplete: true }}>
+    <LoadingContext.Provider value={{ loadingComplete }}>
       <SmoothScroll />
       <AnalyticsTracker />
-      <TopographicBackground interactive={true} />
+      {!shouldShowLoading && (
+        <Suspense fallback={null}>
+          <TopographicBackground interactive={true} />
+        </Suspense>
+      )}
+      {shouldShowLoading && (
+        <LoadingScreen
+          heroImageSrc={currentTheme.heroImage}
+          onComplete={() => {
+            setLoadingComplete(true);
+            setShowLoading(false);
+          }}
+        />
+      )}
       <div className="min-h-screen flex flex-col" style={{ position: "relative", zIndex: 10 }}>
         <Header />
         <main className="flex-1">
