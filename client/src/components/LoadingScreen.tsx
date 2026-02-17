@@ -114,6 +114,10 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
       stagger: 0.05,
     }, "-=0.6");
 
+    const brandContainer = brandImageRef.current?.parentElement;
+    if (brandContainer) {
+      tl.set(brandContainer, { visibility: 'visible' }, "-=0.6");
+    }
     tl.fromTo(brandImageRef.current, {
       y: '100%',
       opacity: 0,
@@ -205,6 +209,7 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 2,
+            visibility: 'hidden',
           }}
         >
           <img
