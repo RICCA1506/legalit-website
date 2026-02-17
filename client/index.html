@@ -23,6 +23,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"></noscript>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="preload" href="/images/topo-bg.png" as="image" type="image/png" />
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SYHZF2CVPF"></script>
     <script>
@@ -36,7 +37,13 @@
         position: fixed;
         inset: 0;
         z-index: 99999;
-        background: #FFFFFF;
+        background: #FFFFFF url('/images/topo-bg.png') center/cover no-repeat;
+        opacity: 1;
+        transition: opacity 0.25s ease-out;
+      }
+      #app-preloader.done {
+        opacity: 0;
+        pointer-events: none;
       }
     </style>
   </head>
@@ -47,7 +54,10 @@
     <script>
       setTimeout(function() {
         var p = document.getElementById('app-preloader');
-        if (p && p.parentNode) p.remove();
+        if (p && p.parentNode) {
+          p.classList.add('done');
+          setTimeout(function() { p.remove(); }, 300);
+        }
       }, 15000);
     </script>
   </body>

@@ -5,53 +5,68 @@ const path = require('path');
 const W = 960;
 const H = 540;
 
-const C = [0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439];
+const C0 = 0.211324865405187;
+const C1 = 0.366025403784439;
+const C2 = -0.577350269189626;
+const C3 = 0.024390243902439;
 
-function mod289(x) { return x - Math.floor(x / 289.0) * 289.0; }
+function glslFract(x) { return x - Math.floor(x); }
+function mod289(x) { return x - Math.floor(x * (1.0 / 289.0)) * 289.0; }
 function permute(x) { return mod289(((x * 34.0) + 1.0) * x); }
 
 function snoise(vx, vy) {
-  const dot_vy = vx * C[1] + vy * C[1];
-  let ix = Math.floor(vx + dot_vy);
-  let iy = Math.floor(vy + dot_vy);
-  const dot_i = ix * C[0] + iy * C[0];
-  let x0x = vx - ix + dot_i;
-  let x0y = vy - iy + dot_i;
+  const s = (vx + vy) * C1;
+  let ix = Math.floor(vx + s);
+  let iy = Math.floor(vy + s);
+
+  const t = (ix + iy) * C0;
+  const x0x = vx - ix + t;
+  const x0y = vy - iy + t;
+
   let i1x, i1y;
-  if (x0x > x0y) { i1x = 1.0; i1y = 0.0; } else { i1x = 0.0; i1y = 1.0; }
-  let x12_x = x0x + C[0] - i1x;
-  let x12_y = x0y + C[0] - i1y;
-  let x12_z = x0x + C[2];
-  let x12_w = x0y + C[2];
+  if (x0x > x0y) { i1x = 1.0; i1y = 0.0; }
+  else { i1x = 0.0; i1y = 1.0; }
+
+  const x12_x = x0x + C0 - i1x;
+  const x12_y = x0y + C0 - i1y;
+  const x12_z = x0x + C2;
+  const x12_w = x0y + C2;
+
   ix = mod289(ix);
   iy = mod289(iy);
-  let p0 = permute(permute(iy) + ix);
-  let p1 = permute(permute(iy + i1y) + ix + i1x);
-  let p2 = permute(permute(iy + 1.0) + ix + 1.0);
+
+  const p_val = permute(permute(iy + 0.0) + ix + 0.0);
+  const p1_val = permute(permute(iy + i1y) + ix + i1x);
+  const p2_val = permute(permute(iy + 1.0) + ix + 1.0);
+
   let m0 = Math.max(0.5 - (x0x * x0x + x0y * x0y), 0.0);
   let m1 = Math.max(0.5 - (x12_x * x12_x + x12_y * x12_y), 0.0);
   let m2 = Math.max(0.5 - (x12_z * x12_z + x12_w * x12_w), 0.0);
   m0 = m0 * m0; m0 = m0 * m0;
   m1 = m1 * m1; m1 = m1 * m1;
   m2 = m2 * m2; m2 = m2 * m2;
-  let x0_val = 2.0 * (((p0 * C[3]) % 1.0 + 1.0) % 1.0) - 1.0;
-  let x1_val = 2.0 * (((p1 * C[3]) % 1.0 + 1.0) % 1.0) - 1.0;
-  let x2_val = 2.0 * (((p2 * C[3]) % 1.0 + 1.0) % 1.0) - 1.0;
-  let h0 = Math.abs(x0_val) - 0.5;
-  let h1 = Math.abs(x1_val) - 0.5;
-  let h2 = Math.abs(x2_val) - 0.5;
-  let ox0 = Math.floor(x0_val + 0.5);
-  let ox1 = Math.floor(x1_val + 0.5);
-  let ox2 = Math.floor(x2_val + 0.5);
-  let a0x = x0_val - ox0;
-  let a0y = x1_val - ox1;
-  let a0z = x2_val - ox2;
+
+  const xx0 = 2.0 * glslFract(p_val * C3) - 1.0;
+  const xx1 = 2.0 * glslFract(p1_val * C3) - 1.0;
+  const xx2 = 2.0 * glslFract(p2_val * C3) - 1.0;
+
+  const h0 = Math.abs(xx0) - 0.5;
+  const h1 = Math.abs(xx1) - 0.5;
+  const h2 = Math.abs(xx2) - 0.5;
+  const ox0 = Math.floor(xx0 + 0.5);
+  const ox1 = Math.floor(xx1 + 0.5);
+  const ox2 = Math.floor(xx2 + 0.5);
+  const a0x = xx0 - ox0;
+  const a0y = xx1 - ox1;
+  const a0z = xx2 - ox2;
+
   m0 *= 1.79284291400159 - 0.85373472095314 * (a0x * a0x + h0 * h0);
   m1 *= 1.79284291400159 - 0.85373472095314 * (a0y * a0y + h1 * h1);
   m2 *= 1.79284291400159 - 0.85373472095314 * (a0z * a0z + h2 * h2);
-  let g0 = a0x * x0x + h0 * x0y;
-  let g1 = a0y * x12_x + h1 * x12_y;
-  let g2 = a0z * x12_z + h2 * x12_w;
+
+  const g0 = a0x * x0x + h0 * x0y;
+  const g1 = a0y * x12_x + h1 * x12_y;
+  const g2 = a0z * x12_z + h2 * x12_w;
   return 130.0 * (m0 * g0 + m1 * g1 + m2 * g2);
 }
 
@@ -65,10 +80,15 @@ function fbm(px, py) {
 }
 
 function contourLine(ht, sp, th) {
-  let frac = ((ht / sp + 0.5) % 1.0 + 1.0) % 1.0;
-  let l = Math.abs(frac - 0.5) * sp;
+  const val = glslFract(ht / sp + 0.5);
+  const l = Math.abs(val - 0.5) * sp;
   if (l >= th) return 0.0;
   return 1.0 - l / th;
+}
+
+function smoothstep(edge0, edge1, x) {
+  const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+  return t * t * (3.0 - 2.0 * t);
 }
 
 const brandR = 0.18, brandG = 0.408, brandB = 0.518;
@@ -102,10 +122,9 @@ for (let y = 0; y < H; y++) {
       lcR = ltR + (brandR - ltR) * t; lcG = ltG + (brandG - ltG) * t; lcB = ltB + (brandB - ltB) * t;
     }
     let cl = Math.min(maj * 0.85 + mn * 0.35, 1.0);
-    let alpha = cl * 0.22;
-    const edgeX = Math.min(uvx < 0.15 ? uvx / 0.15 : 1.0, (1.0 - uvx) < 0.15 ? (1.0 - uvx) / 0.15 : 1.0);
-    const edgeY = Math.min(uvy < 0.1 ? uvy / 0.1 : 1.0, (1.0 - uvy) < 0.1 ? (1.0 - uvy) / 0.1 : 1.0);
-    alpha *= edgeX * edgeY;
+    let alpha = cl * 0.70;
+    alpha *= smoothstep(0.0, 0.15, uvx) * smoothstep(0.0, 0.15, 1.0 - uvx);
+    alpha *= smoothstep(0.0, 0.1, uvy) * smoothstep(0.0, 0.1, 1.0 - uvy);
     const r = Math.round((1.0 + (lcR - 1.0) * alpha) * 255);
     const g = Math.round((1.0 + (lcG - 1.0) * alpha) * 255);
     const b = Math.round((1.0 + (lcB - 1.0) * alpha) * 255);

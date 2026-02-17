@@ -5,7 +5,9 @@ import TopographicBackground from "./TopographicBackground";
 
 function dismissPreloader() {
   const el = document.getElementById('app-preloader');
-  if (el) el.remove();
+  if (!el) return;
+  el.classList.add('done');
+  setTimeout(() => el.remove(), 300);
 }
 
 interface LoadingScreenProps {

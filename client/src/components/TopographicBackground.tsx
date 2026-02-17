@@ -114,7 +114,7 @@ const fragmentShader = `
 
     float combinedLine = min(majorLine * 0.85 + minorLine * 0.35, 1.0);
 
-    float alpha = combinedLine * 0.22;
+    float alpha = combinedLine * 0.70;
 
     alpha *= smoothstep(0.0, 0.15, uv.x) * smoothstep(0.0, 0.15, 1.0 - uv.x);
     alpha *= smoothstep(0.0, 0.1, uv.y) * smoothstep(0.0, 0.1, 1.0 - uv.y);
