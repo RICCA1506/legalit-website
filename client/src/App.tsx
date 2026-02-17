@@ -105,7 +105,10 @@ function AppContentInner() {
       <SmoothScroll />
       <AnalyticsTracker />
       {!shouldShowLoading && (
-        <TopographicBackground interactive={true} />
+        <TopographicBackground interactive={true} onFirstFrame={() => {
+          const el = document.getElementById('app-preloader');
+          if (el) { el.classList.add('fade-out'); setTimeout(() => el.remove(), 450); }
+        }} />
       )}
       {shouldShowLoading && (
         <LoadingScreen

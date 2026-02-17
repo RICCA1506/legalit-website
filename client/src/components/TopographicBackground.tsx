@@ -6,6 +6,7 @@ type TopographicBackgroundProps = {
   bgColor?: string;
   position?: "fixed" | "absolute";
   sizeExtra?: number;
+  onFirstFrame?: () => void;
 };
 
 const vertexShader = `
@@ -133,7 +134,7 @@ function hexToVec3(hex: string): [number, number, number] {
   return [r, g, b];
 }
 
-export default function TopographicBackground({ interactive = true, bgColor, position = "fixed", sizeExtra = 0 }: TopographicBackgroundProps) {
+export default function TopographicBackground({ interactive = true, bgColor, position = "fixed", sizeExtra = 0, onFirstFrame }: TopographicBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const rafRef = useRef<number>(0);
@@ -217,6 +218,7 @@ export default function TopographicBackground({ interactive = true, bgColor, pos
     const startTime = performance.now();
 
     let stopped = false;
+    let firstFrameFired = false;
 
     const animate = () => {
       if (stopped) return;
@@ -234,6 +236,10 @@ export default function TopographicBackground({ interactive = true, bgColor, pos
 
       try {
         renderer.render(scene, camera);
+        if (!firstFrameFired) {
+          firstFrameFired = true;
+          onFirstFrame?.();
+        }
       } catch {
         stopped = true;
         cancelAnimationFrame(rafRef.current);

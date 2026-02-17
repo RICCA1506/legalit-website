@@ -120,25 +120,13 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      (function() {
-        var rootEl = document.getElementById('root');
-        var preloader = document.getElementById('app-preloader');
-        if (!rootEl || !preloader) return;
-        var observer = new MutationObserver(function() {
-          if (rootEl.children.length > 0) {
-            observer.disconnect();
-            preloader.classList.add('fade-out');
-            setTimeout(function() { preloader.remove(); }, 450);
-          }
-        });
-        observer.observe(rootEl, { childList: true, subtree: true });
-        setTimeout(function() {
-          if (preloader.parentNode) {
-            preloader.classList.add('fade-out');
-            setTimeout(function() { preloader.remove(); }, 450);
-          }
-        }, 15000);
-      })();
+      setTimeout(function() {
+        var p = document.getElementById('app-preloader');
+        if (p && p.parentNode) {
+          p.classList.add('fade-out');
+          setTimeout(function() { p.remove(); }, 450);
+        }
+      }, 15000);
     </script>
   </body>
 </html>

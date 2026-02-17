@@ -3,6 +3,13 @@ import gsap from "gsap";
 import logoImage from "@assets/logo_legalit_cropped_1771120703206.png";
 import TopographicBackground from "./TopographicBackground";
 
+function dismissPreloader() {
+  const el = document.getElementById('app-preloader');
+  if (!el) return;
+  el.classList.add('fade-out');
+  setTimeout(() => el.remove(), 450);
+}
+
 interface LoadingScreenProps {
   heroImageSrc: string;
   onComplete: () => void;
@@ -148,6 +155,7 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
             bgColor="#FFFFFF"
             position="absolute"
             sizeExtra={pad}
+            onFirstFrame={dismissPreloader}
           />
         </div>
 
