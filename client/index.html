@@ -37,11 +37,6 @@
         inset: 0;
         z-index: 99999;
         background: #FFFFFF url('/images/topo-bg.png') center/cover no-repeat;
-        transition: opacity 0.4s ease;
-      }
-      #app-preloader.fade-out {
-        opacity: 0;
-        pointer-events: none;
       }
     </style>
   </head>
@@ -52,10 +47,7 @@
     <script>
       setTimeout(function() {
         var p = document.getElementById('app-preloader');
-        if (p && p.parentNode) {
-          p.classList.add('fade-out');
-          setTimeout(function() { p.remove(); }, 450);
-        }
+        if (p && p.parentNode) p.remove();
       }, 15000);
     </script>
   </body>
