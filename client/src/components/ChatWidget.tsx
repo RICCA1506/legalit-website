@@ -794,7 +794,7 @@ export default function ChatWidget() {
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`flex chat-msg-enter ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex chat-msg-enter ${msg.role === "user" ? "justify-end" : "justify-start"} ${i > 0 ? "mt-4" : ""}`}
                 style={{ animationDelay: `${i * 0.05}s` }}
               >
                 {msg.role === "model" && (
@@ -815,17 +815,20 @@ export default function ChatWidget() {
                   style={
                     msg.role === "user"
                       ? {
-                          background: "rgba(126, 184, 229, 0.2)",
-                          border: "1px solid rgba(126, 184, 229, 0.25)",
+                          background: "rgba(30, 100, 180, 0.35)",
+                          border: "1px solid rgba(100, 170, 240, 0.3)",
                           color: "#fff",
                           borderRadius: "16px 16px 4px 16px",
+                          backdropFilter: "blur(8px)",
+                          boxShadow: "0 2px 12px rgba(30, 100, 180, 0.2)",
                         }
                       : {
-                          background: "rgba(255, 255, 255, 0.07)",
-                          color: "rgba(255, 255, 255, 0.9)",
+                          background: "rgba(255, 255, 255, 0.12)",
+                          color: "rgba(255, 255, 255, 0.95)",
                           borderRadius: "16px 16px 16px 4px",
-                          border: "1px solid rgba(255, 255, 255, 0.08)",
-                          backdropFilter: "blur(4px)",
+                          border: "1px solid rgba(255, 255, 255, 0.18)",
+                          backdropFilter: "blur(8px)",
+                          boxShadow: "0 2px 12px rgba(255, 255, 255, 0.05)",
                         }
                   }
                 >
