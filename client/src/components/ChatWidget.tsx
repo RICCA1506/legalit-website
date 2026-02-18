@@ -4,6 +4,7 @@ import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import logoSymbol from "@assets/logo_legalit_cropped_(1)_1771133031977.png";
 import corteCassazione from "@assets/image_1771449412801.png";
+import LiquidMetalButton from "./LiquidMetalButton";
 
 interface ChatMessage {
   role: "user" | "model";
@@ -189,151 +190,6 @@ function DirectLinkCard({ lawyerData, onNavigate }: {
       </div>
       <ExternalLink className="w-4 h-4 shrink-0" style={{ color: "rgba(126, 184, 229, 0.7)" }} />
     </button>
-  );
-}
-
-function ChatTopoBg({ active }: { active: boolean }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rafRef = useRef(0);
-
-  useEffect(() => {
-    if (!active) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let w = 0, h = 0;
-    let imgData: ImageData | null = null;
-
-    const resize = () => {
-      const parent = canvas.parentElement;
-      if (!parent) return;
-      w = parent.clientWidth;
-      h = parent.clientHeight;
-      canvas.width = w;
-      canvas.height = h;
-      imgData = ctx.createImageData(w, h);
-    };
-    resize();
-
-    const ro = new ResizeObserver(resize);
-    if (canvas.parentElement) ro.observe(canvas.parentElement);
-
-    const perm = new Uint8Array(512);
-    const p = new Uint8Array(256);
-    for (let i = 0; i < 256; i++) p[i] = i;
-    for (let i = 255; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [p[i], p[j]] = [p[j], p[i]];
-    }
-    for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
-
-    function noise(x: number, y: number): number {
-      const X = Math.floor(x) & 255;
-      const Y = Math.floor(y) & 255;
-      const xf = x - Math.floor(x);
-      const yf = y - Math.floor(y);
-      const u = xf * xf * (3 - 2 * xf);
-      const v = yf * yf * (3 - 2 * yf);
-      const a = perm[X] + Y;
-      const b = perm[X + 1] + Y;
-      const g = (h: number, x: number, y: number) => {
-        const r = perm[h & 255] & 3;
-        return r === 0 ? x + y : r === 1 ? -x + y : r === 2 ? x - y : -x - y;
-      };
-      return (
-        (1 - v) * ((1 - u) * g(perm[a], xf, yf) + u * g(perm[b], xf - 1, yf)) +
-        v * ((1 - u) * g(perm[a + 1], xf, yf - 1) + u * g(perm[b + 1], xf - 1, yf - 1))
-      );
-    }
-
-    function fbm(x: number, y: number): number {
-      let val = 0, amp = 0.5, freq = 1;
-      for (let i = 0; i < 4; i++) {
-        val += amp * noise(x * freq, y * freq);
-        amp *= 0.45;
-        freq *= 2;
-      }
-      return val;
-    }
-
-    const startTime = performance.now();
-    let stopped = false;
-    let lastDrawTime = 0;
-    const FRAME_INTERVAL = 80;
-
-    const draw = (now: number) => {
-      if (stopped || !ctx || !imgData) return;
-      rafRef.current = requestAnimationFrame(draw);
-
-      if (now - lastDrawTime < FRAME_INTERVAL) return;
-      lastDrawTime = now;
-
-      const t = (now - startTime) * 0.00002;
-      const step = 6;
-      const data = imgData.data;
-
-      for (let py = 0; py < h; py += step) {
-        for (let px = 0; px < w; px += step) {
-          const ux = px / w;
-          const uy = py / h;
-          const sx = ux * 2.5 + t * 15;
-          const sy = uy * 2.5 + t * 10;
-
-          const height = fbm(sx, sy) + 0.2 * noise(sx * 0.4 + t * 5, sy * 0.4 - t * 4);
-          const spacing = 0.15;
-          const line = Math.abs((height / spacing + 0.5) % 1 - 0.5) * spacing;
-          const contour = 1 - Math.min(Math.max(line / 0.01, 0), 1);
-
-          const minorLine = Math.abs((height / 0.05 + 0.5) % 1 - 0.5) * 0.05;
-          const minorContour = 1 - Math.min(Math.max(minorLine / 0.005, 0), 1);
-
-          const combined = Math.min(contour * 0.85 + minorContour * 0.3, 1);
-          const alpha = combined * 0.45;
-
-          const edgeFadeX = Math.min(ux / 0.15, 1) * Math.min((1 - ux) / 0.15, 1);
-          const edgeFadeY = Math.min(uy / 0.1, 1) * Math.min((1 - uy) / 0.1, 1);
-          const finalAlpha = alpha * edgeFadeX * edgeFadeY;
-
-          const tonal = (noise(sx * 0.25 + t * 3, sy * 0.25 + t * 4.5) * 0.5 + 0.5);
-          const brightness = 140 + tonal * 100;
-          const a8 = (finalAlpha * 255) | 0;
-          const r = brightness | 0;
-          const g = (brightness * 0.92) | 0;
-          const b = (brightness * 0.85) | 0;
-
-          for (let dy = 0; dy < step && py + dy < h; dy++) {
-            for (let dx = 0; dx < step && px + dx < w; dx++) {
-              const idx = ((py + dy) * w + (px + dx)) * 4;
-              data[idx] = r;
-              data[idx + 1] = g;
-              data[idx + 2] = b;
-              data[idx + 3] = a8;
-            }
-          }
-        }
-      }
-
-      ctx.putImageData(imgData, 0, 0);
-    };
-
-    rafRef.current = requestAnimationFrame(draw);
-
-    return () => {
-      stopped = true;
-      cancelAnimationFrame(rafRef.current);
-      ro.disconnect();
-    };
-  }, [active]);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 pointer-events-none"
-      style={{ zIndex: 0 }}
-      aria-hidden="true"
-    />
   );
 }
 
@@ -612,56 +468,49 @@ export default function ChatWidget() {
           boxShadow: isOpen ? "0 16px 64px rgba(8, 57, 107, 0.2), 0 0 0 1px rgba(8, 57, 107, 0.06)" : "none",
         }}
       >
-        {/* Header */}
-        <div
-          className="flex items-center justify-between gap-2 px-4 py-3 shrink-0"
-          style={{
-            background: "linear-gradient(135deg, #08396B 0%, #0c4d8a 60%, #2e6884 100%)",
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)" }}
-            >
-              <img
-                src={logoSymbol}
-                alt="LEGALIT"
-                className="w-6 h-6 object-contain brightness-0 invert"
-              />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-white leading-tight tracking-wider">{subtitleText}</p>
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#4ade80" }} />
-                <p className="text-[11px] text-white/70">{titleText}</p>
-              </div>
-            </div>
-          </div>
-          <button
-            data-testid="button-chat-close"
-            onClick={() => setIsOpen(false)}
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-            style={{ background: "rgba(255,255,255,0.1)" }}
-          >
-            <X className="w-4 h-4 text-white/80" />
-          </button>
-        </div>
-
-        {/* Corte di Cassazione strip */}
-        <div className="shrink-0 relative" style={{ height: "48px" }}>
+        {/* Header with Corte di Cassazione photo */}
+        <div className="relative shrink-0" style={{ minHeight: "72px" }}>
           <img
             src={corteCassazione}
             alt="Corte di Cassazione"
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{ objectPosition: "center 30%" }}
           />
           <div
             className="absolute inset-0"
             style={{
-              background: "linear-gradient(180deg, rgba(8, 57, 107, 0.25) 0%, rgba(8, 57, 107, 0.5) 100%)",
+              background: "linear-gradient(135deg, rgba(8, 57, 107, 0.55) 0%, rgba(12, 77, 138, 0.5) 50%, rgba(46, 104, 132, 0.45) 100%)",
             }}
           />
+          <div className="relative flex items-center justify-between gap-2 px-4 py-3">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)" }}
+              >
+                <img
+                  src={logoSymbol}
+                  alt="LEGALIT"
+                  className="w-6 h-6 object-contain brightness-0 invert"
+                />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white leading-tight tracking-wider" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}>{subtitleText}</p>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#4ade80" }} />
+                  <p className="text-[11px] text-white/80" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}>{titleText}</p>
+                </div>
+              </div>
+            </div>
+            <button
+              data-testid="button-chat-close"
+              onClick={() => setIsOpen(false)}
+              className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+              style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(4px)" }}
+            >
+              <X className="w-4 h-4 text-white/90" />
+            </button>
+          </div>
         </div>
 
         {/* "Filo del Discorso" log strip */}
@@ -680,15 +529,13 @@ export default function ChatWidget() {
           </div>
         )}
 
-        {/* Messages area - dark with inverted topographic background */}
+        {/* Messages area - clean dark background */}
         <div
           ref={messagesContainerRef}
           onScroll={handleScroll}
           className="flex-1 overflow-y-auto px-4 py-4 space-y-3 relative"
-          style={{ background: "#061e35" }}
+          style={{ background: "linear-gradient(180deg, #071f36 0%, #0a2a4a 50%, #061e35 100%)" }}
         >
-          <ChatTopoBg active={isOpen} />
-
           <div className="relative z-[1]">
             {/* Welcome state */}
             {messages.length === 0 && !isLoading && (
@@ -708,35 +555,17 @@ export default function ChatWidget() {
                   <p className="text-xs leading-relaxed" style={{ color: "rgba(126, 184, 229, 0.7)" }}>{welcomeSubtitle}</p>
                 </div>
 
-                {/* Quick-reply buttons */}
-                <div className="grid grid-cols-2 gap-2 w-full max-w-[320px]">
+                {/* Liquid metal quick-reply buttons */}
+                <div className="grid grid-cols-2 gap-2.5 w-full max-w-[320px]">
                   {currentQuickReplies.map((qr, idx) => (
-                    <button
+                    <LiquidMetalButton
                       key={idx}
-                      data-testid={`button-quick-reply-${idx}`}
+                      label={qr.label}
+                      icon={qr.icon}
                       onClick={() => sendMessage(qr.label)}
                       disabled={isLoading}
-                      className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-[12px] font-medium transition-all duration-200 text-left"
-                      style={{
-                        background: "rgba(255, 255, 255, 0.06)",
-                        border: "1px solid rgba(126, 184, 229, 0.15)",
-                        color: "rgba(255, 255, 255, 0.85)",
-                        backdropFilter: "blur(4px)",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = "rgba(126, 184, 229, 0.35)";
-                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
-                        e.currentTarget.style.transform = "translateY(-1px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = "rgba(126, 184, 229, 0.15)";
-                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.06)";
-                        e.currentTarget.style.transform = "translateY(0)";
-                      }}
-                    >
-                      <qr.icon className="w-3.5 h-3.5 shrink-0" style={{ color: "#7eb8e5" }} />
-                      <span>{qr.label}</span>
-                    </button>
+                      testId={`button-quick-reply-${idx}`}
+                    />
                   ))}
                 </div>
               </div>
