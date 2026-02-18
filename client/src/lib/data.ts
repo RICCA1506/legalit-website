@@ -468,7 +468,7 @@ export const professionals = [
     phone: "+39 091 8680254",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "",
+    imageUrl: "/attached_assets/avv-giovanni-puntarello.jpg",
   },
   // 15. Carmelina Adamo - Partner (Milano)
   {
@@ -603,7 +603,7 @@ export const professionals = [
     phone: "+39 091 8680254",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "",
+    imageUrl: "/attached_assets/avv-sabrina-causa.jpg",
   },
   // 24. Paola Saladino - Senior Associate (Palermo)
   {
@@ -618,7 +618,7 @@ export const professionals = [
     phone: "+39 091 8680254",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "",
+    imageUrl: "/attached_assets/avv-paola-saladino.jpg",
   },
   // 25. Luciana Maria Russo - Senior Associate (Palermo)
   {
@@ -633,7 +633,7 @@ export const professionals = [
     phone: "+39 091 8680254",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "",
+    imageUrl: "/attached_assets/avv-luciana-maria-russo.jpg",
   },
   // 26. Calogero Gianluca Rizzuto - Senior Associate (Palermo)
   {
@@ -663,7 +663,7 @@ export const professionals = [
     phone: "+39 091 8680254",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "",
+    imageUrl: "/attached_assets/avv-riccardo-costa.jpg",
   },
   // 28. Alessandro Maria Miliziano - Associate (Palermo)
   {
@@ -678,7 +678,7 @@ export const professionals = [
     phone: "+39 091 8680254",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "",
+    imageUrl: "/attached_assets/avv-alessandro-miliziano.jpg",
   },
   // 29. Marco Pauletti - Trainee
   {
@@ -708,7 +708,7 @@ export const professionals = [
     phone: "+39 091 8680254",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "",
+    imageUrl: "/attached_assets/avv-angela-martina-tortorici.jpg",
   },
 ];
 
