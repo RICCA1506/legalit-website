@@ -32,14 +32,51 @@ const quickReplies = {
 };
 
 const lawyerMap: Record<string, { name: string; id: string; area: string }> = {
-  "vaccaro": { name: "Avv. Francesco Vaccaro", id: "1", area: "Penale / M&A" },
-  "francesco vaccaro": { name: "Avv. Francesco Vaccaro", id: "1", area: "Penale / M&A" },
-  "biasci": { name: "Avv. Renato Piero Biasci", id: "2", area: "Civile / Assicurazioni" },
-  "renato piero biasci": { name: "Avv. Renato Piero Biasci", id: "2", area: "Civile / Assicurazioni" },
-  "passalacqua": { name: "Prof. Avv. Pasquale Passalacqua", id: "3", area: "Diritto del Lavoro" },
-  "pasquale passalacqua": { name: "Prof. Avv. Pasquale Passalacqua", id: "3", area: "Diritto del Lavoro" },
-  "puntarello": { name: "Avv. Giovanni Puntarello", id: "12", area: "Amministrativo" },
-  "giovanni puntarello": { name: "Avv. Giovanni Puntarello", id: "12", area: "Amministrativo" },
+  "vaccaro": { name: "Avv. Francesco Vaccaro", id: "3", area: "Penale / M&A / Compliance" },
+  "francesco vaccaro": { name: "Avv. Francesco Vaccaro", id: "3", area: "Penale / M&A / Compliance" },
+  "biasci": { name: "Avv. Renato Piero Biasci", id: "6", area: "Civile / Assicurazioni" },
+  "renato piero biasci": { name: "Avv. Renato Piero Biasci", id: "6", area: "Civile / Assicurazioni" },
+  "passalacqua": { name: "Prof. Avv. Pasquale Passalacqua", id: "4", area: "Diritto del Lavoro" },
+  "pasquale passalacqua": { name: "Prof. Avv. Pasquale Passalacqua", id: "4", area: "Diritto del Lavoro" },
+  "luigi passalacqua": { name: "Avv. Luigi Passalacqua", id: "2", area: "Diritto del Lavoro" },
+  "puntarello": { name: "Avv. Giovanni Puntarello", id: "23", area: "Amministrativo" },
+  "giovanni puntarello": { name: "Avv. Giovanni Puntarello", id: "23", area: "Amministrativo" },
+  "santomauro": { name: "Avv. Alessandro Santomauro", id: "5", area: "Civile / Societario" },
+  "alessandro santomauro": { name: "Avv. Alessandro Santomauro", id: "5", area: "Civile / Societario" },
+  "liberati": { name: "Avv. Fabiana Liberati", id: "1", area: "Diritto del Lavoro" },
+  "fabiana liberati": { name: "Avv. Fabiana Liberati", id: "1", area: "Diritto del Lavoro" },
+  "puglionisi": { name: "Avv. Sonja Puglionisi", id: "7", area: "Diritto del Lavoro" },
+  "sonja puglionisi": { name: "Avv. Sonja Puglionisi", id: "7", area: "Diritto del Lavoro" },
+  "pastorello": { name: "Avv. Francesco Pastorello", id: "8", area: "Penale / Compliance / Sanitario" },
+  "francesco pastorello": { name: "Avv. Francesco Pastorello", id: "8", area: "Penale / Compliance / Sanitario" },
+  "fabbri": { name: "Avv. Bernardo Fabbri", id: "9", area: "Privacy / Compliance / Penale" },
+  "bernardo fabbri": { name: "Avv. Bernardo Fabbri", id: "9", area: "Privacy / Compliance / Penale" },
+  "silvestri": { name: "Avv. Carmine Andrea Silvestri", id: "10", area: "Societario / Civile / Penale" },
+  "carmine andrea silvestri": { name: "Avv. Carmine Andrea Silvestri", id: "10", area: "Societario / Civile / Penale" },
+  "cherti": { name: "Prof. Avv. Stefano Cherti", id: "22", area: "Banking / Assicurazioni / Civile" },
+  "stefano cherti": { name: "Prof. Avv. Stefano Cherti", id: "22", area: "Banking / Assicurazioni / Civile" },
+  "stefanelli": { name: "Avv. Laura Stefanelli", id: "13", area: "Civile / Recupero Crediti" },
+  "laura stefanelli": { name: "Avv. Laura Stefanelli", id: "13", area: "Civile / Recupero Crediti" },
+  "iafrate": { name: "Avv. Claudio Iafrate", id: "11", area: "Civile / Real Estate" },
+  "claudio iafrate": { name: "Avv. Claudio Iafrate", id: "11", area: "Civile / Real Estate" },
+  "ferrara": { name: "Avv. Lorenzo Ferrara", id: "12", area: "Penale / Compliance / Tributario" },
+  "lorenzo ferrara": { name: "Avv. Lorenzo Ferrara", id: "12", area: "Penale / Compliance / Tributario" },
+  "cracchiolo": { name: "Avv. Flavia Cracchiolo", id: "25", area: "Diritto del Lavoro" },
+  "flavia cracchiolo": { name: "Avv. Flavia Cracchiolo", id: "25", area: "Diritto del Lavoro" },
+  "adamo": { name: "Avv. Carmelina Adamo", id: "14", area: "Penale / Civile" },
+  "carmelina adamo": { name: "Avv. Carmelina Adamo", id: "14", area: "Penale / Civile" },
+  "giannini": { name: "Avv. Tommaso Giannini", id: "15", area: "Civile / Lavoro" },
+  "tommaso giannini": { name: "Avv. Tommaso Giannini", id: "15", area: "Civile / Lavoro" },
+  "preite": { name: "Avv. Elena Preite", id: "24", area: "Civile / Lavoro" },
+  "elena preite": { name: "Avv. Elena Preite", id: "24", area: "Civile / Lavoro" },
+  "ialongo": { name: "Avv. Giorgio Ialongo", id: "19", area: "Civile / Recupero Crediti" },
+  "giorgio ialongo": { name: "Avv. Giorgio Ialongo", id: "19", area: "Civile / Recupero Crediti" },
+  "causa": { name: "Avv. Sabrina Causa", id: "26", area: "Amministrativo / Civile" },
+  "sabrina causa": { name: "Avv. Sabrina Causa", id: "26", area: "Amministrativo / Civile" },
+  "saladino": { name: "Avv. Paola Saladino", id: "27", area: "Amministrativo / Civile" },
+  "paola saladino": { name: "Avv. Paola Saladino", id: "27", area: "Amministrativo / Civile" },
+  "rizzuto": { name: "Avv. Calogero Gianluca Rizzuto", id: "29", area: "Penale / Compliance / Civile" },
+  "calogero gianluca rizzuto": { name: "Avv. Calogero Gianluca Rizzuto", id: "29", area: "Penale / Compliance / Civile" },
 };
 
 const pathMap: Record<string, string> = {
@@ -302,6 +339,98 @@ function ChatTopoBackground() {
   );
 }
 
+function GlowBorder({ active }: { active: boolean }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (!active) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let running = true;
+
+    if (typeof ctx.createConicGradient !== "function" || typeof ctx.roundRect !== "function") return;
+
+    const draw = (time: number) => {
+      if (!running) return;
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      if (w === 0 || h === 0) { rafRef.current = requestAnimationFrame(draw); return; }
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2;
+      const angle = (time / 4000) * Math.PI * 2;
+
+      const grad = ctx.createConicGradient(angle, cx, cy);
+      grad.addColorStop(0, "transparent");
+      grad.addColorStop(0.25, "transparent");
+      grad.addColorStop(0.33, "rgba(126, 184, 229, 0.6)");
+      grad.addColorStop(0.38, "rgba(200, 230, 255, 0.9)");
+      grad.addColorStop(0.40, "rgba(255, 255, 255, 1)");
+      grad.addColorStop(0.42, "rgba(200, 230, 255, 0.9)");
+      grad.addColorStop(0.47, "rgba(126, 184, 229, 0.6)");
+      grad.addColorStop(0.55, "transparent");
+      grad.addColorStop(0.70, "transparent");
+      grad.addColorStop(0.76, "rgba(126, 184, 229, 0.35)");
+      grad.addColorStop(0.80, "rgba(180, 220, 255, 0.5)");
+      grad.addColorStop(0.84, "rgba(126, 184, 229, 0.35)");
+      grad.addColorStop(0.90, "transparent");
+      grad.addColorStop(1, "transparent");
+
+      ctx.filter = "blur(0px)";
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, w, h, 18);
+      ctx.fill();
+
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.filter = "none";
+      ctx.fillStyle = "#000";
+      ctx.beginPath();
+      ctx.roundRect(3, 3, w - 6, h - 6, 15);
+      ctx.fill();
+      ctx.globalCompositeOperation = "source-over";
+
+      rafRef.current = requestAnimationFrame(draw);
+    };
+
+    rafRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      running = false;
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [active]);
+
+  if (!active) return null;
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="hidden sm:block"
+      style={{
+        position: "absolute",
+        inset: -6,
+        width: "calc(100% + 12px)",
+        height: "calc(100% + 12px)",
+        pointerEvents: "none",
+        zIndex: -1,
+        filter: "drop-shadow(0 0 8px rgba(126, 184, 229, 0.4))",
+      }}
+    />
+  );
+}
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -490,71 +619,6 @@ export default function ChatWidget() {
         .chat-typing-dot:nth-child(1) { animation: chat-typing-dot 1.2s ease-in-out infinite; }
         .chat-typing-dot:nth-child(2) { animation: chat-typing-dot 1.2s ease-in-out 0.2s infinite; }
         .chat-typing-dot:nth-child(3) { animation: chat-typing-dot 1.2s ease-in-out 0.4s infinite; }
-        @property --chat-border-angle {
-          syntax: '<angle>';
-          initial-value: 0deg;
-          inherits: false;
-        }
-        @keyframes chat-border-spin {
-          to { --chat-border-angle: 360deg; }
-        }
-        .chat-glow-border {
-          --chat-border-angle: 0deg;
-          animation: chat-border-spin 4s linear infinite;
-          position: relative;
-        }
-        .chat-glow-border::before,
-        .chat-glow-border::after {
-          content: '';
-          position: absolute;
-          inset: -2px;
-          border-radius: inherit;
-          pointer-events: none;
-          z-index: -1;
-        }
-        .chat-glow-border::before {
-          background: conic-gradient(
-            from var(--chat-border-angle),
-            transparent 0%,
-            transparent 25%,
-            rgba(126, 184, 229, 0.6) 33%,
-            rgba(200, 230, 255, 0.9) 38%,
-            rgba(255, 255, 255, 1) 40%,
-            rgba(200, 230, 255, 0.9) 42%,
-            rgba(126, 184, 229, 0.6) 47%,
-            transparent 55%,
-            transparent 70%,
-            rgba(126, 184, 229, 0.35) 76%,
-            rgba(180, 220, 255, 0.5) 80%,
-            rgba(126, 184, 229, 0.35) 84%,
-            transparent 90%,
-            transparent 100%
-          );
-        }
-        .chat-glow-border::after {
-          inset: -6px;
-          filter: blur(10px);
-          opacity: 0.5;
-          background: conic-gradient(
-            from var(--chat-border-angle),
-            transparent 0%,
-            transparent 25%,
-            rgba(126, 184, 229, 0.4) 33%,
-            rgba(200, 230, 255, 0.6) 40%,
-            rgba(126, 184, 229, 0.4) 47%,
-            transparent 55%,
-            transparent 70%,
-            rgba(126, 184, 229, 0.25) 80%,
-            transparent 90%,
-            transparent 100%
-          );
-        }
-        @media (max-width: 639px) {
-          .chat-glow-border::before,
-          .chat-glow-border::after {
-            display: none;
-          }
-        }
       `}</style>
 
       {/* Floating toggle button */}
@@ -615,10 +679,9 @@ export default function ChatWidget() {
 
       {/* Chat window wrapper with animated glow border */}
       <div
-        className={`fixed z-[9998] transition-all duration-300 origin-bottom-right
+        className="fixed z-[9998] transition-all duration-300 origin-bottom-right
           bottom-0 right-0 w-full
-          sm:bottom-[5.5rem] sm:right-5 sm:w-[400px] sm:max-w-[calc(100vw-2rem)] sm:rounded-2xl
-          ${isOpen ? "chat-glow-border" : ""}`}
+          sm:bottom-[5.5rem] sm:right-5 sm:w-[400px] sm:max-w-[calc(100vw-2rem)] sm:rounded-2xl"
         style={{
           height: isMobile ? mobileHeight : (isOpen ? "560px" : "0px"),
           opacity: isOpen ? 1 : 0,
@@ -627,6 +690,7 @@ export default function ChatWidget() {
           pointerEvents: isOpen ? "auto" : "none",
         }}
       >
+      <GlowBorder active={isOpen} />
       <div
         ref={chatWindowRef}
         data-testid="chat-window"
