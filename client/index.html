@@ -37,28 +37,24 @@
         position: fixed;
         inset: 0;
         z-index: 99999;
-        background: #FFFFFF;
-        overflow: hidden;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+        pointer-events: none;
       }
-      #app-preloader-img {
-        position: absolute;
-        inset: 0;
+      #app-preloader.dissolve {
+        opacity: 0;
+      }
+      #app-preloader img {
+        display: block;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        filter: blur(4px);
-        transform: scale(1.02);
-        transition: filter 0.4s ease-out, opacity 0.4s ease-out;
-      }
-      #app-preloader.dissolve #app-preloader-img {
-        filter: blur(0px);
-        opacity: 0;
       }
     </style>
   </head>
   <body>
     <div id="app-preloader">
-      <img id="app-preloader-img" src="/images/topo-bg.jpg" alt="" />
+      <img src="/images/topo-bg.jpg" alt="" />
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
@@ -67,7 +63,7 @@
         var p = document.getElementById('app-preloader');
         if (p && p.parentNode) {
           p.classList.add('dissolve');
-          setTimeout(function() { p.remove(); }, 500);
+          setTimeout(function() { p.remove(); }, 600);
         }
       }, 15000);
     </script>
