@@ -69,22 +69,16 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
     });
 
     tl.to(zoomGroupRef.current, {
-      scale: 0.85,
-      duration: 0.7,
-      ease: "power2.out",
-    }, "pullback");
-
-    tl.to(zoomGroupRef.current, {
       scale: 40,
-      duration: 0.75,
-      ease: "expo.in",
+      duration: 1.45,
+      ease: "power2.in",
     }, "zoom");
 
     tl.to(zoomGroupRef.current, {
       opacity: 0,
-      duration: 0.3,
+      duration: 0.4,
       ease: "power1.in",
-    }, "zoom+=0.4");
+    }, "zoom+=1.0");
 
     tl.set(containerRef.current, { visibility: 'hidden', pointerEvents: 'none' });
   }, [onComplete]);
