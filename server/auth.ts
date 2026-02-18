@@ -58,7 +58,7 @@ export function getSession() {
   const isProduction = process.env.NODE_ENV === "production";
   console.log(`[Session] Configuring session: production=${isProduction}, proxy=true, secure=${isProduction}, sameSite=lax, path=/`);
   return session({
-    secret: process.env.SESSION_SECRET || "legalit-secret-key-change-in-production",
+    secret: process.env.SESSION_SECRET!,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
