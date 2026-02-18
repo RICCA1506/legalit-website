@@ -271,6 +271,9 @@ function ChatTopoBackground() {
     }
     rendererRef.current = renderer;
 
+    const handleContextLost = (e: Event) => { e.preventDefault(); };
+    canvas.addEventListener("webglcontextlost", handleContextLost);
+
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
@@ -290,17 +293,19 @@ function ChatTopoBackground() {
     scene.add(mesh);
 
     const render = () => {
-      renderer.render(scene, camera);
+      try { renderer.render(scene, camera); } catch { /* context lost */ }
     };
 
     const updateSize = () => {
       const w = container.clientWidth;
       const h = container.clientHeight;
       if (w === 0 || h === 0) return;
-      renderer.setSize(w, h);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      material.uniforms.u_resolution.value.set(w, h);
-      render();
+      try {
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        material.uniforms.u_resolution.value.set(w, h);
+        render();
+      } catch { /* context lost */ }
     };
 
     updateSize();
@@ -310,9 +315,12 @@ function ChatTopoBackground() {
 
     return () => {
       ro.disconnect();
-      geometry.dispose();
-      material.dispose();
-      renderer.dispose();
+      canvas.removeEventListener("webglcontextlost", handleContextLost);
+      try {
+        geometry.dispose();
+        material.dispose();
+        renderer.dispose();
+      } catch { /* context already lost */ }
       rendererRef.current = null;
       materialRef.current = null;
     };

@@ -259,12 +259,14 @@ export default function TopographicBackground({ interactive = true, bgColor, pos
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("mousemove", onMouseMove);
-      geometry.dispose();
-      material.dispose();
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
+      try {
+        geometry.dispose();
+        material.dispose();
+        renderer.dispose();
+        if (container.contains(renderer.domElement)) {
+          container.removeChild(renderer.domElement);
+        }
+      } catch { /* context already lost */ }
       rendererRef.current = null;
     };
   }, []);
