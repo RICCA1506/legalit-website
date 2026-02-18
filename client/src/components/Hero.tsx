@@ -80,11 +80,19 @@ export default function Hero({ loadingComplete = false }: HeroProps) {
       }
     });
 
+    tl.fromTo(bgRef.current, {
+      scale: 1.18,
+    }, {
+      scale: 1.05,
+      duration: 1.2,
+      ease: "elastic.out(1, 0.45)",
+    }, 0);
+
     tl.to(contentWrapperRef.current, {
       opacity: 1,
       duration: 0.25 * mobileFactor,
       ease: "power2.out"
-    })
+    }, 0.1)
     .to(headingRef.current, {
       opacity: 1,
       y: 0,
