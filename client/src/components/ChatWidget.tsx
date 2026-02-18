@@ -4,7 +4,6 @@ import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import logoSymbol from "@assets/logo_legalit_cropped_(1)_1771133031977.png";
 import corteCassazione from "@assets/image_1771449412801.png";
-import LiquidMetalButton from "./LiquidMetalButton";
 
 interface ChatMessage {
   role: "user" | "model";
@@ -529,13 +528,28 @@ export default function ChatWidget() {
           </div>
         )}
 
-        {/* Messages area - clean dark background */}
+        {/* Messages area with subtle topographic pattern */}
         <div
           ref={messagesContainerRef}
           onScroll={handleScroll}
           className="flex-1 overflow-y-auto px-4 py-4 space-y-3 relative"
           style={{ background: "linear-gradient(180deg, #071f36 0%, #0a2a4a 50%, #061e35 100%)" }}
         >
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.06 }} preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="chat-topo" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+                <path d="M40 10 Q60 25 80 15 Q100 5 120 20 Q140 35 160 18 Q180 0 200 12" fill="none" stroke="#7eb8e5" strokeWidth="0.8"/>
+                <path d="M0 35 Q25 50 50 40 Q75 30 100 45 Q125 60 150 42 Q175 25 200 38" fill="none" stroke="#7eb8e5" strokeWidth="0.6"/>
+                <path d="M20 65 Q45 75 70 60 Q95 45 120 68 Q145 85 170 65 Q190 50 200 58" fill="none" stroke="#7eb8e5" strokeWidth="0.8"/>
+                <path d="M0 90 Q30 100 60 88 Q90 76 120 95 Q150 108 180 90 Q195 82 200 85" fill="none" stroke="#7eb8e5" strokeWidth="0.5"/>
+                <path d="M10 115 Q35 128 65 112 Q95 98 125 118 Q155 132 180 115 Q195 105 200 110" fill="none" stroke="#7eb8e5" strokeWidth="0.7"/>
+                <path d="M0 140 Q28 152 55 138 Q82 125 110 145 Q138 158 165 140 Q185 130 200 135" fill="none" stroke="#7eb8e5" strokeWidth="0.6"/>
+                <path d="M25 168 Q50 178 80 165 Q110 152 140 170 Q165 182 190 168" fill="none" stroke="#7eb8e5" strokeWidth="0.8"/>
+                <path d="M0 195 Q30 185 60 192 Q90 200 120 188 Q150 178 180 195 Q195 200 200 198" fill="none" stroke="#7eb8e5" strokeWidth="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#chat-topo)" />
+          </svg>
           <div className="relative z-[1]">
             {/* Welcome state */}
             {messages.length === 0 && !isLoading && (
@@ -555,18 +569,37 @@ export default function ChatWidget() {
                   <p className="text-xs leading-relaxed" style={{ color: "rgba(126, 184, 229, 0.7)" }}>{welcomeSubtitle}</p>
                 </div>
 
-                {/* Liquid metal quick-reply buttons */}
                 <div className="grid grid-cols-2 gap-2.5 w-full max-w-[320px]">
-                  {currentQuickReplies.map((qr, idx) => (
-                    <LiquidMetalButton
-                      key={idx}
-                      label={qr.label}
-                      icon={qr.icon}
-                      onClick={() => sendMessage(qr.label)}
-                      disabled={isLoading}
-                      testId={`button-quick-reply-${idx}`}
-                    />
-                  ))}
+                  {currentQuickReplies.map((qr, idx) => {
+                    const Icon = qr.icon;
+                    return (
+                      <button
+                        key={idx}
+                        data-testid={`button-quick-reply-${idx}`}
+                        onClick={() => sendMessage(qr.label)}
+                        disabled={isLoading}
+                        className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-[12px] font-medium transition-all duration-200 text-left"
+                        style={{
+                          background: "rgba(126, 184, 229, 0.08)",
+                          border: "1px solid rgba(126, 184, 229, 0.18)",
+                          color: "rgba(200, 225, 245, 0.9)",
+                          cursor: isLoading ? "default" : "pointer",
+                          opacity: isLoading ? 0.5 : 1,
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "rgba(126, 184, 229, 0.16)";
+                          e.currentTarget.style.borderColor = "rgba(126, 184, 229, 0.35)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "rgba(126, 184, 229, 0.08)";
+                          e.currentTarget.style.borderColor = "rgba(126, 184, 229, 0.18)";
+                        }}
+                      >
+                        <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(126, 184, 229, 0.7)" }} />
+                        <span>{qr.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
