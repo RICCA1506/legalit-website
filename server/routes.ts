@@ -1276,7 +1276,7 @@ LANGUAGE: Italiano.
     }
 
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
+      const apiKey = process.env.GOOGLE_API_KEY_LEGALIT;
       if (!apiKey) {
         return res.status(500).json({ message: "Chatbot non configurato" });
       }
