@@ -84,6 +84,15 @@ Preferred communication style: Simple, everyday language.
 - Images served via /objects/:objectPath route
 - Frontend uses drag-and-drop ImageUpload component
 
+**AI Chatbot (Gemini)**
+- POST /api/chat endpoint using Google Gemini 2.0 Flash
+- @google/generative-ai SDK, temperature 0.3, maxOutputTokens 1024
+- Empty systemInstruction variable ready for custom training prompt
+- Conversation history maintained client-side and sent with each request
+- Rate limited: 20 messages per minute per IP
+- Frontend: ChatWidget.tsx floating button (bottom-right), slide-up chat window
+- GEMINI_API_KEY stored as Replit secret
+
 **Email Service (Brevo)**
 - Transactional email delivery via Brevo REST API (server/email.ts)
 - Contact form emails routed by subject: info@legalit.it (default), amministrazione@legalit.it (admin queries), recruitment@legalit.it (job applications)

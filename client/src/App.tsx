@@ -12,6 +12,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Home from "@/pages/Home";
 import CookieConsent from "@/components/CookieConsent";
+import ChatWidget from "@/components/ChatWidget";
 import SmoothScroll from "@/components/SmoothScroll";
 import LoadingScreen from "@/components/LoadingScreen";
 import { LoadingContext } from "@/contexts/LoadingContext";
@@ -127,6 +128,7 @@ function AppContentInner() {
         <Footer />
       </div>
       <CookieConsent />
+      <ChatWidget />
       <Toaster />
     </LoadingContext.Provider>
   );

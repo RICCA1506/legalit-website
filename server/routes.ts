@@ -8,6 +8,7 @@ import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { sendContactEmail, sendJobApplicationEmail } from "./email";
 import { getLinkedInFollowers, updateLinkedInFollowers, startFollowerSync } from "./linkedin";
 import { syncDevDataToCurrentDb } from "./syncData";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const practiceAreaKeywords: Record<string, string[]> = {
   "diritto-lavoro": ["diritto del lavoro", "giuslavoristic", "lavoratore", "lavoratori", "lavoratrice", "licenziamento", "licenziamenti", "previdenziale", "sindacale", "sindacato", "contratto collettivo", "ccnl", "relazioni industriali", "retribuzione", "tfr", "inps", "inail", "cassa integrazione", "mobbing", "demansionamento", "jobs act", "smart working", "lavoro agile", "welfare aziendale", "sicurezza sul lavoro", "rapporto di lavoro", "datore di lavoro"],
@@ -1161,6 +1162,65 @@ export async function registerRoutes(
 </html>`);
     } catch {
       next();
+    }
+  });
+
+  // Gemini AI Chatbot route
+  const systemInstruction = "";
+
+  const chatSchema = z.object({
+    message: z.string().min(1).max(2000),
+    history: z.array(z.object({
+      role: z.enum(["user", "model"]),
+      parts: z.array(z.object({ text: z.string() })),
+    })).optional().default([]),
+  });
+
+  const chatRateLimit = new Map<string, { count: number; resetAt: number }>();
+  const CHAT_RATE_LIMIT = 20;
+  const CHAT_RATE_WINDOW = 60 * 1000;
+
+  app.post("/api/chat", async (req, res) => {
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    const now = Date.now();
+    const entry = chatRateLimit.get(ip);
+    if (entry && now < entry.resetAt) {
+      if (entry.count >= CHAT_RATE_LIMIT) {
+        return res.status(429).json({ message: "Troppi messaggi. Attendi un momento." });
+      }
+      entry.count++;
+    } else {
+      chatRateLimit.set(ip, { count: 1, resetAt: now + CHAT_RATE_WINDOW });
+    }
+
+    try {
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({ message: "Chatbot non configurato" });
+      }
+
+      const parsed = chatSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: "Messaggio non valido" });
+      }
+
+      const { message, history } = parsed.data;
+
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({
+        model: "gemini-2.0-flash",
+        generationConfig: { temperature: 0.3, maxOutputTokens: 1024 },
+        ...(systemInstruction ? { systemInstruction } : {}),
+      });
+
+      const chat = model.startChat({ history });
+      const result = await chat.sendMessage(message);
+      const response = result.response.text();
+
+      res.json({ reply: response });
+    } catch (error: any) {
+      console.error("Gemini chat error:", error?.message || error);
+      res.status(500).json({ message: "Errore nel chatbot. Riprova." });
     }
   });
 
