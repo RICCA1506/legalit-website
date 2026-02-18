@@ -742,16 +742,11 @@ export default function ChatWidget() {
             {/* Welcome state */}
             {messages.length === 0 && !isLoading && (
               <div className="flex flex-col items-center pt-6 pb-2 gap-5 px-2 chat-msg-enter">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center shrink-0"
-                  style={{ background: "rgba(126, 184, 229, 0.1)", border: "1px solid rgba(126, 184, 229, 0.15)" }}
-                >
-                  <img
-                    src={logoSymbol}
-                    alt="LEGALIT"
-                    className="w-9 h-9 object-contain brightness-0 invert"
-                  />
-                </div>
+                <img
+                  src={logoSymbol}
+                  alt="LEGALIT"
+                  className="w-14 h-14 object-contain shrink-0"
+                />
                 <div className="text-center">
                   <p className="text-[15px] font-semibold mb-1 text-white">{welcomeTitle}</p>
                   <p className="text-xs leading-relaxed" style={{ color: "rgba(126, 184, 229, 0.7)" }}>{welcomeSubtitle}</p>
