@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Send, ArrowDown, Building2, User, Phone, Mail } from "lucide-react";
+import { useState, useRef, useEffect, useCallback, type ReactNode } from "react";
+import { X, Send, ArrowDown, Building2, User, Phone, Mail, ExternalLink, CheckCircle2, FileText } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
+import { useLocation } from "wouter";
 import logoSymbol from "@assets/logo_legalit_cropped_(1)_1771133031977.png";
 
 interface ChatMessage {
@@ -28,7 +29,76 @@ const quickReplies = {
   ],
 };
 
-function formatBoldText(text: string) {
+const lawyerMap: Record<string, { name: string; id: string; area: string }> = {
+  "vaccaro": { name: "Avv. Francesco Vaccaro", id: "1", area: "Penale / M&A" },
+  "francesco vaccaro": { name: "Avv. Francesco Vaccaro", id: "1", area: "Penale / M&A" },
+  "biasci": { name: "Avv. Renato Piero Biasci", id: "2", area: "Civile / Assicurazioni" },
+  "renato piero biasci": { name: "Avv. Renato Piero Biasci", id: "2", area: "Civile / Assicurazioni" },
+  "passalacqua": { name: "Prof. Avv. Pasquale Passalacqua", id: "3", area: "Diritto del Lavoro" },
+  "pasquale passalacqua": { name: "Prof. Avv. Pasquale Passalacqua", id: "3", area: "Diritto del Lavoro" },
+  "puntarello": { name: "Avv. Giovanni Puntarello", id: "12", area: "Amministrativo" },
+  "giovanni puntarello": { name: "Avv. Giovanni Puntarello", id: "12", area: "Amministrativo" },
+};
+
+const pathMap: Record<string, string> = {
+  "/team/vaccaro": "vaccaro",
+  "/team/biasci": "biasci",
+  "/team/passalacqua": "passalacqua",
+  "/team/puntarello": "puntarello",
+};
+
+function parseLawyerKey(raw: string): { name: string; id: string; area: string } | null {
+  const trimmed = raw.trim();
+  const fromPath = pathMap[trimmed.toLowerCase()];
+  if (fromPath && lawyerMap[fromPath]) return lawyerMap[fromPath];
+
+  const key = trimmed.toLowerCase().replace(/^avv\.?\s*/i, "").replace(/^prof\.?\s*/i, "").trim();
+  for (const [k, v] of Object.entries(lawyerMap)) {
+    if (key.includes(k) || k.includes(key)) return v;
+  }
+  return null;
+}
+
+interface ParsedSegment {
+  type: "text" | "show_log" | "confirm_triage" | "direct_link";
+  content: string;
+  lawyerData?: { name: string; id: string; area: string };
+}
+
+function parseUITags(text: string): ParsedSegment[] {
+  const segments: ParsedSegment[] = [];
+  let remaining = text;
+
+  const tagRegex = /\[SHOW_LOG\]|\[SHOW_CARD:\s*CONFIRM_TRIAGE\]|\[DIRECT_LINK:\s*([^\]]+)\]/g;
+  let match: RegExpExecArray | null;
+  let lastIndex = 0;
+
+  while ((match = tagRegex.exec(remaining)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push({ type: "text", content: remaining.slice(lastIndex, match.index) });
+    }
+
+    if (match[0] === "[SHOW_LOG]") {
+      segments.push({ type: "show_log", content: "" });
+    } else if (match[0].startsWith("[SHOW_CARD:")) {
+      segments.push({ type: "confirm_triage", content: "" });
+    } else if (match[0].startsWith("[DIRECT_LINK:")) {
+      const rawName = match[1] || "";
+      const lawyer = parseLawyerKey(rawName);
+      segments.push({ type: "direct_link", content: rawName.trim(), lawyerData: lawyer || undefined });
+    }
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < remaining.length) {
+    segments.push({ type: "text", content: remaining.slice(lastIndex) });
+  }
+
+  return segments.length > 0 ? segments : [{ type: "text", content: text }];
+}
+
+function formatRichText(text: string): ReactNode[] {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
@@ -36,6 +106,89 @@ function formatBoldText(text: string) {
     }
     return part;
   });
+}
+
+function ShowLogCard({ children }: { children: ReactNode }) {
+  return (
+    <div
+      className="flex items-start gap-2 px-3 py-2 my-2 rounded-xl text-[11px] leading-relaxed"
+      style={{
+        background: "rgba(8, 57, 107, 0.04)",
+        border: "1px solid rgba(8, 57, 107, 0.08)",
+        color: "#5a6b7d",
+      }}
+      data-testid="chat-show-log"
+    >
+      <FileText className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: "#08396B", opacity: 0.5 }} />
+      <div className="italic">{children}</div>
+    </div>
+  );
+}
+
+function ConfirmTriageCard({ onConfirm }: { onConfirm: (answer: string) => void }) {
+  return (
+    <div
+      className="my-2 px-3.5 py-3 rounded-xl"
+      style={{
+        background: "linear-gradient(135deg, rgba(8, 57, 107, 0.06), rgba(126, 184, 229, 0.08))",
+        border: "1px solid rgba(8, 57, 107, 0.12)",
+      }}
+      data-testid="chat-confirm-triage"
+    >
+      <div className="flex items-center gap-2 mb-2.5">
+        <CheckCircle2 className="w-4 h-4" style={{ color: "#08396B" }} />
+        <span className="text-[12px] font-semibold" style={{ color: "#08396B" }}>Conferma Triage</span>
+      </div>
+      <div className="flex gap-2">
+        <button
+          onClick={() => onConfirm("Confermo, è corretto")}
+          className="flex-1 py-2 rounded-lg text-[12px] font-medium transition-all duration-200"
+          style={{
+            background: "#08396B",
+            color: "#fff",
+          }}
+          data-testid="button-triage-confirm"
+        >
+          Confermo
+        </button>
+        <button
+          onClick={() => onConfirm("No, vorrei correggere")}
+          className="flex-1 py-2 rounded-lg text-[12px] font-medium transition-all duration-200"
+          style={{
+            background: "#fff",
+            color: "#08396B",
+            border: "1px solid rgba(8, 57, 107, 0.2)",
+          }}
+          data-testid="button-triage-correct"
+        >
+          Correggi
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function DirectLinkCard({ lawyerData, onNavigate }: {
+  lawyerData: { name: string; id: string; area: string };
+  onNavigate: (path: string) => void;
+}) {
+  return (
+    <button
+      onClick={() => onNavigate(`/professionisti?id=${lawyerData.id}`)}
+      className="flex items-center gap-3 w-full my-2 px-3.5 py-3 rounded-xl text-left transition-all duration-200"
+      style={{
+        background: "linear-gradient(135deg, #08396B, #0c4d8a)",
+        boxShadow: "0 2px 8px rgba(8, 57, 107, 0.25)",
+      }}
+      data-testid={`button-direct-link-${lawyerData.id}`}
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-semibold text-white truncate">{lawyerData.name}</p>
+        <p className="text-[11px] text-white/60">{lawyerData.area}</p>
+      </div>
+      <ExternalLink className="w-4 h-4 text-white/70 shrink-0" />
+    </button>
+  );
 }
 
 export default function ChatWidget() {
@@ -47,11 +200,13 @@ export default function ChatWidget() {
   const [pulseToggle, setPulseToggle] = useState(true);
   const [mobileHeight, setMobileHeight] = useState("100dvh");
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 640);
+  const [showLogContent, setShowLogContent] = useState<string | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();
+  const [, navigate] = useLocation();
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -131,6 +286,13 @@ export default function ChatWidget() {
 
       const data = await res.json();
       if (res.ok && data.reply) {
+        const parsed = parseUITags(data.reply);
+        const logSegment = parsed.find(s => s.type === "show_log");
+        if (logSegment) {
+          const textAfterLog = parsed.filter(s => s.type === "text").map(s => s.content).join("").trim();
+          const firstLine = textAfterLog.split("\n")[0] || "";
+          setShowLogContent(firstLine.slice(0, 120));
+        }
         setMessages((prev) => [...prev, { role: "model", text: data.reply }]);
       } else {
         setMessages((prev) => [
@@ -153,6 +315,50 @@ export default function ChatWidget() {
       e.preventDefault();
       sendMessage();
     }
+  };
+
+  const handleNavigate = (path: string) => {
+    setIsOpen(false);
+    navigate(path);
+  };
+
+  const renderMessageContent = (text: string, msgIndex: number) => {
+    const segments = parseUITags(text);
+    const hasSpecialTags = segments.some(s => s.type !== "text");
+
+    if (!hasSpecialTags) {
+      return <>{formatRichText(text)}</>;
+    }
+
+    return (
+      <>
+        {segments.map((seg, i) => {
+          if (seg.type === "show_log") {
+            const nextTextSeg = segments.find((s, j) => j > i && s.type === "text");
+            if (!nextTextSeg) return null;
+            const lines = nextTextSeg.content.trim().split("\n");
+            const logLine = lines[0] || "";
+            if (!logLine) return null;
+            return <ShowLogCard key={`${msgIndex}-log-${i}`}>{formatRichText(logLine)}</ShowLogCard>;
+          }
+          if (seg.type === "confirm_triage") {
+            return <ConfirmTriageCard key={`${msgIndex}-triage-${i}`} onConfirm={(answer) => sendMessage(answer)} />;
+          }
+          if (seg.type === "direct_link" && seg.lawyerData) {
+            return <DirectLinkCard key={`${msgIndex}-link-${i}`} lawyerData={seg.lawyerData} onNavigate={handleNavigate} />;
+          }
+          if (seg.type === "direct_link" && !seg.lawyerData) {
+            return null;
+          }
+          if (seg.type === "text") {
+            const trimmedContent = seg.content.trim();
+            if (!trimmedContent) return null;
+            return <span key={`${msgIndex}-text-${i}`}>{formatRichText(trimmedContent)}</span>;
+          }
+          return null;
+        })}
+      </>
+    );
   };
 
   const placeholderText = language === "it" ? "Scrivi un messaggio..." : "Type a message...";
@@ -216,14 +422,12 @@ export default function ChatWidget() {
               boxShadow: isOpen
                 ? "0 2px 12px rgba(8, 57, 107, 0.3)"
                 : "0 4px 24px rgba(8, 57, 107, 0.45), 0 0 0 3px rgba(126, 184, 229, 0.12)",
-              transform: isOpen ? "rotate(0deg)" : "rotate(0deg)",
             }}
           >
             <div
               className="transition-all duration-300"
               style={{
                 transform: isOpen ? "rotate(90deg) scale(0.9)" : "rotate(0deg) scale(1)",
-                opacity: 1,
               }}
             >
               {isOpen ? (
@@ -298,6 +502,22 @@ export default function ChatWidget() {
           </button>
         </div>
 
+        {/* "Filo del Discorso" log strip */}
+        {showLogContent && messages.length > 0 && (
+          <div
+            className="flex items-center gap-2 px-4 py-1.5 shrink-0 text-[10px]"
+            style={{
+              background: "rgba(8, 57, 107, 0.03)",
+              borderBottom: "1px solid rgba(8, 57, 107, 0.06)",
+              color: "#6b7d8e",
+            }}
+            data-testid="chat-log-strip"
+          >
+            <FileText className="w-3 h-3 shrink-0" style={{ opacity: 0.5 }} />
+            <span className="truncate italic">{showLogContent}</span>
+          </div>
+        )}
+
         {/* Messages area with watermark */}
         <div
           ref={messagesContainerRef}
@@ -307,7 +527,7 @@ export default function ChatWidget() {
         >
           {/* Logo watermark background */}
           <div
-            className="pointer-events-none fixed"
+            className="pointer-events-none"
             style={{
               position: "absolute",
               top: "50%",
@@ -420,7 +640,7 @@ export default function ChatWidget() {
                         }
                   }
                 >
-                  {msg.role === "model" ? formatBoldText(msg.text) : msg.text}
+                  {msg.role === "model" ? renderMessageContent(msg.text, i) : msg.text}
                 </div>
               </div>
             ))}
