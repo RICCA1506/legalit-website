@@ -490,6 +490,71 @@ export default function ChatWidget() {
         .chat-typing-dot:nth-child(1) { animation: chat-typing-dot 1.2s ease-in-out infinite; }
         .chat-typing-dot:nth-child(2) { animation: chat-typing-dot 1.2s ease-in-out 0.2s infinite; }
         .chat-typing-dot:nth-child(3) { animation: chat-typing-dot 1.2s ease-in-out 0.4s infinite; }
+        @property --chat-border-angle {
+          syntax: '<angle>';
+          initial-value: 0deg;
+          inherits: false;
+        }
+        @keyframes chat-border-spin {
+          to { --chat-border-angle: 360deg; }
+        }
+        .chat-glow-border {
+          --chat-border-angle: 0deg;
+          animation: chat-border-spin 4s linear infinite;
+          position: relative;
+        }
+        .chat-glow-border::before,
+        .chat-glow-border::after {
+          content: '';
+          position: absolute;
+          inset: -2px;
+          border-radius: inherit;
+          pointer-events: none;
+          z-index: -1;
+        }
+        .chat-glow-border::before {
+          background: conic-gradient(
+            from var(--chat-border-angle),
+            transparent 0%,
+            transparent 25%,
+            rgba(126, 184, 229, 0.6) 33%,
+            rgba(200, 230, 255, 0.9) 38%,
+            rgba(255, 255, 255, 1) 40%,
+            rgba(200, 230, 255, 0.9) 42%,
+            rgba(126, 184, 229, 0.6) 47%,
+            transparent 55%,
+            transparent 70%,
+            rgba(126, 184, 229, 0.35) 76%,
+            rgba(180, 220, 255, 0.5) 80%,
+            rgba(126, 184, 229, 0.35) 84%,
+            transparent 90%,
+            transparent 100%
+          );
+        }
+        .chat-glow-border::after {
+          inset: -6px;
+          filter: blur(10px);
+          opacity: 0.5;
+          background: conic-gradient(
+            from var(--chat-border-angle),
+            transparent 0%,
+            transparent 25%,
+            rgba(126, 184, 229, 0.4) 33%,
+            rgba(200, 230, 255, 0.6) 40%,
+            rgba(126, 184, 229, 0.4) 47%,
+            transparent 55%,
+            transparent 70%,
+            rgba(126, 184, 229, 0.25) 80%,
+            transparent 90%,
+            transparent 100%
+          );
+        }
+        @media (max-width: 639px) {
+          .chat-glow-border::before,
+          .chat-glow-border::after {
+            display: none;
+          }
+        }
       `}</style>
 
       {/* Floating toggle button */}
@@ -548,20 +613,26 @@ export default function ChatWidget() {
         </div>
       </button>
 
-      {/* Chat window */}
+      {/* Chat window wrapper with animated glow border */}
       <div
-        ref={chatWindowRef}
-        data-testid="chat-window"
-        className="fixed z-[9998] flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right
+        className={`fixed z-[9998] transition-all duration-300 origin-bottom-right
           bottom-0 right-0 w-full
-          sm:bottom-[5.5rem] sm:right-5 sm:w-[400px] sm:max-w-[calc(100vw-2rem)] sm:rounded-2xl"
+          sm:bottom-[5.5rem] sm:right-5 sm:w-[400px] sm:max-w-[calc(100vw-2rem)] sm:rounded-2xl
+          ${isOpen ? "chat-glow-border" : ""}`}
         style={{
           height: isMobile ? mobileHeight : (isOpen ? "560px" : "0px"),
           opacity: isOpen ? 1 : 0,
           visibility: isOpen ? "visible" : "hidden",
           transform: isOpen ? "scale(1) translateY(0)" : "scale(0.95) translateY(16px)",
           pointerEvents: isOpen ? "auto" : "none",
-          boxShadow: isOpen ? "0 16px 64px rgba(8, 57, 107, 0.2), 0 0 0 1px rgba(8, 57, 107, 0.06)" : "none",
+        }}
+      >
+      <div
+        ref={chatWindowRef}
+        data-testid="chat-window"
+        className="w-full h-full flex flex-col overflow-hidden sm:rounded-2xl"
+        style={{
+          boxShadow: isOpen ? "0 16px 64px rgba(8, 57, 107, 0.2)" : "none",
         }}
       >
         {/* Header with Corte di Cassazione photo */}
@@ -807,6 +878,7 @@ export default function ChatWidget() {
             <Send className="w-4 h-4" style={{ transform: "translateX(0.5px)" }} />
           </button>
         </div>
+      </div>
       </div>
     </>
   );
