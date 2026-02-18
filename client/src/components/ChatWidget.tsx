@@ -791,13 +791,17 @@ export default function ChatWidget() {
             )}
 
             {/* Messages */}
-            {messages.map((msg, i) => (
+            {messages.map((msg, i) => {
+              const segments = msg.role === "model" ? parseUITags(msg.text) : null;
+              const hasOnlyCards = segments ? segments.every(s => s.type !== "text" || !s.content.trim()) : false;
+
+              return (
               <div
                 key={i}
                 className={`flex chat-msg-enter ${msg.role === "user" ? "justify-end" : "justify-start"} ${i > 0 ? "mt-4" : ""}`}
                 style={{ animationDelay: `${i * 0.05}s` }}
               >
-                {msg.role === "model" && (
+                {msg.role === "model" && !hasOnlyCards && (
                   <div
                     className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mr-2 mt-1"
                     style={{ background: "rgba(126, 184, 229, 0.12)" }}
@@ -809,6 +813,11 @@ export default function ChatWidget() {
                     />
                   </div>
                 )}
+                {hasOnlyCards ? (
+                  <div data-testid={`chat-message-${msg.role}-${i}`} className="w-full">
+                    {renderMessageContent(msg.text, i)}
+                  </div>
+                ) : (
                 <div
                   data-testid={`chat-message-${msg.role}-${i}`}
                   className="max-w-[80%] px-3.5 py-2.5 text-[13px] leading-[1.6] whitespace-pre-wrap"
@@ -834,8 +843,10 @@ export default function ChatWidget() {
                 >
                   {msg.role === "model" ? renderMessageContent(msg.text, i) : msg.text}
                 </div>
+                )}
               </div>
-            ))}
+              );
+            })}
 
             {/* Typing indicator */}
             {isLoading && (
