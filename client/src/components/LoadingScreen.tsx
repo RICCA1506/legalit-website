@@ -69,6 +69,12 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
     });
 
     tl.to(zoomGroupRef.current, {
+      scale: 0.85,
+      duration: 0.7,
+      ease: "power2.out",
+    }, "pullback");
+
+    tl.to(zoomGroupRef.current, {
       scale: 40,
       duration: 0.75,
       ease: "expo.in",
