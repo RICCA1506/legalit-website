@@ -237,7 +237,12 @@ function ChatTopoBackground() {
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    } catch {
+      return;
+    }
     rendererRef.current = renderer;
 
     const scene = new THREE.Scene();
