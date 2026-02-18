@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, useCallback, type ReactNode } from "react";
-import { X, Send, ArrowDown, Building2, User, Phone, Mail, ExternalLink, CheckCircle2, FileText } from "lucide-react";
+import { X, Send, ArrowDown, Building2, User, Phone, Mail, ExternalLink, CheckCircle2 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import logoSymbol from "@assets/logo_legalit_cropped_(1)_1771133031977.png";
 import corteCassazione from "@assets/image_1771449412801.png";
+import * as THREE from "three";
 
 interface ChatMessage {
   role: "user" | "model";
@@ -108,23 +109,6 @@ function formatRichText(text: string): ReactNode[] {
   });
 }
 
-function ShowLogCard({ children }: { children: ReactNode }) {
-  return (
-    <div
-      className="flex items-start gap-2 px-3 py-2 my-2 rounded-xl text-[11px] leading-relaxed"
-      style={{
-        background: "rgba(255, 255, 255, 0.06)",
-        border: "1px solid rgba(255, 255, 255, 0.1)",
-        color: "rgba(255, 255, 255, 0.6)",
-      }}
-      data-testid="chat-show-log"
-    >
-      <FileText className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: "rgba(126, 184, 229, 0.6)" }} />
-      <div className="italic">{children}</div>
-    </div>
-  );
-}
-
 function ConfirmTriageCard({ onConfirm }: { onConfirm: (answer: string) => void }) {
   return (
     <div
@@ -192,6 +176,127 @@ function DirectLinkCard({ lawyerData, onNavigate }: {
   );
 }
 
+const vertexShader = `
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = vec4(position, 1.0);
+}
+`;
+
+const fragmentShader = `
+uniform vec2 u_resolution;
+uniform vec3 u_color;
+varying vec2 vUv;
+
+vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+float snoise(vec2 v){
+  const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+  vec2 i  = floor(v + dot(v, C.yy));
+  vec2 x0 = v - i + dot(i, C.xx);
+  vec2 i1;
+  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+  vec4 x12 = x0.xyxy + C.xxzz;
+  x12.xy -= i1;
+  i = mod(i, 289.0);
+  vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
+  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+  m = m*m;
+  m = m*m;
+  vec3 x = 2.0 * fract(p * C.www) - 1.0;
+  vec3 h = abs(x) - 0.5;
+  vec3 ox = floor(x + 0.5);
+  vec3 a0 = x - ox;
+  m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
+  vec3 g;
+  g.x  = a0.x  * x0.x  + h.x  * x0.y;
+  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+  return 130.0 * dot(m, g);
+}
+
+void main() {
+  vec2 uv = vUv;
+  uv.x *= u_resolution.x / u_resolution.y;
+  float scale = 3.0;
+  float n = snoise(uv * scale);
+  n += 0.5 * snoise(uv * scale * 2.0 + 10.0);
+  float lines = sin(n * 20.0);
+  lines = smoothstep(0.96, 0.98, lines);
+  gl_FragColor = vec4(u_color, lines * 0.3);
+}
+`;
+
+function ChatTopoBackground() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const materialRef = useRef<THREE.ShaderMaterial | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const canvas = canvasRef.current;
+    if (!container || !canvas) return;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    rendererRef.current = renderer;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        u_resolution: { value: new THREE.Vector2(1, 1) },
+        u_color: { value: new THREE.Vector3(1.0, 1.0, 1.0) },
+      },
+      transparent: true,
+    });
+    materialRef.current = material;
+
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    const render = () => {
+      renderer.render(scene, camera);
+    };
+
+    const updateSize = () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (w === 0 || h === 0) return;
+      renderer.setSize(w, h);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      material.uniforms.u_resolution.value.set(w, h);
+      render();
+    };
+
+    updateSize();
+
+    const ro = new ResizeObserver(() => updateSize());
+    ro.observe(container);
+
+    return () => {
+      ro.disconnect();
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+      rendererRef.current = null;
+      materialRef.current = null;
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.12 }}
+    >
+      <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
+    </div>
+  );
+}
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -201,7 +306,6 @@ export default function ChatWidget() {
   const [pulseToggle, setPulseToggle] = useState(true);
   const [mobileHeight, setMobileHeight] = useState("100dvh");
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 640);
-  const [showLogContent, setShowLogContent] = useState<string | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -287,13 +391,6 @@ export default function ChatWidget() {
 
       const data = await res.json();
       if (res.ok && data.reply) {
-        const parsed = parseUITags(data.reply);
-        const logSegment = parsed.find(s => s.type === "show_log");
-        if (logSegment) {
-          const textAfterLog = parsed.filter(s => s.type === "text").map(s => s.content).join("").trim();
-          const firstLine = textAfterLog.split("\n")[0] || "";
-          setShowLogContent(firstLine.slice(0, 120));
-        }
         setMessages((prev) => [...prev, { role: "model", text: data.reply }]);
       } else {
         setMessages((prev) => [
@@ -335,12 +432,7 @@ export default function ChatWidget() {
       <>
         {segments.map((seg, i) => {
           if (seg.type === "show_log") {
-            const nextTextSeg = segments.find((s, j) => j > i && s.type === "text");
-            if (!nextTextSeg) return null;
-            const lines = nextTextSeg.content.trim().split("\n");
-            const logLine = lines[0] || "";
-            if (!logLine) return null;
-            return <ShowLogCard key={`${msgIndex}-log-${i}`}>{formatRichText(logLine)}</ShowLogCard>;
+            return null;
           }
           if (seg.type === "confirm_triage") {
             return <ConfirmTriageCard key={`${msgIndex}-triage-${i}`} onConfirm={(answer) => sendMessage(answer)} />;
@@ -385,7 +477,7 @@ export default function ChatWidget() {
         }
         @keyframes chat-typing-dot {
           0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-          30% { transform: translateY(-4px); opacity: 1; }
+          30% { transform: translateY(-6px); opacity: 1; }
         }
         .chat-msg-enter {
           animation: chat-fade-in 0.25s ease-out both;
@@ -512,44 +604,14 @@ export default function ChatWidget() {
           </div>
         </div>
 
-        {/* "Filo del Discorso" log strip */}
-        {showLogContent && messages.length > 0 && (
-          <div
-            className="flex items-center gap-2 px-4 py-1.5 shrink-0 text-[10px]"
-            style={{
-              background: "rgba(8, 57, 107, 0.95)",
-              borderBottom: "1px solid rgba(126, 184, 229, 0.1)",
-              color: "rgba(126, 184, 229, 0.6)",
-            }}
-            data-testid="chat-log-strip"
-          >
-            <FileText className="w-3 h-3 shrink-0" style={{ opacity: 0.5 }} />
-            <span className="truncate italic">{showLogContent}</span>
-          </div>
-        )}
-
-        {/* Messages area with subtle topographic pattern */}
+        {/* Messages area with Three.js topographic pattern */}
         <div
           ref={messagesContainerRef}
           onScroll={handleScroll}
           className="flex-1 overflow-y-auto px-4 py-4 space-y-3 relative"
           style={{ background: "linear-gradient(180deg, #071f36 0%, #0a2a4a 50%, #061e35 100%)" }}
         >
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.06 }} preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="chat-topo" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
-                <path d="M40 10 Q60 25 80 15 Q100 5 120 20 Q140 35 160 18 Q180 0 200 12" fill="none" stroke="#7eb8e5" strokeWidth="0.8"/>
-                <path d="M0 35 Q25 50 50 40 Q75 30 100 45 Q125 60 150 42 Q175 25 200 38" fill="none" stroke="#7eb8e5" strokeWidth="0.6"/>
-                <path d="M20 65 Q45 75 70 60 Q95 45 120 68 Q145 85 170 65 Q190 50 200 58" fill="none" stroke="#7eb8e5" strokeWidth="0.8"/>
-                <path d="M0 90 Q30 100 60 88 Q90 76 120 95 Q150 108 180 90 Q195 82 200 85" fill="none" stroke="#7eb8e5" strokeWidth="0.5"/>
-                <path d="M10 115 Q35 128 65 112 Q95 98 125 118 Q155 132 180 115 Q195 105 200 110" fill="none" stroke="#7eb8e5" strokeWidth="0.7"/>
-                <path d="M0 140 Q28 152 55 138 Q82 125 110 145 Q138 158 165 140 Q185 130 200 135" fill="none" stroke="#7eb8e5" strokeWidth="0.6"/>
-                <path d="M25 168 Q50 178 80 165 Q110 152 140 170 Q165 182 190 168" fill="none" stroke="#7eb8e5" strokeWidth="0.8"/>
-                <path d="M0 195 Q30 185 60 192 Q90 200 120 188 Q150 178 180 195 Q195 200 200 198" fill="none" stroke="#7eb8e5" strokeWidth="0.5"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#chat-topo)" />
-          </svg>
+          <ChatTopoBackground />
           <div className="relative z-[1]">
             {/* Welcome state */}
             {messages.length === 0 && !isLoading && (
@@ -585,14 +647,17 @@ export default function ChatWidget() {
                           color: "rgba(200, 225, 245, 0.9)",
                           cursor: isLoading ? "default" : "pointer",
                           opacity: isLoading ? 0.5 : 1,
+                          boxShadow: "0 0 12px rgba(255, 255, 255, 0.08), 0 0 4px rgba(126, 184, 229, 0.15)",
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.background = "rgba(126, 184, 229, 0.16)";
                           e.currentTarget.style.borderColor = "rgba(126, 184, 229, 0.35)";
+                          e.currentTarget.style.boxShadow = "0 0 18px rgba(255, 255, 255, 0.15), 0 0 6px rgba(126, 184, 229, 0.25)";
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.background = "rgba(126, 184, 229, 0.08)";
                           e.currentTarget.style.borderColor = "rgba(126, 184, 229, 0.18)";
+                          e.currentTarget.style.boxShadow = "0 0 12px rgba(255, 255, 255, 0.08), 0 0 4px rgba(126, 184, 229, 0.15)";
                         }}
                       >
                         <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(126, 184, 229, 0.7)" }} />
@@ -670,9 +735,9 @@ export default function ChatWidget() {
                   }}
                 >
                   <div className="flex items-center gap-1.5" data-testid="chat-typing-indicator">
-                    <span className="chat-typing-dot w-[6px] h-[6px] rounded-full" style={{ background: "#7eb8e5" }} />
-                    <span className="chat-typing-dot w-[6px] h-[6px] rounded-full" style={{ background: "#7eb8e5" }} />
-                    <span className="chat-typing-dot w-[6px] h-[6px] rounded-full" style={{ background: "#7eb8e5" }} />
+                    <span className="chat-typing-dot w-[7px] h-[7px] rounded-full" style={{ background: "#7eb8e5" }} />
+                    <span className="chat-typing-dot w-[7px] h-[7px] rounded-full" style={{ background: "#7eb8e5" }} />
+                    <span className="chat-typing-dot w-[7px] h-[7px] rounded-full" style={{ background: "#7eb8e5" }} />
                   </div>
                 </div>
               </div>

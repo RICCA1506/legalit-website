@@ -378,7 +378,7 @@ export const professionals = [
     phone: "+39 0774 381495",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "",
+    imageUrl: "/attached_assets/a26569b4-aaef-4298-84cd-714dc18648bf_1771450876374.png",
   },
   // 7. Alessandro Santomauro - Partner
   {
