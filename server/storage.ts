@@ -11,6 +11,7 @@ import {
   passwordResetTokens,
   emailLoginCodes,
   translations,
+  chatConversations,
   type User,
   type UpsertUser,
   type NewsArticle,
@@ -31,6 +32,7 @@ import {
   type PasswordResetToken,
   type EmailLoginCode,
   type Translation,
+  type ChatConversation,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, asc, and, gt, gte, isNull, isNotNull } from "drizzle-orm";
@@ -117,6 +119,12 @@ export interface IStorage {
   upsertTranslation(key: string, lang: string, value: string): Promise<void>;
   updateTranslation(id: number, value: string): Promise<void>;
   deleteTranslation(id: number): Promise<void>;
+
+  // Chat conversation operations
+  saveConversationMessage(sessionId: string, ipAddress: string, userAgent: string, userMessage: string, modelReply: string): Promise<void>;
+  getConversations(): Promise<ChatConversation[]>;
+  getConversation(id: number): Promise<ChatConversation | undefined>;
+  deleteConversation(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -512,6 +520,62 @@ export class DatabaseStorage implements IStorage {
 
   async deleteTranslation(id: number): Promise<void> {
     await db.delete(translations).where(eq(translations.id, id));
+  }
+
+  async saveConversationMessage(sessionId: string, ipAddress: string, userAgent: string, userMessage: string, modelReply: string): Promise<void> {
+    const existing = await db
+      .select()
+      .from(chatConversations)
+      .where(eq(chatConversations.sessionId, sessionId));
+
+    const newMessages = [
+      { role: "user", text: userMessage, timestamp: new Date().toISOString() },
+      { role: "model", text: modelReply, timestamp: new Date().toISOString() },
+    ];
+
+    if (existing.length > 0) {
+      const currentMessages = (existing[0].messages as any[]) || [];
+      await db
+        .update(chatConversations)
+        .set({
+          messages: [...currentMessages, ...newMessages],
+          messageCount: currentMessages.length + newMessages.length,
+          updatedAt: new Date(),
+        })
+        .where(eq(chatConversations.id, existing[0].id));
+    } else {
+      await db.insert(chatConversations).values({
+        sessionId,
+        ipAddress,
+        userAgent,
+        messages: newMessages,
+        messageCount: newMessages.length,
+        updatedAt: new Date(),
+      });
+    }
+  }
+
+  async getConversations(): Promise<ChatConversation[]> {
+    return db
+      .select()
+      .from(chatConversations)
+      .orderBy(desc(chatConversations.updatedAt));
+  }
+
+  async getConversation(id: number): Promise<ChatConversation | undefined> {
+    const result = await db
+      .select()
+      .from(chatConversations)
+      .where(eq(chatConversations.id, id));
+    return result[0];
+  }
+
+  async deleteConversation(id: number): Promise<boolean> {
+    const result = await db
+      .delete(chatConversations)
+      .where(eq(chatConversations.id, id))
+      .returning();
+    return result.length > 0;
   }
 }
 

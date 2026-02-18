@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback, type ReactNode } from "react";
-import { X, Send, ArrowDown, Building2, User, Phone, Mail, ExternalLink, CheckCircle2 } from "lucide-react";
+import { X, Send, ArrowDown, Building2, User, Phone, Mail, ExternalLink, CheckCircle2, Users } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import logoSymbol from "@assets/logo_legalit_cropped_(1)_1771133031977.png";
@@ -90,7 +90,7 @@ function parseLawyerKey(raw: string): { name: string; id: string; area: string }
 }
 
 interface ParsedSegment {
-  type: "text" | "confirm_triage" | "direct_link";
+  type: "text" | "confirm_triage" | "direct_link" | "view_all_professionals";
   content: string;
   lawyerData?: { name: string; id: string; area: string };
 }
@@ -98,7 +98,7 @@ interface ParsedSegment {
 function parseUITags(text: string): ParsedSegment[] {
   const segments: ParsedSegment[] = [];
   const cleaned = text.replace(/\[SHOW_LOG\]/g, "");
-  const tagRegex = /\[SHOW_CARD:\s*CONFIRM_TRIAGE\]|\[DIRECT_LINK:\s*([^\]]+)\]/g;
+  const tagRegex = /\[SHOW_CARD:\s*CONFIRM_TRIAGE\]|\[DIRECT_LINK:\s*([^\]]+)\]|\[VIEW_ALL_PROFESSIONALS\]/g;
   let match: RegExpExecArray | null;
   let lastIndex = 0;
 
@@ -109,6 +109,8 @@ function parseUITags(text: string): ParsedSegment[] {
 
     if (match[0].startsWith("[SHOW_CARD:")) {
       segments.push({ type: "confirm_triage", content: "" });
+    } else if (match[0] === "[VIEW_ALL_PROFESSIONALS]") {
+      segments.push({ type: "view_all_professionals", content: "" });
     } else if (match[0].startsWith("[DIRECT_LINK:")) {
       const rawName = match[1] || "";
       const lawyer = parseLawyerKey(rawName);
@@ -186,18 +188,44 @@ function DirectLinkCard({ lawyerData, onNavigate }: {
   return (
     <button
       onClick={() => onNavigate(`/professionisti?id=${lawyerData.id}`)}
-      className="flex items-center gap-3 w-full my-2 px-3.5 py-3 rounded-xl text-left transition-all duration-200"
+      className="flex items-center gap-3 w-full my-1.5 px-3 py-2.5 rounded-xl text-left transition-all duration-200"
       style={{
-        background: "rgba(126, 184, 229, 0.15)",
-        border: "1px solid rgba(126, 184, 229, 0.25)",
+        background: "rgba(126, 184, 229, 0.12)",
+        border: "1px solid rgba(126, 184, 229, 0.2)",
       }}
       data-testid={`button-direct-link-${lawyerData.id}`}
     >
-      <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-semibold text-white truncate">{lawyerData.name}</p>
-        <p className="text-[11px]" style={{ color: "rgba(126, 184, 229, 0.8)" }}>{lawyerData.area}</p>
+      <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(126, 184, 229, 0.15)" }}>
+        <User className="w-4 h-4" style={{ color: "#7eb8e5" }} />
       </div>
-      <ExternalLink className="w-4 h-4 shrink-0" style={{ color: "rgba(126, 184, 229, 0.7)" }} />
+      <div className="flex-1 min-w-0">
+        <p className="text-[12px] font-semibold text-white truncate">{lawyerData.name}</p>
+        <p className="text-[10px]" style={{ color: "rgba(126, 184, 229, 0.7)" }}>{lawyerData.area}</p>
+      </div>
+      <ExternalLink className="w-3.5 h-3.5 shrink-0" style={{ color: "rgba(126, 184, 229, 0.5)" }} />
+    </button>
+  );
+}
+
+function ViewAllProfessionalsCard({ onNavigate }: { onNavigate: (path: string) => void }) {
+  return (
+    <button
+      onClick={() => onNavigate("/professionisti")}
+      className="flex items-center gap-3 w-full my-2 px-3.5 py-3 rounded-xl text-left transition-all duration-200"
+      style={{
+        background: "linear-gradient(135deg, rgba(8, 57, 107, 0.4), rgba(126, 184, 229, 0.2))",
+        border: "1px solid rgba(126, 184, 229, 0.3)",
+      }}
+      data-testid="button-view-all-professionals"
+    >
+      <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(126, 184, 229, 0.2)" }}>
+        <Users className="w-4.5 h-4.5" style={{ color: "#7eb8e5" }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-semibold text-white">Tutti i professionisti</p>
+        <p className="text-[10px]" style={{ color: "rgba(126, 184, 229, 0.7)" }}>Consulta la sezione dedicata</p>
+      </div>
+      <ExternalLink className="w-4 h-4 shrink-0" style={{ color: "rgba(126, 184, 229, 0.6)" }} />
     </button>
   );
 }
@@ -428,6 +456,10 @@ function GlowBorder({ active }: { active: boolean }) {
   );
 }
 
+function generateSessionId() {
+  return `chat_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+}
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -437,6 +469,7 @@ export default function ChatWidget() {
   const [pulseToggle, setPulseToggle] = useState(true);
   const [mobileHeight, setMobileHeight] = useState("100dvh");
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 640);
+  const [sessionId] = useState(() => generateSessionId());
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -517,7 +550,7 @@ export default function ChatWidget() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, history }),
+        body: JSON.stringify({ message: trimmed, history, sessionId }),
       });
 
       const data = await res.json();
@@ -564,6 +597,9 @@ export default function ChatWidget() {
         {segments.map((seg, i) => {
           if (seg.type === "confirm_triage") {
             return <ConfirmTriageCard key={`${msgIndex}-triage-${i}`} onConfirm={(answer) => sendMessage(answer)} />;
+          }
+          if (seg.type === "view_all_professionals") {
+            return <ViewAllProfessionalsCard key={`${msgIndex}-viewall-${i}`} onNavigate={handleNavigate} />;
           }
           if (seg.type === "direct_link" && seg.lawyerData) {
             return <DirectLinkCard key={`${msgIndex}-link-${i}`} lawyerData={seg.lawyerData} onNavigate={handleNavigate} />;
@@ -675,9 +711,9 @@ export default function ChatWidget() {
       <div
         className="fixed z-[9998] transition-all duration-300 origin-bottom-right
           bottom-0 right-0 w-full
-          sm:bottom-[5.5rem] sm:right-5 sm:w-[400px] sm:max-w-[calc(100vw-2rem)] sm:rounded-2xl"
+          sm:bottom-[5.5rem] sm:right-5 sm:w-[560px] sm:max-w-[calc(100vw-2rem)] sm:rounded-2xl"
         style={{
-          height: isMobile ? mobileHeight : (isOpen ? "560px" : "0px"),
+          height: isMobile ? mobileHeight : (isOpen ? "780px" : "0px"),
           opacity: isOpen ? 1 : 0,
           visibility: isOpen ? "visible" : "hidden",
           transform: isOpen ? "scale(1) translateY(0)" : "scale(0.95) translateY(16px)",
@@ -760,7 +796,7 @@ export default function ChatWidget() {
                   <p className="text-xs leading-relaxed" style={{ color: "rgba(126, 184, 229, 0.7)" }}>{welcomeSubtitle}</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2.5 w-full max-w-[320px]">
+                <div className="grid grid-cols-2 gap-2.5 w-full max-w-[440px]">
                   {currentQuickReplies.map((qr, idx) => {
                     const Icon = qr.icon;
                     return (

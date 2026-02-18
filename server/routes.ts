@@ -1192,11 +1192,20 @@ Inserisci in modo naturale nel primo messaggio di ogni conversazione: "Le ricord
 ### TAG UI (Comandi per il Frontend) ###
 Inserisci questi tag nel testo delle risposte – il frontend li trasformerà in elementi visivi:
 - **[SHOW_CARD: CONFIRM_TRIAGE]**: Mostra una card con bottoni "Confermo" / "Vorrei correggere". Usalo quando hai capito l'area legale e vuoi conferma. IMPORTANTE: inserisci SEMPRE questo tag ALLA FINE di un messaggio che contiene anche del testo. NON mandare MAI il tag da solo senza testo accompagnatorio.
-- **[DIRECT_LINK: COGNOME]**: Mostra un bottone elegante "Contatta l'esperto" con link al profilo. Usalo SOLO dopo il triage completato. Il COGNOME deve corrispondere a uno dei professionisti elencati sotto (es. [DIRECT_LINK: Vaccaro], [DIRECT_LINK: Biasci]).
+- **[DIRECT_LINK: COGNOME]**: Mostra un bottone elegante con link al profilo del professionista. Il COGNOME deve corrispondere a uno dei professionisti elencati sotto (es. [DIRECT_LINK: Vaccaro], [DIRECT_LINK: Biasci]).
+- **[VIEW_ALL_PROFESSIONALS]**: Mostra un bottone "Tutti i professionisti" che porta alla pagina dedicata. Inseriscilo SEMPRE PRIMA dei [DIRECT_LINK] quando elenchi più professionisti.
 - NON usare il tag [SHOW_LOG]. È stato rimosso.
 
+### FLUSSO PROFESSIONISTI ###
+Quando l'utente chiede di un'area legale e vuoi proporre professionisti:
+1. PRIMA chiedi: "Vuole consultare direttamente la sezione dedicata ai nostri professionisti, oppure preferisce che le indichi io i colleghi più indicati per la sua esigenza?"
+2. Se l'utente conferma di voler vedere i professionisti, oppure dopo il triage completato, elenca i professionisti pertinenti. SEMPRE in questo ordine:
+   a. Un breve testo introduttivo (es. "Ecco i nostri esperti in quest'area:")
+   b. Il tag [VIEW_ALL_PROFESSIONALS]
+   c. I singoli [DIRECT_LINK: COGNOME] per ciascun professionista
+
 ### RICHIESTA DIRETTA DI PROFESSIONISTI ###
-Se l'utente chiede esplicitamente di vedere i professionisti di un'area o una sede (es. "dammi i professionisti del campo", "chi sono gli avvocati a Roma", "mostrami gli esperti di diritto di famiglia"), NON continuare con altre domande di triage. Rispondi subito elencando i professionisti pertinenti con i relativi [DIRECT_LINK: COGNOME] per ciascuno. L'utente ha già indicato chiaramente cosa vuole.
+Se l'utente chiede esplicitamente di vedere i professionisti di un'area o una sede (es. "dammi i professionisti del campo", "chi sono gli avvocati a Roma", "mostrami gli esperti di diritto di famiglia"), NON continuare con altre domande di triage. Rispondi subito elencando i professionisti pertinenti con [VIEW_ALL_PROFESSIONALS] seguito dai relativi [DIRECT_LINK: COGNOME] per ciascuno. L'utente ha già indicato chiaramente cosa vuole.
 
 ### LO STUDIO LEGALIT ###
 LEGALIT – Società tra Avvocati S.r.l. nasce dall'integrazione di studi legali indipendenti con l'obiettivo di offrire assistenza legale multidisciplinare e coordinata. Lo Studio opera su tutto il territorio nazionale con sedi a Roma (HQ), Milano, Palermo, Latina e Napoli.
@@ -1292,6 +1301,7 @@ Per questi professionisti non fornire [DIRECT_LINK] – indirizza sempre verso i
       role: z.enum(["user", "model"]),
       parts: z.array(z.object({ text: z.string() })),
     })).optional().default([]),
+    sessionId: z.string().optional(),
   });
 
   const chatRateLimit = new Map<string, { count: number; resetAt: number }>();
@@ -1322,7 +1332,7 @@ Per questi professionisti non fornire [DIRECT_LINK] – indirizza sempre verso i
         return res.status(400).json({ message: "Messaggio non valido" });
       }
 
-      const { message, history } = parsed.data;
+      const { message, history, sessionId } = parsed.data;
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
@@ -1335,10 +1345,53 @@ Per questi professionisti non fornire [DIRECT_LINK] – indirizza sempre verso i
       const result = await chat.sendMessage(message);
       const response = result.response.text();
 
+      if (sessionId) {
+        try {
+          await storage.saveConversationMessage(sessionId, ip, req.headers["user-agent"] || "", message, response);
+        } catch (e) {
+          console.error("Error saving conversation:", e);
+        }
+      }
+
       res.json({ reply: response });
     } catch (error: any) {
       console.error("Gemini chat error:", error?.message || error);
       res.status(500).json({ message: "Errore nel chatbot. Riprova." });
+    }
+  });
+
+  app.get("/api/conversations", isAuthenticated, async (_req, res) => {
+    try {
+      const conversations = await storage.getConversations();
+      res.json(conversations);
+    } catch (error: any) {
+      console.error("Error fetching conversations:", error?.message || error);
+      res.status(500).json({ message: "Errore nel recupero delle conversazioni" });
+    }
+  });
+
+  app.get("/api/conversations/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) return res.status(400).json({ message: "ID non valido" });
+      const conversation = await storage.getConversation(id);
+      if (!conversation) return res.status(404).json({ message: "Conversazione non trovata" });
+      res.json(conversation);
+    } catch (error: any) {
+      console.error("Error fetching conversation:", error?.message || error);
+      res.status(500).json({ message: "Errore nel recupero della conversazione" });
+    }
+  });
+
+  app.delete("/api/conversations/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) return res.status(400).json({ message: "ID non valido" });
+      await storage.deleteConversation(id);
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error deleting conversation:", error?.message || error);
+      res.status(500).json({ message: "Errore nell'eliminazione della conversazione" });
     }
   });
 

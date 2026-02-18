@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Pencil, Trash2, ArrowLeft, Newspaper, UserPlus, Mail, Copy, Check, Clock, Loader2, Users, FolderTree, MailPlus, Download, BarChart3, ChevronDown, MessageSquare, Eye, EyeOff, Phone, ExternalLink, Calendar, User, FileText, Shield, Smartphone, Move, ArrowUp, ArrowDown, ZoomIn, Link2, Maximize, X, Camera } from "lucide-react";
+import { Plus, Pencil, Trash2, ArrowLeft, Newspaper, UserPlus, Mail, Copy, Check, Clock, Loader2, Users, FolderTree, MailPlus, Download, BarChart3, ChevronDown, MessageSquare, Eye, EyeOff, Phone, ExternalLink, Calendar, User, FileText, Shield, Smartphone, Move, ArrowUp, ArrowDown, ZoomIn, Link2, Maximize, X } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Link, useLocation } from "wouter";
 import PageHeader from "@/components/PageHeader";
@@ -233,6 +233,33 @@ export default function Admin() {
 
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const [deleteMessageConfirm, setDeleteMessageConfirm] = useState<number | null>(null);
+
+  interface ChatConvSummary {
+    id: number;
+    sessionId: string;
+    ipAddress: string | null;
+    messages: { role: string; text: string; timestamp: string }[];
+    messageCount: number | null;
+    createdAt: string | null;
+    updatedAt: string | null;
+  }
+  const { data: conversations = [], isLoading: conversationsLoading } = useQuery<ChatConvSummary[]>({
+    queryKey: ["/api/conversations"],
+    enabled: isAuthenticated,
+  });
+  const [selectedConversation, setSelectedConversation] = useState<ChatConvSummary | null>(null);
+
+  const deleteConversationMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiRequest("DELETE", `/api/conversations/${id}`, {});
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
+      setSelectedConversation(null);
+      toast({ title: "Conversazione eliminata" });
+    },
+  });
 
   // Users query for password reset
   interface AdminUser {
@@ -991,6 +1018,11 @@ export default function Admin() {
                     <span className="hidden sm:inline">Sicurezza</span>
                     <span className="sm:hidden">2FA</span>
                   </TabsTrigger>
+                  <TabsTrigger value="conversations" className="gap-1.5 text-xs sm:text-sm" data-testid="tab-conversations">
+                    <MessageSquare className="h-4 w-4 shrink-0" />
+                    <span className="hidden sm:inline">Conversazioni</span>
+                    <span className="sm:hidden">Chat</span>
+                  </TabsTrigger>
                 </TabsList>
               </div>
             </div>
@@ -1346,41 +1378,23 @@ export default function Admin() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {professionals.map((professional) => (
                     <Card key={professional.id} className="overflow-hidden" data-testid={`card-admin-professional-${professional.id}`}>
-                      {professional.imageUrl && !isLogoPlaceholderCheck(professional.imageUrl) && (
+                      {professional.imageUrl && (
                         <div
-                          className="aspect-[3/4] overflow-hidden relative cursor-pointer group/img"
+                          className="aspect-square overflow-hidden relative cursor-pointer group/img"
                           onClick={(e) => { e.stopPropagation(); setLightboxImage(professional.imageUrl!); }}
                           data-testid={`preview-pro-img-${professional.id}`}
                         >
                           <img
                             src={professional.imageUrl}
                             alt={professional.name}
-                            className="w-full h-full object-cover"
-                            style={getImageCropStyle(professional.imagePosition, professional.imageZoom)}
+                            className={`w-full h-full ${isLogoPlaceholderCheck(professional.imageUrl) ? 'object-contain p-6 bg-white' : 'object-cover'}`}
+                            style={isLogoPlaceholderCheck(professional.imageUrl) ? {} : getImageCropStyle(professional.imagePosition, professional.imageZoom)}
                             loading="lazy"
                             decoding="async"
                           />
                           <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors flex items-center justify-center">
                             <Maximize className="h-6 w-6 text-white opacity-0 group-hover/img:opacity-100 transition-opacity drop-shadow-lg" />
                           </div>
-                        </div>
-                      )}
-                      {(!professional.imageUrl || isLogoPlaceholderCheck(professional.imageUrl)) && (
-                        <div
-                          className="aspect-[3/4] overflow-hidden relative flex flex-col items-center justify-center gap-3 bg-muted/50 border-b"
-                          data-testid={`placeholder-pro-img-${professional.id}`}
-                        >
-                          <Camera className="h-10 w-10 text-muted-foreground/40" />
-                          <span className="text-sm text-muted-foreground">Nessuna foto</span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => openEditProfessional(professional)}
-                            data-testid={`button-upload-photo-${professional.id}`}
-                          >
-                            <Camera className="h-4 w-4 mr-1" />
-                            Carica Foto
-                          </Button>
                         </div>
                       )}
                       <CardHeader className="pb-2">
@@ -2239,6 +2253,100 @@ export default function Admin() {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            <TabsContent value="conversations">
+              {conversationsLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : selectedConversation ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <Button variant="outline" size="sm" onClick={() => setSelectedConversation(null)} data-testid="button-back-conversations">
+                      <ArrowLeft className="h-4 w-4 mr-1" /> Torna alla lista
+                    </Button>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="secondary">{selectedConversation.ipAddress || "IP sconosciuto"}</Badge>
+                      <Badge variant="outline">{selectedConversation.messageCount || 0} messaggi</Badge>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-destructive"
+                        onClick={() => deleteConversationMutation.mutate(selectedConversation.id)}
+                        data-testid="button-delete-conversation"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" /> Elimina
+                      </Button>
+                    </div>
+                  </div>
+                  <Card>
+                    <CardContent className="p-4 space-y-3 max-h-[600px] overflow-y-auto">
+                      {selectedConversation.messages.map((msg, i) => (
+                        <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                          <div
+                            className={`max-w-[75%] px-3 py-2 rounded-lg text-sm whitespace-pre-wrap ${
+                              msg.role === "user"
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted"
+                            }`}
+                            data-testid={`conv-msg-${msg.role}-${i}`}
+                          >
+                            <p>{msg.text.replace(/\[SHOW_CARD:\s*CONFIRM_TRIAGE\]|\[DIRECT_LINK:\s*[^\]]+\]|\[VIEW_ALL_PROFESSIONALS\]|\[SHOW_LOG\]/g, "").trim()}</p>
+                            {msg.timestamp && (
+                              <p className="text-[10px] mt-1 opacity-60">
+                                {new Date(msg.timestamp).toLocaleString("it-IT", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : conversations.length === 0 ? (
+                <Card>
+                  <CardContent className="p-12 text-center">
+                    <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
+                    <p className="text-muted-foreground">Nessuna conversazione registrata.</p>
+                    <p className="text-sm text-muted-foreground/60 mt-1">Le conversazioni del chatbot appariranno qui.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">{conversations.length} conversazioni totali</p>
+                  {conversations.map((conv) => {
+                    const firstUserMsg = conv.messages.find(m => m.role === "user");
+                    const preview = firstUserMsg ? firstUserMsg.text.slice(0, 120) + (firstUserMsg.text.length > 120 ? "..." : "") : "—";
+                    return (
+                      <Card
+                        key={conv.id}
+                        className="cursor-pointer hover-elevate"
+                        onClick={() => setSelectedConversation(conv)}
+                        data-testid={`card-conversation-${conv.id}`}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{preview}</p>
+                              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                <Badge variant="secondary" className="text-[10px]">{conv.messageCount || 0} msg</Badge>
+                                <Badge variant="outline" className="text-[10px]">{conv.ipAddress || "—"}</Badge>
+                                {conv.updatedAt && (
+                                  <span className="text-[10px] text-muted-foreground">
+                                    {new Date(conv.updatedAt).toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
+            </TabsContent>
           </Tabs>
         </div>
       </section>
@@ -2700,23 +2808,10 @@ export default function Admin() {
             <div className="space-y-2">
               <Label>Foto Professionista</Label>
               <ImageUpload
-                value={professionalForm.imageUrl && !isLogoPlaceholderCheck(professionalForm.imageUrl) ? professionalForm.imageUrl : ""}
+                value={professionalForm.imageUrl}
                 onChange={(url) => setProfessionalForm({ ...professionalForm, imageUrl: url || "" })}
                 aspectRatio="portrait"
               />
-              {professionalForm.imageUrl && !isLogoPlaceholderCheck(professionalForm.imageUrl) && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="text-destructive"
-                  onClick={() => setProfessionalForm({ ...professionalForm, imageUrl: "", imagePosition: "top", imageZoom: 100 })}
-                  data-testid="button-remove-photo"
-                >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  Rimuovi Foto
-                </Button>
-              )}
             </div>
 
             {professionalForm.imageUrl && !isLogoPlaceholderCheck(professionalForm.imageUrl) && (

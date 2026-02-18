@@ -155,6 +155,17 @@ export async function ensureSchema() {
         value TEXT NOT NULL,
         updated_at TIMESTAMP DEFAULT NOW()
       );
+
+      CREATE TABLE IF NOT EXISTS chat_conversations (
+        id SERIAL PRIMARY KEY,
+        session_id VARCHAR(100) NOT NULL,
+        ip_address VARCHAR(45),
+        user_agent TEXT,
+        messages JSONB NOT NULL DEFAULT '[]'::jsonb,
+        message_count INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
     `);
 
     await addUniqueConstraintIfNotExists(pool, 'partner_invites', 'email', 'partner_invites_email_unique');
