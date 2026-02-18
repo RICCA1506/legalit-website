@@ -6,6 +6,12 @@ import TopographicBackground from "./TopographicBackground";
 function dismissPreloader() {
   const el = document.getElementById('app-preloader');
   if (!el) return;
+  const img = el.querySelector('img');
+  if (img) {
+    const current = getComputedStyle(img).transform;
+    img.style.animation = 'none';
+    img.style.transform = current;
+  }
   el.classList.add('dissolve');
   document.documentElement.classList.remove('preloader-active');
   setTimeout(() => el.remove(), 700);

@@ -81,6 +81,12 @@
       setTimeout(function() {
         var p = document.getElementById('app-preloader');
         if (p && p.parentNode) {
+          var img = p.querySelector('img');
+          if (img) {
+            var cs = getComputedStyle(img).transform;
+            img.style.animation = 'none';
+            img.style.transform = cs;
+          }
           p.classList.add('dissolve');
           document.documentElement.classList.remove('preloader-active');
           setTimeout(function() { p.remove(); }, 700);
