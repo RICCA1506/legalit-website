@@ -80,14 +80,6 @@ export default function Hero({ loadingComplete = false }: HeroProps) {
       }
     });
 
-    tl.fromTo(bgRef.current, {
-      scale: 1.18,
-    }, {
-      scale: 1.05,
-      duration: 1.2,
-      ease: "elastic.out(1, 0.45)",
-    }, 0);
-
     tl.to(contentWrapperRef.current, {
       opacity: 1,
       duration: 0.25 * mobileFactor,
@@ -186,6 +178,23 @@ export default function Hero({ loadingComplete = false }: HeroProps) {
     if (heroImgRef.current) {
       heroImgRef.current.setAttribute("fetchpriority", "high");
     }
+  }, []);
+
+  useEffect(() => {
+    if (alreadyScrolledRef.current) return;
+    const onZoomStart = () => {
+      if (bgRef.current) {
+        gsap.fromTo(bgRef.current, {
+          scale: 1.35,
+        }, {
+          scale: 1.05,
+          duration: 2.2,
+          ease: "elastic.out(1, 0.35)",
+        });
+      }
+    };
+    window.addEventListener('loadingZoomStart', onZoomStart);
+    return () => window.removeEventListener('loadingZoomStart', onZoomStart);
   }, []);
 
   useEffect(() => {

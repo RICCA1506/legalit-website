@@ -64,6 +64,10 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
 
     tl.to({}, { duration: 0.15 });
 
+    tl.call(() => {
+      window.dispatchEvent(new CustomEvent('loadingZoomStart'));
+    });
+
     tl.to(zoomGroupRef.current, {
       scale: 40,
       duration: 0.75,
