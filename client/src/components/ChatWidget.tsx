@@ -45,9 +45,12 @@ export default function ChatWidget() {
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const [pulseToggle, setPulseToggle] = useState(true);
+  const [mobileHeight, setMobileHeight] = useState("100dvh");
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 640);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const chatWindowRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguage();
 
   const scrollToBottom = useCallback(() => {
@@ -73,6 +76,29 @@ export default function ChatWidget() {
       return () => clearInterval(interval);
     }
   }, [isOpen, messages.length]);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const updateHeight = () => {
+      setMobileHeight(`${vv.height}px`);
+      setTimeout(() => scrollToBottom(), 100);
+    };
+
+    vv.addEventListener("resize", updateHeight);
+    vv.addEventListener("scroll", updateHeight);
+    return () => {
+      vv.removeEventListener("resize", updateHeight);
+      vv.removeEventListener("scroll", updateHeight);
+    };
+  }, [scrollToBottom]);
 
   const handleScroll = useCallback(() => {
     const el = messagesContainerRef.current;
@@ -168,7 +194,10 @@ export default function ChatWidget() {
         onClick={() => setIsOpen(!isOpen)}
         aria-label={isOpen ? "Close chat" : "Open chat"}
         className="fixed bottom-5 right-5 z-[9999] group sm:bottom-6 sm:right-6"
-        style={{ outline: "none" }}
+        style={{
+          outline: "none",
+          display: isOpen && isMobile ? "none" : undefined,
+        }}
       >
         <div className="relative">
           {pulseToggle && !isOpen && (
@@ -219,11 +248,13 @@ export default function ChatWidget() {
 
       {/* Chat window */}
       <div
+        ref={chatWindowRef}
         data-testid="chat-window"
         className="fixed z-[9998] flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right
-          bottom-0 right-0 w-full h-[100dvh]
-          sm:bottom-[5.5rem] sm:right-5 sm:w-[400px] sm:max-w-[calc(100vw-2rem)] sm:h-[560px] sm:rounded-2xl"
+          bottom-0 right-0 w-full
+          sm:bottom-[5.5rem] sm:right-5 sm:w-[400px] sm:max-w-[calc(100vw-2rem)] sm:rounded-2xl"
         style={{
+          height: isMobile ? mobileHeight : (isOpen ? "560px" : "0px"),
           opacity: isOpen ? 1 : 0,
           visibility: isOpen ? "visible" : "hidden",
           transform: isOpen ? "scale(1) translateY(0)" : "scale(0.95) translateY(16px)",
@@ -448,6 +479,7 @@ export default function ChatWidget() {
           style={{
             borderTop: "1px solid rgba(8, 57, 107, 0.06)",
             background: "#ffffff",
+            paddingBottom: isMobile ? "calc(0.625rem + env(safe-area-inset-bottom, 0px))" : undefined,
           }}
         >
           <input
