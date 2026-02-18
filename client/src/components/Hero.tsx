@@ -184,12 +184,18 @@ export default function Hero({ loadingComplete = false }: HeroProps) {
     if (alreadyScrolledRef.current) return;
     const onZoomStart = () => {
       if (bgRef.current) {
-        gsap.fromTo(bgRef.current, {
-          scale: 1.35,
+        const bowTl = gsap.timeline();
+        bowTl.fromTo(bgRef.current, {
+          scale: 1.0,
         }, {
+          scale: 1.25,
+          duration: 0.55,
+          ease: "power2.in",
+        });
+        bowTl.to(bgRef.current, {
           scale: 1.05,
-          duration: 2.2,
-          ease: "elastic.out(1, 0.35)",
+          duration: 1.1,
+          ease: "power3.out",
         });
       }
     };
