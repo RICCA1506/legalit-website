@@ -79,19 +79,10 @@ const lawyerMap: Record<string, { name: string; id: string; area: string }> = {
   "calogero gianluca rizzuto": { name: "Avv. Calogero Gianluca Rizzuto", id: "29", area: "Penale / Compliance / Civile" },
 };
 
-const pathMap: Record<string, string> = {
-  "/team/vaccaro": "vaccaro",
-  "/team/biasci": "biasci",
-  "/team/passalacqua": "passalacqua",
-  "/team/puntarello": "puntarello",
-};
-
 function parseLawyerKey(raw: string): { name: string; id: string; area: string } | null {
-  const trimmed = raw.trim();
-  const fromPath = pathMap[trimmed.toLowerCase()];
-  if (fromPath && lawyerMap[fromPath]) return lawyerMap[fromPath];
-
-  const key = trimmed.toLowerCase().replace(/^avv\.?\s*/i, "").replace(/^prof\.?\s*/i, "").trim();
+  const key = raw.trim().toLowerCase().replace(/^avv\.?\s*/i, "").replace(/^prof\.?\s*/i, "").trim();
+  if (!key) return null;
+  if (lawyerMap[key]) return lawyerMap[key];
   for (const [k, v] of Object.entries(lawyerMap)) {
     if (key.includes(k) || k.includes(key)) return v;
   }
@@ -99,26 +90,24 @@ function parseLawyerKey(raw: string): { name: string; id: string; area: string }
 }
 
 interface ParsedSegment {
-  type: "text" | "show_log" | "confirm_triage" | "direct_link";
+  type: "text" | "confirm_triage" | "direct_link";
   content: string;
   lawyerData?: { name: string; id: string; area: string };
 }
 
 function parseUITags(text: string): ParsedSegment[] {
   const segments: ParsedSegment[] = [];
-
-  const tagRegex = /\[SHOW_LOG\]|\[SHOW_CARD:\s*CONFIRM_TRIAGE\]|\[DIRECT_LINK:\s*([^\]]+)\]/g;
+  const cleaned = text.replace(/\[SHOW_LOG\]/g, "");
+  const tagRegex = /\[SHOW_CARD:\s*CONFIRM_TRIAGE\]|\[DIRECT_LINK:\s*([^\]]+)\]/g;
   let match: RegExpExecArray | null;
   let lastIndex = 0;
 
-  while ((match = tagRegex.exec(text)) !== null) {
+  while ((match = tagRegex.exec(cleaned)) !== null) {
     if (match.index > lastIndex) {
-      segments.push({ type: "text", content: text.slice(lastIndex, match.index) });
+      segments.push({ type: "text", content: cleaned.slice(lastIndex, match.index) });
     }
 
-    if (match[0] === "[SHOW_LOG]") {
-      segments.push({ type: "show_log", content: "" });
-    } else if (match[0].startsWith("[SHOW_CARD:")) {
+    if (match[0].startsWith("[SHOW_CARD:")) {
       segments.push({ type: "confirm_triage", content: "" });
     } else if (match[0].startsWith("[DIRECT_LINK:")) {
       const rawName = match[1] || "";
@@ -129,11 +118,11 @@ function parseUITags(text: string): ParsedSegment[] {
     lastIndex = match.index + match[0].length;
   }
 
-  if (lastIndex < text.length) {
-    segments.push({ type: "text", content: text.slice(lastIndex) });
+  if (lastIndex < cleaned.length) {
+    segments.push({ type: "text", content: cleaned.slice(lastIndex) });
   }
 
-  return segments.length > 0 ? segments : [{ type: "text", content: text }];
+  return segments.length > 0 ? segments : [{ type: "text", content: cleaned }];
 }
 
 function formatRichText(text: string): ReactNode[] {
@@ -565,9 +554,6 @@ export default function ChatWidget() {
     return (
       <>
         {segments.map((seg, i) => {
-          if (seg.type === "show_log") {
-            return null;
-          }
           if (seg.type === "confirm_triage") {
             return <ConfirmTriageCard key={`${msgIndex}-triage-${i}`} onConfirm={(answer) => sendMessage(answer)} />;
           }
