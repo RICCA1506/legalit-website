@@ -73,12 +73,14 @@
   <body>
     <script>
       document.documentElement.classList.add('preloader-active');
-      window.addEventListener("error", function(e) {
-        if (!e.error || !(e.error instanceof Error)) { e.preventDefault(); e.stopImmediatePropagation(); return false; }
-      }, true);
-      window.addEventListener("unhandledrejection", function(e) {
-        if (!e.reason || !(e.reason instanceof Error)) { e.preventDefault(); e.stopImmediatePropagation(); }
-      }, true);
+      function __blockNonError(e) {
+        var err = e.error !== undefined ? e.error : e.reason;
+        if (!err || !(err instanceof Error)) { e.preventDefault(); e.stopImmediatePropagation(); return false; }
+      }
+      window.addEventListener("error", __blockNonError, true);
+      window.addEventListener("error", __blockNonError, false);
+      window.addEventListener("unhandledrejection", __blockNonError, true);
+      window.addEventListener("unhandledrejection", __blockNonError, false);
     </script>
     <div id="app-preloader">
       <img src="/images/topo-bg.jpg" alt="" />

@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Pencil, Trash2, ArrowLeft, Newspaper, UserPlus, Mail, Copy, Check, Clock, Loader2, Users, FolderTree, MailPlus, Download, BarChart3, ChevronDown, MessageSquare, Eye, EyeOff, Phone, ExternalLink, Calendar, User, FileText, Shield, Smartphone, Move, ArrowUp, ArrowDown, ZoomIn, Link2, Maximize, X } from "lucide-react";
+import { Plus, Pencil, Trash2, ArrowLeft, Newspaper, UserPlus, Mail, Copy, Check, Clock, Loader2, Users, FolderTree, MailPlus, Download, BarChart3, ChevronDown, MessageSquare, Eye, EyeOff, Phone, ExternalLink, Calendar, User, FileText, Shield, Smartphone, Move, ArrowUp, ArrowDown, ZoomIn, Link2, Maximize, X, Camera } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Link, useLocation } from "wouter";
 import PageHeader from "@/components/PageHeader";
@@ -1346,23 +1346,41 @@ export default function Admin() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {professionals.map((professional) => (
                     <Card key={professional.id} className="overflow-hidden" data-testid={`card-admin-professional-${professional.id}`}>
-                      {professional.imageUrl && (
+                      {professional.imageUrl && !isLogoPlaceholderCheck(professional.imageUrl) && (
                         <div
-                          className="aspect-square overflow-hidden relative cursor-pointer group/img"
+                          className="aspect-[3/4] overflow-hidden relative cursor-pointer group/img"
                           onClick={(e) => { e.stopPropagation(); setLightboxImage(professional.imageUrl!); }}
                           data-testid={`preview-pro-img-${professional.id}`}
                         >
                           <img
                             src={professional.imageUrl}
                             alt={professional.name}
-                            className={`w-full h-full ${isLogoPlaceholderCheck(professional.imageUrl) ? 'object-contain p-6 bg-white' : 'object-cover'}`}
-                            style={isLogoPlaceholderCheck(professional.imageUrl) ? {} : getImageCropStyle(professional.imagePosition, professional.imageZoom)}
+                            className="w-full h-full object-cover"
+                            style={getImageCropStyle(professional.imagePosition, professional.imageZoom)}
                             loading="lazy"
                             decoding="async"
                           />
                           <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors flex items-center justify-center">
                             <Maximize className="h-6 w-6 text-white opacity-0 group-hover/img:opacity-100 transition-opacity drop-shadow-lg" />
                           </div>
+                        </div>
+                      )}
+                      {(!professional.imageUrl || isLogoPlaceholderCheck(professional.imageUrl)) && (
+                        <div
+                          className="aspect-[3/4] overflow-hidden relative flex flex-col items-center justify-center gap-3 bg-muted/50 border-b"
+                          data-testid={`placeholder-pro-img-${professional.id}`}
+                        >
+                          <Camera className="h-10 w-10 text-muted-foreground/40" />
+                          <span className="text-sm text-muted-foreground">Nessuna foto</span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditProfessional(professional)}
+                            data-testid={`button-upload-photo-${professional.id}`}
+                          >
+                            <Camera className="h-4 w-4 mr-1" />
+                            Carica Foto
+                          </Button>
                         </div>
                       )}
                       <CardHeader className="pb-2">
@@ -2682,10 +2700,23 @@ export default function Admin() {
             <div className="space-y-2">
               <Label>Foto Professionista</Label>
               <ImageUpload
-                value={professionalForm.imageUrl}
+                value={professionalForm.imageUrl && !isLogoPlaceholderCheck(professionalForm.imageUrl) ? professionalForm.imageUrl : ""}
                 onChange={(url) => setProfessionalForm({ ...professionalForm, imageUrl: url || "" })}
                 aspectRatio="portrait"
               />
+              {professionalForm.imageUrl && !isLogoPlaceholderCheck(professionalForm.imageUrl) && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="text-destructive"
+                  onClick={() => setProfessionalForm({ ...professionalForm, imageUrl: "", imagePosition: "top", imageZoom: 100 })}
+                  data-testid="button-remove-photo"
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Rimuovi Foto
+                </Button>
+              )}
             </div>
 
             {professionalForm.imageUrl && !isLogoPlaceholderCheck(professionalForm.imageUrl) && (
