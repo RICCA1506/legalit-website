@@ -7,7 +7,8 @@ function dismissPreloader() {
   const el = document.getElementById('app-preloader');
   if (!el) return;
   el.classList.add('dissolve');
-  setTimeout(() => el.remove(), 600);
+  document.documentElement.classList.remove('preloader-active');
+  setTimeout(() => el.remove(), 700);
 }
 
 interface LoadingScreenProps {
