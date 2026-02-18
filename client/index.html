@@ -39,8 +39,8 @@
         scrollbar-gutter: auto !important;
       }
       @keyframes preloaderPan {
-        0%   { transform: translateX(0px); }
-        100% { transform: translateX(-60px); }
+        0%   { transform: translateX(0%); }
+        100% { transform: translateX(-5%); }
       }
       #app-preloader {
         position: fixed;
@@ -58,12 +58,14 @@
         display: block;
         position: absolute;
         top: 0;
-        left: 0;
-        width: calc(100% + 60px);
         height: 100%;
+        width: auto;
+        min-width: 110%;
+        left: 50%;
+        transform: translateX(-55%);
         object-fit: cover;
         filter: blur(3px);
-        animation: preloaderPan 14s linear infinite alternate;
+        animation: preloaderPan 8s linear infinite alternate;
         will-change: transform;
       }
     </style>
