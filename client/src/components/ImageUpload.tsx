@@ -122,19 +122,42 @@ export function ImageUpload({
 
       {value ? (
         <div className="space-y-3">
-          <div className={cn("relative rounded-lg overflow-hidden bg-muted", aspectClasses[aspectRatio])}>
+          <div
+            className={cn(
+              "relative rounded-lg overflow-hidden bg-muted cursor-pointer transition-all",
+              aspectClasses[aspectRatio],
+              isDragging && "ring-2 ring-primary ring-offset-2"
+            )}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            data-testid="dropzone-image-replace"
+          >
             <img
               src={getImageSrc(value)}
               alt="Anteprima"
-              className="w-full h-full object-cover"
+              className={cn("w-full h-full object-cover transition-opacity", isDragging && "opacity-30")}
             />
+            {isDragging && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                <Upload className="h-10 w-10 text-primary" />
+                <p className="text-sm font-medium text-primary">Rilascia per sostituire</p>
+              </div>
+            )}
+            {isUploading && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-background/70">
+                <Loader2 className="h-10 w-10 text-primary animate-spin" />
+                <p className="text-sm text-muted-foreground">Caricamento in corso...</p>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => fileInputRef.current?.click()}
+              onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
               data-testid="button-change-image"
             >
               <Upload className="h-4 w-4 mr-1.5" />
@@ -145,7 +168,7 @@ export function ImageUpload({
               variant="outline"
               size="sm"
               className="text-destructive"
-              onClick={handleRemove}
+              onClick={(e) => { e.stopPropagation(); handleRemove(); }}
               data-testid="button-remove-image"
             >
               <X className="h-4 w-4 mr-1.5" />
