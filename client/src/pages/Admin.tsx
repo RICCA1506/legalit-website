@@ -1,9 +1,10 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/i18n";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { cn } from "@/lib/utils";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import type { NewsArticle, PartnerInvite, Professional, NewsCategory, NewsletterSubscriber, ContactMessage } from "@shared/schema";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Pencil, Trash2, ArrowLeft, Newspaper, UserPlus, Mail, Copy, Check, Clock, Loader2, Users, FolderTree, MailPlus, Download, BarChart3, ChevronDown, MessageSquare, Eye, EyeOff, Phone, ExternalLink, Calendar, User, FileText, Shield, Smartphone, Move, ArrowUp, ArrowDown, ZoomIn, Link2, Maximize, X } from "lucide-react";
+import { Plus, Pencil, Trash2, ArrowLeft, Newspaper, UserPlus, Mail, Copy, Check, Clock, Loader2, Users, FolderTree, MailPlus, Download, BarChart3, ChevronDown, MessageSquare, Eye, EyeOff, Phone, ExternalLink, Calendar, User, FileText, Shield, Smartphone, Move, ArrowUp, ArrowDown, ZoomIn, Link2, Maximize, X, Camera, Upload } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Link, useLocation } from "wouter";
 import PageHeader from "@/components/PageHeader";
@@ -138,6 +139,68 @@ const getImageCropStyle = (position?: string | null, zoom?: number | null): Reac
   };
 };
 
+
+function CardQuickUpload({ professionalId, professionalName }: { professionalId: number; professionalName: string }) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  const handleUpload = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "File non valido", description: "Seleziona un file immagine.", variant: "destructive" });
+      return;
+    }
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const uploadRes = await fetch("/api/upload-file", { method: "POST", body: formData, credentials: "include" });
+      if (!uploadRes.ok) throw new Error("Upload failed");
+      const { url } = await uploadRes.json();
+      await apiRequest("PATCH", `/api/professionals/${professionalId}`, { imageUrl: url });
+      queryClient.invalidateQueries({ queryKey: ["/api/professionals"] });
+      toast({ title: "Foto caricata", description: `Foto aggiornata per ${professionalName}.` });
+    } catch {
+      toast({ title: "Errore", description: "Impossibile caricare la foto.", variant: "destructive" });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return (
+    <div
+      className={cn(
+        "aspect-square flex flex-col items-center justify-center gap-3 cursor-pointer transition-colors border-b",
+        isDragging ? "bg-primary/10" : "bg-muted/40 hover:bg-muted/70",
+        isUploading && "pointer-events-none opacity-60"
+      )}
+      onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
+      onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); }}
+      onDrop={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); if (e.dataTransfer.files.length > 0) handleUpload(e.dataTransfer.files[0]); }}
+      onClick={() => fileInputRef.current?.click()}
+      data-testid={`dropzone-quick-upload-${professionalId}`}
+    >
+      <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) handleUpload(e.target.files[0]); }} />
+      {isUploading ? (
+        <>
+          <Loader2 className="h-8 w-8 text-primary animate-spin" />
+          <p className="text-sm text-muted-foreground">Caricamento...</p>
+        </>
+      ) : (
+        <>
+          <div className="rounded-full bg-muted p-3">
+            {isDragging ? <Upload className="h-6 w-6 text-primary" /> : <Camera className="h-6 w-6 text-muted-foreground" />}
+          </div>
+          <p className="text-sm font-medium text-muted-foreground">
+            {isDragging ? "Rilascia qui" : "Trascina o clicca"}
+          </p>
+          <p className="text-xs text-muted-foreground">per aggiungere foto</p>
+        </>
+      )}
+    </div>
+  );
+}
 
 export default function Admin() {
   const { toast } = useToast();
@@ -1378,7 +1441,7 @@ export default function Admin() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {professionals.map((professional) => (
                     <Card key={professional.id} className="overflow-hidden" data-testid={`card-admin-professional-${professional.id}`}>
-                      {professional.imageUrl && (
+                      {professional.imageUrl && !isLogoPlaceholderCheck(professional.imageUrl) ? (
                         <div
                           className="aspect-square overflow-hidden relative cursor-pointer group/img"
                           onClick={(e) => { e.stopPropagation(); setLightboxImage(professional.imageUrl!); }}
@@ -1387,8 +1450,8 @@ export default function Admin() {
                           <img
                             src={professional.imageUrl}
                             alt={professional.name}
-                            className={`w-full h-full ${isLogoPlaceholderCheck(professional.imageUrl) ? 'object-contain p-6 bg-white' : 'object-cover'}`}
-                            style={isLogoPlaceholderCheck(professional.imageUrl) ? {} : getImageCropStyle(professional.imagePosition, professional.imageZoom)}
+                            className="w-full h-full object-cover"
+                            style={getImageCropStyle(professional.imagePosition, professional.imageZoom)}
                             loading="lazy"
                             decoding="async"
                           />
@@ -1396,6 +1459,8 @@ export default function Admin() {
                             <Maximize className="h-6 w-6 text-white opacity-0 group-hover/img:opacity-100 transition-opacity drop-shadow-lg" />
                           </div>
                         </div>
+                      ) : (
+                        <CardQuickUpload professionalId={professional.id} professionalName={professional.name} />
                       )}
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between gap-2">
