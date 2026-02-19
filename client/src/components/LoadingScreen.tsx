@@ -1,7 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import logoImage from "@assets/logo_legalit_cropped_1771120703206.png";
-import TopographicBackground from "./TopographicBackground";
 
 function dismissPreloader() {
   const el = document.getElementById('app-preloader');
@@ -165,12 +164,9 @@ export default function LoadingScreen({ heroImageSrc, onComplete }: LoadingScree
             WebkitMaskRepeat: 'no-repeat' as string,
           } as React.CSSProperties}
         >
-          <TopographicBackground
-            interactive={false}
-            bgColor="#FFFFFF"
-            position="absolute"
-            sizeExtra={pad}
-            onFirstFrame={dismissPreloader}
+          <div
+            className="absolute inset-0 bg-white"
+            ref={(el) => { if (el) dismissPreloader(); }}
           />
         </div>
 

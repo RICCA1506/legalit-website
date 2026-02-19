@@ -17,7 +17,6 @@ import SmoothScroll from "@/components/SmoothScroll";
 import LoadingScreen from "@/components/LoadingScreen";
 import { LoadingContext } from "@/contexts/LoadingContext";
 
-import TopographicBackground from "@/components/TopographicBackground";
 const Attivita = lazy(() => import("@/pages/Attivita"));
 const AttivitaDetail = lazy(() => import("@/pages/AttivitaDetail"));
 const Professionisti = lazy(() => import("@/pages/Professionisti"));
@@ -101,16 +100,17 @@ function AppContentInner() {
 
   const shouldShowLoading = isHomePage && showLoading && !loadingComplete;
 
+  useEffect(() => {
+    if (!shouldShowLoading) {
+      const el = document.getElementById('app-preloader');
+      if (el) { el.classList.add('fade-out'); setTimeout(() => el.remove(), 450); }
+    }
+  }, [shouldShowLoading]);
+
   return (
     <LoadingContext.Provider value={{ loadingComplete }}>
       <SmoothScroll />
       <AnalyticsTracker />
-      {!shouldShowLoading && (
-        <TopographicBackground interactive={true} onFirstFrame={() => {
-          const el = document.getElementById('app-preloader');
-          if (el) { el.classList.add('fade-out'); setTimeout(() => el.remove(), 450); }
-        }} />
-      )}
       {shouldShowLoading && (
         <LoadingScreen
           heroImageSrc={currentTheme.heroImage}
