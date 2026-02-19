@@ -1369,8 +1369,32 @@ Per questi professionisti non fornire [DIRECT_LINK] – indirizza sempre verso i
       });
 
       const chat = model.startChat({ history });
-      const result = await chat.sendMessage(message);
-      const response = result.response.text();
+
+      const MAX_RETRIES = 3;
+      let lastError: any = null;
+      let response: string | null = null;
+
+      for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+        try {
+          const result = await chat.sendMessage(message);
+          response = result.response.text();
+          break;
+        } catch (err: any) {
+          lastError = err;
+          const is429 = err?.message?.includes("429") || err?.message?.includes("Resource exhausted");
+          if (is429 && attempt < MAX_RETRIES - 1) {
+            const delay = (attempt + 1) * 2000;
+            console.log(`[Chat] Gemini 429, retry ${attempt + 1}/${MAX_RETRIES} in ${delay}ms`);
+            await new Promise(r => setTimeout(r, delay));
+          } else {
+            throw err;
+          }
+        }
+      }
+
+      if (!response) {
+        throw lastError || new Error("No response from Gemini");
+      }
 
       if (sessionId) {
         try {
@@ -1383,7 +1407,12 @@ Per questi professionisti non fornire [DIRECT_LINK] – indirizza sempre verso i
       res.json({ reply: response });
     } catch (error: any) {
       console.error("Gemini chat error:", error?.message || error);
-      res.status(500).json({ message: "Errore nel chatbot. Riprova." });
+      const is429 = error?.message?.includes("429") || error?.message?.includes("Resource exhausted");
+      if (is429) {
+        res.status(503).json({ message: "Il servizio è momentaneamente sovraccarico. Riprova tra qualche secondo." });
+      } else {
+        res.status(500).json({ message: "Errore nel chatbot. Riprova." });
+      }
     }
   });
 
