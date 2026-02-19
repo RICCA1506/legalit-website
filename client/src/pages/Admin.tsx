@@ -116,7 +116,7 @@ const emptyProfessionalForm: ProfessionalForm = {
 };
 
 const isLogoPlaceholderCheck = (imageUrl: string): boolean => {
-  return imageUrl.includes('000_LOGO_LEGALIT');
+  return imageUrl.includes('000_LOGO_LEGALIT') || imageUrl.includes('logo_legalit_cropped');
 };
 
 const getImageCropStyle = (position?: string | null, zoom?: number | null): React.CSSProperties => {

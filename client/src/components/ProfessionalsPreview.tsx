@@ -45,7 +45,7 @@ const getCropStyle = (position?: string | null, zoom?: number | null): React.CSS
 
 function LawyerCard({ lawyer, onClick }: { lawyer: ProfessionalData; onClick: () => void }) {
   const [imageError, setImageError] = useState(false);
-  const isLogo = lawyer.imageUrl?.includes('000_LOGO_LEGALIT');
+  const isLogo = lawyer.imageUrl?.includes('000_LOGO_LEGALIT') || lawyer.imageUrl?.includes('logo_legalit_cropped');
   const showImage = lawyer.imageUrl && !imageError;
 
   return (

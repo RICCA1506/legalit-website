@@ -26,7 +26,7 @@ const getImageUrl = (imageUrl: string | null | undefined): string | null => {
 
 const isLogoPlaceholder = (imageUrl: string | null | undefined): boolean => {
   if (!imageUrl) return false;
-  return imageUrl.includes("000_LOGO_LEGALIT");
+  return imageUrl.includes("000_LOGO_LEGALIT") || imageUrl.includes("logo_legalit_cropped");
 };
 
 function CardContent({
