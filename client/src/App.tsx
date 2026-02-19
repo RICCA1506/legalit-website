@@ -1,11 +1,11 @@
 import { Switch, Route, useLocation } from "wouter";
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/lib/i18n";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 import { ScrollProvider } from "@/contexts/ScrollContext";
 import { LinkedInCardProvider } from "@/contexts/LinkedInCardContext";
 import Header from "@/components/Header";
@@ -14,6 +14,7 @@ import Home from "@/pages/Home";
 import CookieConsent from "@/components/CookieConsent";
 import ChatWidget from "@/components/ChatWidget";
 import SmoothScroll from "@/components/SmoothScroll";
+import LoadingScreen from "@/components/LoadingScreen";
 import { LoadingContext } from "@/contexts/LoadingContext";
 
 const Attivita = lazy(() => import("@/pages/Attivita"));
@@ -91,10 +92,27 @@ function Router() {
 }
 
 function AppContentInner() {
+  const [location] = useLocation();
+  const { currentTheme } = useTheme();
+  const [loadingComplete, setLoadingComplete] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
+  const isHomePage = location === "/";
+
+  const shouldShowLoading = isHomePage && showLoading && !loadingComplete;
+
   return (
-    <LoadingContext.Provider value={{ loadingComplete: true }}>
+    <LoadingContext.Provider value={{ loadingComplete: loadingComplete || !isHomePage }}>
       <SmoothScroll />
       <AnalyticsTracker />
+      {shouldShowLoading && (
+        <LoadingScreen
+          heroImageSrc={currentTheme.heroImage}
+          onComplete={() => {
+            setLoadingComplete(true);
+            setShowLoading(false);
+          }}
+        />
+      )}
       <div className="min-h-screen flex flex-col" style={{ position: "relative", zIndex: 10 }}>
         <Header />
         <main className="flex-1">

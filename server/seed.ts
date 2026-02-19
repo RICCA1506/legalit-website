@@ -38,8 +38,8 @@ export async function seedAdminUser() {
   if (isProduction) {
     try {
       const allProfessionals = await db.select().from(professionals);
-      if (allProfessionals.length < 30) {
-        console.log(`[Seed] Production has ${allProfessionals.length} professionals (expected 30). Running full data sync...`);
+      if (allProfessionals.length < 20) {
+        console.log(`[Seed] Production has ${allProfessionals.length} professionals (expected 26+). Running full data sync...`);
         const result = await syncDevDataToCurrentDb();
         console.log("[Seed] Full data sync result:", JSON.stringify(result));
         return;
@@ -69,9 +69,19 @@ export async function seedAdminUser() {
           role: seedUser.role,
         });
         console.log(`[Seed] User created: ${seedUser.email} (${seedUser.role})`);
-      } else if (existing.role !== seedUser.role) {
-        await db.update(users).set({ role: seedUser.role }).where(eq(users.email, seedUser.email));
-        console.log(`[Seed] User role updated: ${seedUser.email} ${existing.role} -> ${seedUser.role}`);
+      } else {
+        const updates: Record<string, string> = {};
+        if (existing.role !== seedUser.role) updates.role = seedUser.role;
+        const passwordValid = existing.hashedPassword ? await bcrypt.compare(seedUser.password, existing.hashedPassword) : false;
+        if (!passwordValid) {
+          const hashedPassword = await bcrypt.hash(seedUser.password, BCRYPT_ROUNDS);
+          updates.hashedPassword = hashedPassword;
+          console.log(`[Seed] Password reset for: ${seedUser.email}`);
+        }
+        if (Object.keys(updates).length > 0) {
+          await db.update(users).set(updates).where(eq(users.email, seedUser.email));
+          console.log(`[Seed] User updated: ${seedUser.email}`);
+        }
       }
     } catch (error) {
       console.error(`[Seed] Error seeding user ${seedUser.email}:`, error);
