@@ -291,9 +291,9 @@ export default function Hero({ loadingComplete = false }: HeroProps) {
               transform: 'translateY(30px)',
             }}
           >
-            <span className="text-white">Il tuo </span><span ref={accentWord1Ref} className="italic" style={{ color: '#003767', WebkitTextStroke: '3px white', paintOrder: 'stroke fill' }}>{Array.from("partner").map((ch, i) => <span key={i} className="accent-letter" style={{ display: 'inline-block', position: 'relative', zIndex: 1, opacity: 0 }}>{ch}</span>)}</span><br />
-            <span className="text-white">per difendere i </span><span ref={accentWord2Ref} className="italic" style={{ color: '#003767', WebkitTextStroke: '3px white', paintOrder: 'stroke fill' }}>{Array.from("diritti").map((ch, i) => <span key={i} className="accent-letter" style={{ display: 'inline-block', position: 'relative', zIndex: 1, opacity: 0 }}>{ch}</span>)}</span><br />
-            <span className="text-white">e creare </span><span ref={accentWord3Ref} className="italic" style={{ color: '#003767', WebkitTextStroke: '3px white', paintOrder: 'stroke fill' }}>{Array.from("valore").map((ch, i) => <span key={i} className="accent-letter" style={{ display: 'inline-block', position: 'relative', zIndex: 1, opacity: 0 }}>{ch}</span>)}</span>
+            <span className="text-white">Il tuo </span><span ref={accentWord1Ref} className="italic" style={{ color: '#003767', WebkitTextStroke: '7px white', paintOrder: 'stroke fill' }}>{Array.from("partner").map((ch, i) => <span key={i} className="accent-letter" style={{ display: 'inline-block', position: 'relative', zIndex: 1, opacity: 0 }}>{ch}</span>)}</span><br />
+            <span className="text-white">per difendere i </span><span ref={accentWord2Ref} className="italic" style={{ color: '#003767', WebkitTextStroke: '7px white', paintOrder: 'stroke fill' }}>{Array.from("diritti").map((ch, i) => <span key={i} className="accent-letter" style={{ display: 'inline-block', position: 'relative', zIndex: 1, opacity: 0 }}>{ch}</span>)}</span><br />
+            <span className="text-white">e creare </span><span ref={accentWord3Ref} className="italic" style={{ color: '#003767', WebkitTextStroke: '7px white', paintOrder: 'stroke fill' }}>{Array.from("valore").map((ch, i) => <span key={i} className="accent-letter" style={{ display: 'inline-block', position: 'relative', zIndex: 1, opacity: 0 }}>{ch}</span>)}</span>
           </h1>
           
           <div 
