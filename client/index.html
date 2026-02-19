@@ -23,7 +23,6 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"></noscript>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="preload" href="/images/topo-bg.jpg" as="image" type="image/jpeg" fetchpriority="high" />
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SYHZF2CVPF"></script>
     <script>
@@ -32,76 +31,9 @@
       gtag('js', new Date());
       gtag('config', 'G-SYHZF2CVPF', { send_page_view: false });
     </script>
-    <style>
-      html.preloader-active,
-      html.preloader-active body {
-        overflow: hidden !important;
-        scrollbar-gutter: auto !important;
-      }
-      @keyframes preloaderPan {
-        0%   { transform: translate(-50%, -55%) scale(1); }
-        100% { transform: translate(-56%, -55%) scale(1.12); }
-      }
-      #app-preloader {
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-        overflow: hidden;
-        opacity: 1;
-        transition: opacity 0.6s ease-out;
-        pointer-events: none;
-      }
-      #app-preloader.dissolve {
-        opacity: 0;
-      }
-      #app-preloader img {
-        display: block;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 110%;
-        height: auto;
-        min-height: 110%;
-        object-fit: cover;
-        filter: blur(3px);
-        transform: translate(-50%, -55%);
-        animation: preloaderPan 8s ease-in-out infinite alternate;
-        will-change: transform;
-      }
-    </style>
   </head>
   <body>
-    <script>
-      document.documentElement.classList.add('preloader-active');
-      function __blockNonError(e) {
-        var err = e.error !== undefined ? e.error : e.reason;
-        if (!err || !(err instanceof Error)) { e.preventDefault(); e.stopImmediatePropagation(); return false; }
-      }
-      window.addEventListener("error", __blockNonError, true);
-      window.addEventListener("error", __blockNonError, false);
-      window.addEventListener("unhandledrejection", __blockNonError, true);
-      window.addEventListener("unhandledrejection", __blockNonError, false);
-    </script>
-    <div id="app-preloader">
-      <img src="/images/topo-bg.jpg" alt="" />
-    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      setTimeout(function() {
-        var p = document.getElementById('app-preloader');
-        if (p && p.parentNode) {
-          var img = p.querySelector('img');
-          if (img) {
-            var cs = getComputedStyle(img).transform;
-            img.style.animation = 'none';
-            img.style.transform = cs;
-          }
-          p.classList.add('dissolve');
-          document.documentElement.classList.remove('preloader-active');
-          setTimeout(function() { p.remove(); }, 700);
-        }
-      }, 15000);
-    </script>
   </body>
 </html>
