@@ -54,30 +54,21 @@ export function ImageUpload({
     setError(null);
 
     try {
-      const response = await fetch("/api/upload", {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload-file", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filename: file.name, contentType: file.type }),
+        body: formData,
         credentials: "include",
       });
 
       if (!response.ok) {
-        throw new Error("Errore durante la preparazione dell'upload");
-      }
-
-      const { uploadUrl, objectPath } = await response.json();
-
-      const uploadResponse = await fetch(uploadUrl, {
-        method: "PUT",
-        body: file,
-        headers: { "Content-Type": file.type },
-      });
-
-      if (!uploadResponse.ok) {
         throw new Error("Errore durante il caricamento");
       }
 
-      onChange(objectPath);
+      const { url } = await response.json();
+      onChange(url);
     } catch (err) {
       console.error("Upload error:", err);
       setError(err instanceof Error ? err.message : "Errore durante il caricamento");

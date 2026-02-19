@@ -1,6 +1,9 @@
 import type { Express } from "express";
 import { type Server } from "http";
 import { z } from "zod";
+import multer from "multer";
+import path from "path";
+import { randomUUID } from "crypto";
 import { storage, hashToken } from "./storage";
 import { setupAuth, setupAdminRoutes, isAuthenticated, generateInviteToken } from "./auth";
 import { insertNewsArticleSchema, insertProfessionalSchema, insertNewsCategorySchema, insertNewsletterSubscriberSchema, insertContactMessageSchema } from "@shared/schema";
@@ -598,6 +601,30 @@ export async function registerRoutes(
   });
 
   // Image upload routes
+  const uploadStorage = multer.diskStorage({
+    destination: path.join(process.cwd(), "attached_assets"),
+    filename: (_req, file, cb) => {
+      const ext = path.extname(file.originalname) || ".png";
+      cb(null, `upload_${randomUUID()}${ext}`);
+    },
+  });
+  const uploadMiddleware = multer({
+    storage: uploadStorage,
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
+      if (file.mimetype.startsWith("image/")) cb(null, true);
+      else cb(new Error("Solo file immagine sono accettati"));
+    },
+  });
+
+  app.post("/api/upload-file", isAuthenticated, uploadMiddleware.single("file"), (req: any, res) => {
+    if (!req.file) {
+      return res.status(400).json({ message: "Nessun file caricato" });
+    }
+    const filePath = `/attached_assets/${req.file.filename}`;
+    res.json({ url: filePath });
+  });
+
   app.post("/api/upload", isAuthenticated, async (req: any, res) => {
     try {
       const objectStorageService = new ObjectStorageService();
