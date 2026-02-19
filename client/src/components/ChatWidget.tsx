@@ -711,9 +711,9 @@ export default function ChatWidget() {
       <div
         className="fixed z-[9998] transition-all duration-300 origin-bottom-right
           bottom-0 right-0 w-full
-          sm:bottom-[5.5rem] sm:right-5 sm:w-[560px] sm:max-w-[calc(100vw-2rem)] sm:rounded-2xl"
+          sm:bottom-[5.5rem] sm:right-5 sm:w-[400px] sm:max-w-[calc(100vw-2rem)] sm:rounded-2xl"
         style={{
-          height: isMobile ? mobileHeight : (isOpen ? "780px" : "0px"),
+          height: isMobile ? mobileHeight : (isOpen ? "min(600px, calc(100vh - 7rem))" : "0px"),
           opacity: isOpen ? 1 : 0,
           visibility: isOpen ? "visible" : "hidden",
           transform: isOpen ? "scale(1) translateY(0)" : "scale(0.95) translateY(16px)",
@@ -796,7 +796,7 @@ export default function ChatWidget() {
                   <p className="text-xs leading-relaxed" style={{ color: "rgba(126, 184, 229, 0.7)" }}>{welcomeSubtitle}</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2.5 w-full max-w-[440px]">
+                <div className="grid grid-cols-2 gap-2.5 w-full max-w-[340px]">
                   {currentQuickReplies.map((qr, idx) => {
                     const Icon = qr.icon;
                     return (
