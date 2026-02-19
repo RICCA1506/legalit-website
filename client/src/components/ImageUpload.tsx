@@ -121,22 +121,37 @@ export function ImageUpload({
       />
 
       {value ? (
-        <div className={cn("relative rounded-lg overflow-hidden bg-muted", aspectClasses[aspectRatio])}>
-          <img
-            src={getImageSrc(value)}
-            alt="Anteprima"
-            className="w-full h-full object-cover"
-          />
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon"
-            className="absolute top-2 right-2"
-            onClick={handleRemove}
-            data-testid="button-remove-image"
-          >
-            <X className="h-4 w-4" />
-          </Button>
+        <div className="space-y-3">
+          <div className={cn("relative rounded-lg overflow-hidden bg-muted", aspectClasses[aspectRatio])}>
+            <img
+              src={getImageSrc(value)}
+              alt="Anteprima"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              data-testid="button-change-image"
+            >
+              <Upload className="h-4 w-4 mr-1.5" />
+              Cambia foto
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="text-destructive"
+              onClick={handleRemove}
+              data-testid="button-remove-image"
+            >
+              <X className="h-4 w-4 mr-1.5" />
+              Rimuovi foto
+            </Button>
+          </div>
         </div>
       ) : (
         <div
