@@ -55,7 +55,7 @@ export const practiceAreas = [
   },
   {
     id: "diritto-lavoro",
-    title: "Diritto del Lavoro, Previdenziale e Relazioni Industriali",
+    title: "Diritto del Lavoro, Previdenza e Relazioni Industriali",
     items: [
       "Diritto del lavoro generale",
       "Licenziamenti",
@@ -79,7 +79,7 @@ export const practiceAreas = [
   },
   {
     id: "corporate-compliance",
-    title: "Corporate Compliance, Internal Investigations e Responsabilità degli Enti ex d.lgs. 231/01",
+    title: "Corporate Compliance, Internal Investigations e Responsabilità degli Enti ex D.Lgs. 231/01",
     items: [
       "Modelli organizzativi 231",
       "Investigazioni interne",
@@ -144,7 +144,7 @@ export const practiceAreas = [
   },
   {
     id: "recupero-crediti",
-    title: "Gestione Crediti, NPL e Procedure Esecutive",
+    title: "Gestione del Credito, NPL e Procedure Esecutive",
     items: [
       "Gestione crediti stragiudiziale",
       "Procedure esecutive mobiliari",
@@ -155,7 +155,7 @@ export const practiceAreas = [
   },
   {
     id: "diritto-assicurazioni",
-    title: "Diritto delle Assicurazioni",
+    title: "Diritto delle Assicurazioni e Responsabilità Civile",
     items: [
       "Contratti assicurativi",
       "Risarcimento danni",
@@ -236,6 +236,16 @@ export const practiceAreas = [
       "Accertamenti fiscali",
       "Pianificazione fiscale",
       "Reati tributari",
+    ],
+  },
+  {
+    id: "terzo-settore",
+    title: "Terzo Settore e No Profit",
+    items: [
+      "Enti del terzo settore",
+      "Associazioni e fondazioni",
+      "ONLUS e imprese sociali",
+      "Governance e compliance no profit",
     ],
   },
 ];

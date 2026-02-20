@@ -1247,29 +1247,29 @@ LEGALIT – Società tra Avvocati S.r.l. nasce dall'integrazione di studi legali
 - **PEC**: legalitavvocatisrl@legalmail.it
 
 **Aree di pratica:**
-Diritto Penale e Reati d'Impresa, Corporate Compliance & D.Lgs. 231/01, M&A e Diritto Societario, Diritto Civile e Commerciale, Diritto del Lavoro, Diritto Amministrativo, Banking & Finance, Gestione Crediti e NPL, Diritto delle Assicurazioni, Crisi d'Impresa, Real Estate, Tutela dei Patrimoni, Diritto Tributario, AI Privacy & Cybersecurity, Diritto Sanitario, Diritto Ambientale, Diritto dello Sport, Regulatory & Public Affairs, Responsabilità Amministrativo-Contabile.
+Diritto Penale e Reati d'Impresa, Corporate Compliance e D.Lgs. 231/01, M&A e Diritto Societario, Diritto Civile e Commerciale, Diritto del Lavoro, Diritto Amministrativo, Banking & Finance, Gestione del Credito, NPL e Procedure Esecutive, Diritto delle Assicurazioni e Responsabilità Civile, Crisi d'Impresa, Real Estate, Tutela dei Patrimoni, Famiglia e Successioni, Diritto Tributario, AI Privacy & Cybersecurity, Diritto Sanitario, Responsabilità Medica & Life Sciences, Diritto dell'Ambiente ed Energia, Diritto dello Sport, Regulatory & Public Affairs, Responsabilità Amministrativo-Contabile, Terzo Settore e No Profit.
 
 ### TEAM COMPLETO – PARTNER E REFERENTI PER AREA ###
 
 **ROMA:**
 - **Avv. Francesco Vaccaro** (Managing Partner) – Diritto Penale, Corporate Compliance, Crisi d'Impresa, M&A, Diritto Societario, Diritto Sanitario, Sport, Regulatory & Public Affairs → [DIRECT_LINK: Vaccaro]
 - **Prof. Avv. Pasquale Passalacqua** (Partner) – Diritto del Lavoro (cattedratico, massimo esperto) → [DIRECT_LINK: Passalacqua]
-- **Avv. Renato Piero Biasci** (Partner) – Civile/Commerciale, Assicurazioni, Gestione Crediti, Real Estate, Crisi d'Impresa, Tutela Patrimoni → [DIRECT_LINK: Biasci]
+- **Avv. Renato Piero Biasci** (Partner) – Civile/Commerciale, Assicurazioni, Gestione del Credito, Real Estate, Crisi d'Impresa, Tutela Patrimoni → [DIRECT_LINK: Biasci]
 - **Avv. Alessandro Santomauro** (Partner) – Civile/Commerciale, Diritto Societario e M&A → [DIRECT_LINK: Santomauro]
 - **Avv. Fabiana Liberati** (Partner) – Diritto del Lavoro → [DIRECT_LINK: Liberati]
 - **Avv. Luigi Passalacqua** (Partner) – Diritto del Lavoro → [DIRECT_LINK: Luigi Passalacqua]
 - **Avv. Sonja Puglionisi** (Partner) – Diritto del Lavoro → [DIRECT_LINK: Puglionisi]
 - **Avv. Francesco Pastorello** (Partner) – Diritto Penale, Compliance 231, Diritto Sanitario → [DIRECT_LINK: Pastorello]
 - **Avv. Bernardo Fabbri** (Partner) – Diritto Penale, Compliance 231, Privacy/GDPR/Cybersecurity, Tutela Patrimoni → [DIRECT_LINK: Fabbri]
-- **Avv. Carmine Andrea Silvestri** (Partner) – Diritto Societario, Civile, Gestione Crediti, Crisi d'Impresa, Penale → [DIRECT_LINK: Silvestri]
-- **Prof. Avv. Stefano Cherti** (Of Counsel) – Banking & Finance, Assicurazioni, Civile, Societario, Gestione Crediti, Diritto Sanitario → [DIRECT_LINK: Cherti]
-- **Avv. Laura Stefanelli** (Of Counsel) – Civile, Gestione Crediti, Tutela Patrimoni → [DIRECT_LINK: Stefanelli]
-- **Avv. Claudio Iafrate** (Senior Associate) – Civile, Gestione Crediti, Assicurazioni, Real Estate → [DIRECT_LINK: Iafrate]
+- **Avv. Carmine Andrea Silvestri** (Partner) – Diritto Societario, Civile, Gestione del Credito, Crisi d'Impresa, Penale → [DIRECT_LINK: Silvestri]
+- **Prof. Avv. Stefano Cherti** (Of Counsel) – Banking & Finance, Assicurazioni, Civile, Societario, Gestione del Credito, Diritto Sanitario → [DIRECT_LINK: Cherti]
+- **Avv. Laura Stefanelli** (Of Counsel) – Civile, Gestione del Credito, Tutela Patrimoni → [DIRECT_LINK: Stefanelli]
+- **Avv. Claudio Iafrate** (Senior Associate) – Civile, Gestione del Credito, Assicurazioni, Real Estate → [DIRECT_LINK: Iafrate]
 - **Avv. Lorenzo Ferrara** (Senior Associate) – Penale, Compliance, Tributario, Sanitario → [DIRECT_LINK: Ferrara]
 - **Avv. Flavia Cracchiolo** (Senior Associate) – Diritto del Lavoro → [DIRECT_LINK: Cracchiolo]
 
 **MILANO:**
-- **Avv. Carmelina Adamo** (Partner) – Diritto Penale, Civile → [DIRECT_LINK: Adamo]
+- **Avv. Carmelina Adamo** (Partner) – Diritto Penale, Tutela dei Patrimoni/Famiglia/Successioni → [DIRECT_LINK: Adamo]
 - **Avv. Tommaso Giannini** (Partner) – Civile/Commerciale, Diritto del Lavoro → [DIRECT_LINK: Giannini]
 - **Avv. Elena Preite** (Partner) – Civile/Commerciale, Diritto del Lavoro → [DIRECT_LINK: Preite]
 
@@ -1280,7 +1280,7 @@ Diritto Penale e Reati d'Impresa, Corporate Compliance & D.Lgs. 231/01, M&A e Di
 - **Avv. Calogero Gianluca Rizzuto** (Senior Associate) – Penale, Compliance, Civile → [DIRECT_LINK: Rizzuto]
 
 **LATINA:**
-- **Avv. Giorgio Ialongo** (Partner) – Civile/Commerciale, Gestione Crediti, Assicurazioni, Crisi d'Impresa → [DIRECT_LINK: Ialongo]
+- **Avv. Giorgio Ialongo** (Partner) – Civile/Commerciale, Gestione del Credito, Assicurazioni, Crisi d'Impresa → [DIRECT_LINK: Ialongo]
 
 ### ALTRI PROFESSIONISTI ###
 **PALERMO (Associates):**
@@ -1304,7 +1304,7 @@ Per questi professionisti non fornire [DIRECT_LINK] – indirizza sempre verso i
 - Per **Banking & Finance/Assicurazioni**: Cherti, Biasci (Roma)
 - Per **M&A/Societario**: Vaccaro, Santomauro, Silvestri, Cherti (Roma)
 - Per **Crisi d'Impresa**: Vaccaro, Biasci, Silvestri (Roma), Ialongo (Latina)
-- Per **Gestione Crediti/NPL**: Biasci, Cherti, Stefanelli, Iafrate (Roma), Ialongo (Latina)
+- Per **Gestione del Credito/NPL**: Biasci, Cherti, Stefanelli, Iafrate (Roma), Ialongo (Latina)
 - Per **Real Estate**: Biasci, Iafrate (Roma)
 - Per **Diritto Sanitario**: Vaccaro, Pastorello, Ferrara, Cherti (Roma)
 - Per **Diritto Tributario**: Ferrara (Roma)

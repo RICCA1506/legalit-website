@@ -108,7 +108,7 @@ export const practiceAreasEnhanced: PracticeArea[] = [
   },
   {
     id: "corporate-compliance",
-    titleIT: "Corporate Compliance, Internal Investigations & Responsabilità degli Enti ex D.Lgs. 231/01",
+    titleIT: "Corporate Compliance, Internal Investigations e Responsabilità degli Enti ex D.Lgs. 231/01",
     titleEN: "Corporate Compliance, Internal Investigations & Entity Liability (D.Lgs. 231/01)",
     shortDescriptionIT: "Modelli organizzativi 231, investigazioni interne e prevenzione della responsabilità d'impresa.",
     shortDescriptionEN: "231 organizational models, internal investigations and corporate liability prevention.",
@@ -145,7 +145,7 @@ export const practiceAreasEnhanced: PracticeArea[] = [
   },
   {
     id: "diritto-assicurazioni",
-    titleIT: "Diritto Assicurativo e Responsabilità Civile",
+    titleIT: "Diritto delle Assicurazioni e Responsabilità Civile",
     titleEN: "Insurance Law",
     shortDescriptionIT: "Consulenza e contenzioso in materia assicurativa per compagnie e assicurati.",
     shortDescriptionEN: "Advice and litigation in insurance matters for companies and insureds.",
@@ -169,7 +169,7 @@ export const practiceAreasEnhanced: PracticeArea[] = [
   },
   {
     id: "recupero-crediti-npl",
-    titleIT: "Gestione Crediti, NPL e Procedure Esecutive",
+    titleIT: "Gestione del Credito, NPL e Procedure Esecutive",
     titleEN: "Credit Management, NPL and Enforcement Proceedings",
     shortDescriptionIT: "Gestione crediti giudiziale e stragiudiziale, NPL e procedure esecutive.",
     shortDescriptionEN: "Judicial and extrajudicial debt recovery, NPL management and enforcement proceedings.",
