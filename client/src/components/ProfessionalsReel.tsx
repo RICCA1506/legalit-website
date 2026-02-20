@@ -259,32 +259,37 @@ export default function ProfessionalsReel({
   const [tick, setTick] = useState(0);
   const prevIds = useRef<Set<string | number>>(new Set());
 
+  const authorPro = useMemo(() => {
+    if (!highlightAuthor) return null;
+    return pool.find((p) => isAuthor(p.name)) ?? null;
+  }, [pool, highlightAuthor, isAuthor]);
+
+  const nonAuthorPool = useMemo(() => {
+    if (!authorPro) return pool;
+    return pool.filter((p) => p.id !== authorPro.id);
+  }, [pool, authorPro]);
+
   useEffect(() => {
     if (pool.length === 0) return;
-    const authorPro = highlightAuthor
-      ? pool.find((p) => isAuthor(p.name))
-      : null;
-
-    const nonAuthorPool = authorPro
-      ? pool.filter((p) => p.id !== authorPro.id)
-      : pool;
 
     const count = Math.min(columns, pool.length);
 
     let selected: any[];
     if (authorPro && count > 0) {
+      const rotatingSlots = count - 1;
       const others = [...nonAuthorPool]
         .filter((p) => !prevIds.current.has(p.id))
         .sort(() => Math.random() - 0.5)
-        .slice(0, count - 1);
-      if (others.length < count - 1) {
+        .slice(0, rotatingSlots);
+      if (others.length < rotatingSlots) {
         const more = [...nonAuthorPool]
           .sort(() => Math.random() - 0.5)
-          .slice(0, count - 1);
+          .slice(0, rotatingSlots);
         selected = [authorPro, ...more];
       } else {
         selected = [authorPro, ...others];
       }
+      prevIds.current = new Set(others.map((p) => p.id));
     } else {
       const fresh = pickRandom(count, prevIds.current);
       if (fresh.length < count) {
@@ -292,17 +297,19 @@ export default function ProfessionalsReel({
       } else {
         selected = fresh;
       }
+      prevIds.current = new Set(selected.map((p) => p.id));
     }
 
-    prevIds.current = new Set(selected.map((p) => p.id));
     setVisiblePros(selected);
-  }, [tick, pool, columns, highlightAuthor, isAuthor, pickRandom]);
+  }, [tick, pool, columns, authorPro, nonAuthorPool, isAuthor, pickRandom]);
 
   useEffect(() => {
-    if (pool.length <= columns) return;
+    const rotatingCount = authorPro ? nonAuthorPool.length : pool.length;
+    const rotatingSlots = authorPro ? columns - 1 : columns;
+    if (rotatingCount <= rotatingSlots) return;
     const timer = setInterval(() => setTick((t) => t + 1), interval);
     return () => clearInterval(timer);
-  }, [pool.length, columns, interval]);
+  }, [authorPro, nonAuthorPool.length, pool.length, columns, interval]);
 
   if (pool.length === 0) return null;
 
