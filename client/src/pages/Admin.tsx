@@ -50,6 +50,7 @@ interface ArticleForm {
   excerpt: string;
   category: string;
   newsType: string;
+  authorName: string;
   linkedProfessionalId: string;
   linkedProfessionalIds: string[];
   linkedPracticeArea: string;
@@ -69,6 +70,7 @@ const emptyForm: ArticleForm = {
   excerpt: "",
   category: "",
   newsType: "studio",
+  authorName: "",
   linkedProfessionalId: "",
   linkedProfessionalIds: [],
   linkedPracticeArea: "",
@@ -867,6 +869,7 @@ export default function Admin() {
       excerpt: article.excerpt || "",
       category: article.category,
       newsType: article.newsType || "studio",
+      authorName: article.authorName || "",
       linkedProfessionalId: article.linkedProfessionalId || "",
       linkedProfessionalIds: resolvedIds,
       linkedPracticeArea: article.linkedPracticeArea || "",
@@ -2468,17 +2471,22 @@ export default function Admin() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="newsType">Tipo News *</Label>
-                <Select value={form.newsType} onValueChange={(v) => setForm({ ...form, newsType: v })}>
-                  <SelectTrigger data-testid="select-news-type">
-                    <SelectValue placeholder="Seleziona tipo" />
+                <Label htmlFor="authorName">Autore</Label>
+                <Select value={form.authorName || "none"} onValueChange={(v) => setForm({ ...form, authorName: v === "none" ? "" : v })}>
+                  <SelectTrigger data-testid="select-author-name">
+                    <SelectValue placeholder="Seleziona autore" />
                   </SelectTrigger>
                   <SelectContent>
-                    {newsTypes.map((type) => (
-                      <SelectItem key={type.key} value={type.key}>{type.it}</SelectItem>
+                    <SelectItem value="none">-- Nessun autore --</SelectItem>
+                    <SelectItem value="LEGALIT">LEGALIT (Studio)</SelectItem>
+                    {professionals?.map((prof) => (
+                      <SelectItem key={prof.id} value={prof.name}>{prof.name} · {prof.title}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                <p className="text-xs text-muted-foreground">
+                  Seleziona l'autore dell'articolo. Apparirà nella card della news.
+                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="linkedPracticeArea">Area di Attività *</Label>
@@ -2544,21 +2552,19 @@ export default function Admin() {
               </Collapsible>
             </div>
 
-            {form.newsType === "studio" && (
-              <div className="space-y-2">
-                <Label htmlFor="linkedinUrl">Link Post LinkedIn (opzionale)</Label>
-                <Input
-                  id="linkedinUrl"
-                  value={form.linkedinUrl}
-                  onChange={(e) => setForm({ ...form, linkedinUrl: e.target.value })}
-                  placeholder="https://www.linkedin.com/posts/..."
-                  data-testid="input-linkedin-url"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Se inserito, il clic sull'articolo aprirà il post LinkedIn invece della pagina articolo.
-                </p>
-              </div>
-            )}
+            <div className="space-y-2">
+              <Label htmlFor="linkedinUrl">Link Post LinkedIn (opzionale)</Label>
+              <Input
+                id="linkedinUrl"
+                value={form.linkedinUrl}
+                onChange={(e) => setForm({ ...form, linkedinUrl: e.target.value })}
+                placeholder="https://www.linkedin.com/posts/..."
+                data-testid="input-linkedin-url"
+              />
+              <p className="text-xs text-muted-foreground">
+                Se inserito, il clic sull'articolo aprirà il post LinkedIn invece della pagina articolo.
+              </p>
+            </div>
 
             <div className="space-y-2">
               <Label htmlFor="excerpt">Estratto</Label>

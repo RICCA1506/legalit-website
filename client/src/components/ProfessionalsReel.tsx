@@ -196,19 +196,6 @@ export default function ProfessionalsReel({
   const allProfessionals: any[] =
     dbProfessionals.length > 0 ? dbProfessionals : staticProfessionals;
 
-  const pool = useMemo(() => {
-    if (filterByIds && filterByIds.length > 0) {
-      return allProfessionals.filter((p) => filterByIds.includes(String(p.id)));
-    }
-    if (filterByAreas && filterByAreas.length > 0) {
-      return allProfessionals.filter((p) => {
-        const specs = p.specializations || [];
-        return specs.some((s: string) => filterByAreas!.includes(s));
-      });
-    }
-    return allProfessionals;
-  }, [allProfessionals, filterByAreas, filterByIds]);
-
   const cleanName = (n: string) =>
     n
       .replace(/^(Avv\.\s*|Prof\.\s*|Dott\.\s*|Dott\.ssa\s*)+/gi, "")
@@ -235,6 +222,29 @@ export default function ProfessionalsReel({
     },
     [highlightAuthor],
   );
+
+  const SENIOR_TITLES = ["managing partner", "partner"];
+
+  const pool = useMemo(() => {
+    let filtered: any[];
+    if (filterByIds && filterByIds.length > 0) {
+      filtered = allProfessionals.filter((p) => filterByIds.includes(String(p.id)));
+    } else if (filterByAreas && filterByAreas.length > 0) {
+      filtered = allProfessionals.filter((p) => {
+        const specs = p.specializations || [];
+        return specs.some((s: string) => filterByAreas!.includes(s));
+      });
+    } else {
+      filtered = allProfessionals;
+    }
+    if (filterByIds && filterByIds.length > 0) return filtered;
+    return filtered.filter((p) => {
+      const titleLower = (p.title || "").toLowerCase();
+      if (SENIOR_TITLES.some(t => titleLower.includes(t))) return true;
+      if (highlightAuthor && isAuthor(p.name)) return true;
+      return false;
+    });
+  }, [allProfessionals, filterByAreas, filterByIds, highlightAuthor, isAuthor]);
 
   const pickRandom = useCallback(
     (count: number, exclude: Set<string | number>) => {
@@ -275,7 +285,6 @@ export default function ProfessionalsReel({
       } else {
         selected = [authorPro, ...others];
       }
-      selected.sort(() => Math.random() - 0.5);
     } else {
       const fresh = pickRandom(count, prevIds.current);
       if (fresh.length < count) {

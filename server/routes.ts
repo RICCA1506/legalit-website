@@ -133,7 +133,7 @@ export async function registerRoutes(
         ...parsed.data,
         tags: autoTags,
         authorId: user.id,
-        authorName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+        authorName: parsed.data.authorName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
       });
       res.status(201).json(article);
     } catch (error) {
@@ -152,8 +152,8 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Invalid article data", errors: parsed.error.errors });
       }
       
-      // Remove immutable fields (authorId, authorName) from update
-      const { authorId, authorName, ...updateData } = parsed.data;
+      // Remove immutable field authorId from update, allow authorName to be updated
+      const { authorId, ...updateData } = parsed.data;
       
       if (updateData.title || updateData.content || updateData.excerpt || updateData.linkedPracticeArea) {
         const existing = await storage.getNewsArticle(id);
