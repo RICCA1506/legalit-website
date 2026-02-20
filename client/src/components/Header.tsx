@@ -223,10 +223,10 @@ export default function Header() {
               visibility: showLinkedInFollow ? "visible" as const : "hidden" as const,
             }}
             transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-            className="hidden lg:flex items-center gap-2 bg-[#0A66C2] hover:bg-[#004182] text-white rounded-full pl-2.5 pr-4 py-1.5 text-sm font-semibold shadow-lg transition-colors"
+            className="hidden lg:flex items-center gap-1 xl:gap-2 bg-[#0A66C2] hover:bg-[#004182] text-white rounded-full pl-1.5 pr-2.5 xl:pl-2.5 xl:pr-4 py-1 xl:py-1.5 text-[11px] xl:text-sm font-semibold shadow-lg transition-colors"
             data-testid="button-header-linkedin-follow"
           >
-            <SiLinkedin className="w-5 h-5" />
+            <SiLinkedin className="w-3.5 h-3.5 xl:w-5 xl:h-5" />
             <span>Legalit</span>
           </motion.a>
         )}
