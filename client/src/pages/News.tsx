@@ -198,7 +198,7 @@ export default function News() {
         data-testid={`card-news-${article.id}`}
       >
         <div
-          className="overflow-hidden relative bg-muted flex items-center justify-center aspect-[16/10]"
+          className="overflow-hidden relative bg-muted flex items-center justify-center aspect-[16/7]"
         >
           <Newspaper className="h-12 w-12 text-muted-foreground/40 absolute" />
           <OptimizedPicture
@@ -230,7 +230,7 @@ export default function News() {
           )}
         </div>
         <CardContent className="p-4 md:p-6 flex flex-col flex-1">
-          <h3 className="font-semibold text-base md:text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="font-semibold text-base md:text-lg mb-2 group-hover:text-primary transition-colors">
             {autoT(article.title)}
           </h3>
           {article.linkedPracticeArea && (
@@ -251,9 +251,26 @@ export default function News() {
               {autoT(article.excerpt)}
             </p>
           )}
-          <div className="flex flex-wrap items-center justify-between mt-auto gap-2">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground min-w-0">
-              <span className="flex items-center gap-1 shrink-0">
+          <div className="flex flex-col gap-2 mt-auto">
+            {article.authorName && (
+              <button
+                type="button"
+                onClick={(e) => handleAuthorClick(article.authorName, e)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleAuthorClick(article.authorName, e as any);
+                  }
+                }}
+                className="hover:underline transition-colors text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded px-0 flex items-center gap-1 w-fit"
+                data-testid={`button-author-${article.id}`}
+                aria-label={`${language === "it" ? "Visualizza profilo di" : "View profile of"} ${article.authorName}`}
+              >
+                <span className="truncate">{article.authorName}</span>
+              </button>
+            )}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
                 <Calendar className="h-3 w-3" />
                 {article.createdAt && new Date(article.createdAt).toLocaleDateString("it-IT", {
                   day: "2-digit",
@@ -261,35 +278,18 @@ export default function News() {
                   year: "numeric",
                 })}
               </span>
-              {article.authorName && (
-                <button
-                  type="button"
-                  onClick={(e) => handleAuthorClick(article.authorName, e)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      handleAuthorClick(article.authorName, e as any);
-                    }
-                  }}
-                  className="hover:underline transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded px-1 flex items-center gap-1 truncate"
-                  data-testid={`button-author-${article.id}`}
-                  aria-label={`${language === "it" ? "Visualizza profilo di" : "View profile of"} ${article.authorName}`}
-                >
-                  <span className="truncate">{article.authorName}</span>
-                </button>
-              )}
+              <a
+                href={article.linkedinUrl || "https://www.linkedin.com/company/legalit---avvocati-associati/"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-medium text-[#0A66C2] flex items-center gap-1 hover:underline transition-colors btn-bounce shrink-0"
+                onClick={(e) => e.stopPropagation()}
+                data-testid={`link-linkedin-${article.id}`}
+              >
+                <SiLinkedin className="h-3.5 w-3.5" />
+                {t("news.viewOnLinkedIn")}
+              </a>
             </div>
-            <a
-              href={article.linkedinUrl || "https://www.linkedin.com/company/legalit---avvocati-associati/"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-medium text-[#0A66C2] flex items-center gap-1 hover:underline transition-colors btn-bounce shrink-0"
-              onClick={(e) => e.stopPropagation()}
-              data-testid={`link-linkedin-${article.id}`}
-            >
-              <SiLinkedin className="h-3.5 w-3.5" />
-              {t("news.viewOnLinkedIn")}
-            </a>
           </div>
         </CardContent>
       </Card>
@@ -420,7 +420,7 @@ export default function News() {
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 lg:gap-8">
               {[1, 2, 3].map((i) => (
                 <Card key={i} className="overflow-hidden animate-pulse">
-                  <div className="aspect-[16/10] bg-muted" />
+                  <div className="aspect-[16/7] bg-muted" />
                   <CardContent className="p-6 h-[220px]">
                     <div className="h-4 bg-muted rounded w-1/4 mb-4" />
                     <div className="h-6 bg-muted rounded w-3/4 mb-3" />
