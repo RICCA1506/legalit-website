@@ -22,11 +22,11 @@ const practiceAreaKeywords: Record<string, string[]> = {
   "banking-finance": ["diritto bancario", "banking", "fintech", "cartolarizzazione", "mercati finanziari", "consob", "banca d'italia", "usura", "anatocismo", "fideiussione bancaria"],
   "diritto-assicurazioni": ["diritto assicurativo", "assicurazione", "assicurazioni", "polizza", "sinistro", "sinistri", "indennizzo", "ivass", "compagnia assicurativa", "riassicurazione"],
   "crisi-impresa": ["crisi d'impresa", "crisi di impresa", "fallimento", "fallimentare", "concordato", "concordato preventivo", "sovraindebitamento", "procedura concorsuale", "codice della crisi", "composizione negoziata", "ccii", "ristrutturazione del debito"],
-  "recupero-crediti": ["recupero crediti", "npl", "non performing", "pignoramento", "decreto ingiuntivo", "espropriazione forzata", "procedura esecutiva", "creditore", "debitore"],
+  "recupero-crediti": ["recupero crediti", "gestione crediti", "npl", "non performing", "pignoramento", "decreto ingiuntivo", "espropriazione forzata", "procedura esecutiva", "creditore", "debitore"],
   "diritto-amministrativo": ["diritto amministrativo", "pubblica amministrazione", "ente pubblico", "enti pubblici", "ente locale", "enti locali", "tar", "consiglio di stato", "appalto pubblico", "appalti pubblici", "conferenza di servizi"],
   "responsabilita-contabile": ["responsabilità contabile", "corte dei conti", "danno erariale", "giudizio di conto"],
   "ambiente-energia": ["diritto ambientale", "diritto dell'ambiente", "reati ambientali", "inquinamento ambientale", "energia rinnovabile", "fotovoltaico", "eolico", "emissioni", "bonifica", "valutazione impatto ambientale", "transizione ecologica", "ecoreati", "criminalità ambientale"],
-  "affari-regolatori": ["affari regolatori", "public affairs", "lobby", "lobbying", "agcm", "antitrust", "arera", "agcom"],
+  "affari-regolatori": ["affari regolatori", "regulatory", "public affairs", "lobby", "lobbying", "agcm", "antitrust", "arera", "agcom"],
   "diritto-sport": ["diritto sportivo", "diritto dello sport", "atleta", "calciatore", "figc", "coni", "doping", "tesseramento", "agente sportivo", "giustizia sportiva", "collegio di garanzia"],
   "diritto-tributario": ["diritto tributario", "contenzioso tributario", "agenzia delle entrate", "accertamento fiscale", "evasione fiscale", "elusione fiscale", "irpef", "ires", "irap", "credito d'imposta", "dichiarazione dei redditi", "corte di giustizia tributaria"],
   "diritto-sanitario": ["diritto sanitario", "responsabilità medica", "malasanità", "malpractice", "dispositivi medici", "life sciences", "clinical trial", "sperimentazione clinica", "consenso informato"],
@@ -525,7 +525,7 @@ export async function registerRoutes(
         { name: "Reati contro la Persona", nameEn: "Crimes against Person", type: "micro", parentCategory: "criminal", isDefault: "true" },
         { name: "Reati contro la PA", nameEn: "Crimes against PA", type: "micro", parentCategory: "criminal", isDefault: "true" },
         { name: "Ambiente", nameEn: "Environment", type: "micro", parentCategory: "administrative", isDefault: "true" },
-        { name: "Diritto Penale d'Impresa", nameEn: "Corporate Criminal Law", type: "micro", parentCategory: "criminal", isDefault: "true" },
+        { name: "Reati d'Impresa", nameEn: "Corporate Crime", type: "micro", parentCategory: "criminal", isDefault: "true" },
         { name: "Criminalità Organizzata", nameEn: "Organized Crime", type: "micro", parentCategory: "criminal", isDefault: "true" },
         { name: "Esecuzione Penale", nameEn: "Criminal Execution", type: "micro", parentCategory: "criminal", isDefault: "true" },
         { name: "Tech & Digitale", nameEn: "Tech & Digital", type: "micro", parentCategory: null, isDefault: "true" },
@@ -1247,24 +1247,24 @@ LEGALIT – Società tra Avvocati S.r.l. nasce dall'integrazione di studi legali
 - **PEC**: legalitavvocatisrl@legalmail.it
 
 **Aree di pratica:**
-Diritto Penale e Penale d'Impresa, Corporate Compliance & D.Lgs. 231/01, M&A e Diritto Societario, Diritto Civile e Commerciale, Diritto del Lavoro, Diritto Amministrativo, Banking & Finance, Recupero Crediti, Diritto delle Assicurazioni, Crisi d'Impresa, Real Estate, Tutela dei Patrimoni, Diritto Tributario, AI Privacy & Cybersecurity, Diritto Sanitario, Diritto Ambientale, Diritto dello Sport, Affari Regolatori.
+Diritto Penale e Reati d'Impresa, Corporate Compliance & D.Lgs. 231/01, M&A e Diritto Societario, Diritto Civile e Commerciale, Diritto del Lavoro, Diritto Amministrativo, Banking & Finance, Gestione Crediti e NPL, Diritto delle Assicurazioni, Crisi d'Impresa, Real Estate, Tutela dei Patrimoni, Diritto Tributario, AI Privacy & Cybersecurity, Diritto Sanitario, Diritto Ambientale, Diritto dello Sport, Regulatory & Public Affairs, Responsabilità Amministrativo-Contabile.
 
 ### TEAM COMPLETO – PARTNER E REFERENTI PER AREA ###
 
 **ROMA:**
-- **Avv. Francesco Vaccaro** (Managing Partner) – Diritto Penale, Corporate Compliance, Crisi d'Impresa, M&A, Diritto Societario, Diritto Sanitario, Sport, Affari Regolatori → [DIRECT_LINK: Vaccaro]
+- **Avv. Francesco Vaccaro** (Managing Partner) – Diritto Penale, Corporate Compliance, Crisi d'Impresa, M&A, Diritto Societario, Diritto Sanitario, Sport, Regulatory & Public Affairs → [DIRECT_LINK: Vaccaro]
 - **Prof. Avv. Pasquale Passalacqua** (Partner) – Diritto del Lavoro (cattedratico, massimo esperto) → [DIRECT_LINK: Passalacqua]
-- **Avv. Renato Piero Biasci** (Partner) – Civile/Commerciale, Assicurazioni, Recupero Crediti, Real Estate, Crisi d'Impresa, Tutela Patrimoni → [DIRECT_LINK: Biasci]
+- **Avv. Renato Piero Biasci** (Partner) – Civile/Commerciale, Assicurazioni, Gestione Crediti, Real Estate, Crisi d'Impresa, Tutela Patrimoni → [DIRECT_LINK: Biasci]
 - **Avv. Alessandro Santomauro** (Partner) – Civile/Commerciale, Diritto Societario e M&A → [DIRECT_LINK: Santomauro]
 - **Avv. Fabiana Liberati** (Partner) – Diritto del Lavoro → [DIRECT_LINK: Liberati]
 - **Avv. Luigi Passalacqua** (Partner) – Diritto del Lavoro → [DIRECT_LINK: Luigi Passalacqua]
 - **Avv. Sonja Puglionisi** (Partner) – Diritto del Lavoro → [DIRECT_LINK: Puglionisi]
 - **Avv. Francesco Pastorello** (Partner) – Diritto Penale, Compliance 231, Diritto Sanitario → [DIRECT_LINK: Pastorello]
 - **Avv. Bernardo Fabbri** (Partner) – Diritto Penale, Compliance 231, Privacy/GDPR/Cybersecurity, Tutela Patrimoni → [DIRECT_LINK: Fabbri]
-- **Avv. Carmine Andrea Silvestri** (Partner) – Diritto Societario, Civile, Recupero Crediti, Crisi d'Impresa, Penale → [DIRECT_LINK: Silvestri]
-- **Prof. Avv. Stefano Cherti** (Of Counsel) – Banking & Finance, Assicurazioni, Civile, Societario, Recupero Crediti, Diritto Sanitario → [DIRECT_LINK: Cherti]
-- **Avv. Laura Stefanelli** (Of Counsel) – Civile, Recupero Crediti, Tutela Patrimoni → [DIRECT_LINK: Stefanelli]
-- **Avv. Claudio Iafrate** (Senior Associate) – Civile, Recupero Crediti, Assicurazioni, Real Estate → [DIRECT_LINK: Iafrate]
+- **Avv. Carmine Andrea Silvestri** (Partner) – Diritto Societario, Civile, Gestione Crediti, Crisi d'Impresa, Penale → [DIRECT_LINK: Silvestri]
+- **Prof. Avv. Stefano Cherti** (Of Counsel) – Banking & Finance, Assicurazioni, Civile, Societario, Gestione Crediti, Diritto Sanitario → [DIRECT_LINK: Cherti]
+- **Avv. Laura Stefanelli** (Of Counsel) – Civile, Gestione Crediti, Tutela Patrimoni → [DIRECT_LINK: Stefanelli]
+- **Avv. Claudio Iafrate** (Senior Associate) – Civile, Gestione Crediti, Assicurazioni, Real Estate → [DIRECT_LINK: Iafrate]
 - **Avv. Lorenzo Ferrara** (Senior Associate) – Penale, Compliance, Tributario, Sanitario → [DIRECT_LINK: Ferrara]
 - **Avv. Flavia Cracchiolo** (Senior Associate) – Diritto del Lavoro → [DIRECT_LINK: Cracchiolo]
 
@@ -1280,7 +1280,7 @@ Diritto Penale e Penale d'Impresa, Corporate Compliance & D.Lgs. 231/01, M&A e D
 - **Avv. Calogero Gianluca Rizzuto** (Senior Associate) – Penale, Compliance, Civile → [DIRECT_LINK: Rizzuto]
 
 **LATINA:**
-- **Avv. Giorgio Ialongo** (Partner) – Civile/Commerciale, Recupero Crediti, Assicurazioni, Crisi d'Impresa → [DIRECT_LINK: Ialongo]
+- **Avv. Giorgio Ialongo** (Partner) – Civile/Commerciale, Gestione Crediti, Assicurazioni, Crisi d'Impresa → [DIRECT_LINK: Ialongo]
 
 ### ALTRI PROFESSIONISTI ###
 **PALERMO (Associates):**
@@ -1304,7 +1304,7 @@ Per questi professionisti non fornire [DIRECT_LINK] – indirizza sempre verso i
 - Per **Banking & Finance/Assicurazioni**: Cherti, Biasci (Roma)
 - Per **M&A/Societario**: Vaccaro, Santomauro, Silvestri, Cherti (Roma)
 - Per **Crisi d'Impresa**: Vaccaro, Biasci, Silvestri (Roma), Ialongo (Latina)
-- Per **Recupero Crediti**: Biasci, Cherti, Stefanelli, Iafrate (Roma), Ialongo (Latina)
+- Per **Gestione Crediti/NPL**: Biasci, Cherti, Stefanelli, Iafrate (Roma), Ialongo (Latina)
 - Per **Real Estate**: Biasci, Iafrate (Roma)
 - Per **Diritto Sanitario**: Vaccaro, Pastorello, Ferrara, Cherti (Roma)
 - Per **Diritto Tributario**: Ferrara (Roma)

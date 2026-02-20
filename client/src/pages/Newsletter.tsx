@@ -355,7 +355,7 @@ export default function Newsletter() {
                   language === "it" ? "Diritto del lavoro e relazioni sindacali" : "Labor law and union relations",
                   language === "it" ? "Diritto societario e M&A" : "Corporate law and M&A",
                   language === "it" ? "Compliance e privacy" : "Compliance and privacy",
-                  language === "it" ? "Diritto penale d'impresa" : "Corporate criminal law",
+                  language === "it" ? "Reati d'impresa" : "Corporate crime",
                 ].map((item, index) => (
                   <li key={index} className="flex items-center gap-3">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />

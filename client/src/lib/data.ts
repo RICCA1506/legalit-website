@@ -34,7 +34,7 @@ export const practiceAreas = [
   },
   {
     id: "diritto-penale",
-    title: "Diritto Penale e Penale d'Impresa",
+    title: "Diritto Penale e Reati d'Impresa",
     items: [
       "Reati contro la persona",
       "Reati contro il patrimonio",
@@ -124,7 +124,7 @@ export const practiceAreas = [
   },
   {
     id: "affari-regolatori",
-    title: "Affari Regolatori & Public Affairs",
+    title: "Regulatory & Public Affairs",
     items: [
       "Rapporti istituzionali",
       "Regulatory affairs",
@@ -144,9 +144,9 @@ export const practiceAreas = [
   },
   {
     id: "recupero-crediti",
-    title: "Recupero crediti, NPL e procedure esecutive",
+    title: "Gestione Crediti, NPL e Procedure Esecutive",
     items: [
-      "Recupero crediti stragiudiziale",
+      "Gestione crediti stragiudiziale",
       "Procedure esecutive mobiliari",
       "Procedure esecutive immobiliari",
       "NPL e crediti deteriorati",
@@ -177,12 +177,11 @@ export const practiceAreas = [
   },
   {
     id: "tutela-patrimoni",
-    title: "Tutela dei Patrimoni, Famiglia, Minori & Successioni",
+    title: "Tutela dei Patrimoni, Famiglia e Successioni",
     items: [
       "Pianificazione patrimoniale",
       "Trust e protezione patrimoniale",
       "Diritto di famiglia",
-      "Tutela dei minori",
       "Successioni e testamenti",
     ],
   },
@@ -199,7 +198,7 @@ export const practiceAreas = [
   },
   {
     id: "responsabilita-contabile",
-    title: "Responsabilità amministrativo contabile",
+    title: "Responsabilità Amministrativo-Contabile",
     items: [
       "Danno erariale",
       "Giudizio contabile",
