@@ -3,7 +3,7 @@ import { X, Send, ArrowDown, Building2, User, Phone, Mail, ExternalLink, CheckCi
 import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import logoSymbol from "@assets/logo_legalit_cropped_(1)_1771133031977.png";
-import corteCassazione from "@assets/image_1771449412801.png";
+import corteCassazione from "@assets/optimized/hero-cassazione.webp";
 import * as THREE from "three";
 
 interface ChatMessage {
