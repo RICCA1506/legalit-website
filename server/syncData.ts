@@ -2,6 +2,7 @@ import { Pool } from "pg";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import bcrypt from "bcrypt";
 
 interface DevData {
   users: any[];
@@ -65,12 +66,18 @@ export async function syncDevDataToCurrentDb() {
 
     console.log("[Sync] Cleared all tables");
 
+    const seedPassword = process.env.SEED_USER_PASSWORD;
+    if (!seedPassword) {
+      throw new Error("[Sync] SEED_USER_PASSWORD environment variable is required to seed user accounts.");
+    }
+    const hashedPassword = await bcrypt.hash(seedPassword, 10);
+
     for (const user of data.users) {
       await client.query(
         `INSERT INTO users (id, email, hashed_password, first_name, last_name, role, profile_image_url, two_factor_secret, two_factor_enabled, created_at, updated_at) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
          ON CONFLICT (id) DO NOTHING`,
-        [user.id, user.email, user.hashed_password, user.first_name, user.last_name, user.role, user.profile_image_url, user.two_factor_secret, user.two_factor_enabled, user.created_at, user.updated_at]
+        [user.id, user.email, hashedPassword, user.first_name, user.last_name, user.role, user.profile_image_url, user.two_factor_secret || null, user.two_factor_enabled, user.created_at, user.updated_at]
       );
     }
     console.log(`[Sync] Inserted ${data.users.length} users`);
