@@ -4,7 +4,7 @@ hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["glibcLocales", "imagemagick", "python311Packages.openpyxl", "python311Packages.pandas", "unzip"]
+packages = ["glibcLocales", "imagemagick", "python311Packages.openpyxl", "python311Packages.pandas", "unzip", "jpegoptim", "optipng"]
 
 [deployment]
 deploymentTarget = "autoscale"
