@@ -52,10 +52,78 @@ function detectPracticeAreaTags(title: string, content: string, excerpt: string 
   return detected;
 }
 
+const SITE_URL = "https://legalit.it";
+
+const PRACTICE_AREA_SLUGS = [
+  "diritto-lavoro", "diritto-penale", "diritto-civile-commerciale",
+  "corporate-compliance", "diritto-societario-ma", "banking-finance",
+  "diritto-assicurazioni", "crisi-impresa", "recupero-crediti-npl",
+  "diritto-amministrativo", "responsabilita-contabile", "ambiente-energia",
+  "affari-regolatori", "diritto-sport", "diritto-tributario",
+  "diritto-sanitario", "ia-privacy-cybersecurity", "real-estate",
+  "tutela-patrimoni-famiglia", "terzo-settore"
+];
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  app.get("/robots.txt", (_req, res) => {
+    res.type("text/plain").send(
+`User-agent: *
+Allow: /
+Disallow: /area-riservata
+Disallow: /login
+Disallow: /registrazione
+Disallow: /password-dimenticata
+Disallow: /reset-password
+Disallow: /api/
+
+Sitemap: ${SITE_URL}/sitemap.xml`
+    );
+  });
+
+  app.get("/sitemap.xml", async (_req, res) => {
+    const today = new Date().toISOString().split("T")[0];
+
+    const staticPages = [
+      { loc: "/", priority: "1.0", changefreq: "weekly" },
+      { loc: "/attivita", priority: "0.9", changefreq: "monthly" },
+      { loc: "/professionisti", priority: "0.9", changefreq: "monthly" },
+      { loc: "/sedi", priority: "0.8", changefreq: "monthly" },
+      { loc: "/news", priority: "0.8", changefreq: "weekly" },
+      { loc: "/contatti", priority: "0.7", changefreq: "monthly" },
+      { loc: "/lavora-con-noi", priority: "0.6", changefreq: "monthly" },
+      { loc: "/privacy", priority: "0.3", changefreq: "yearly" },
+      { loc: "/cookies", priority: "0.3", changefreq: "yearly" },
+      { loc: "/termini", priority: "0.3", changefreq: "yearly" },
+    ];
+
+    const practiceAreaPages = PRACTICE_AREA_SLUGS.map(slug => ({
+      loc: `/attivita/${slug}`,
+      priority: "0.8",
+      changefreq: "monthly",
+    }));
+
+    const allPages = [...staticPages, ...practiceAreaPages];
+
+    const urls = allPages.map(p =>
+      `  <url>
+    <loc>${SITE_URL}${p.loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`
+    ).join("\n");
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>`;
+
+    res.type("application/xml").send(xml);
+  });
+
   // Auth middleware
   await setupAuth(app);
   
