@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   Select,
   SelectContent,
@@ -1687,6 +1688,7 @@ export default function Admin() {
               {/* Message Detail Dialog */}
               <Dialog open={!!selectedMessage} onOpenChange={(open) => !open && setSelectedMessage(null)}>
                 <DialogContent className="max-w-2xl">
+                  {!selectedMessage && <VisuallyHidden><DialogTitle>Dettaglio Messaggio</DialogTitle></VisuallyHidden>}
                   {selectedMessage && (
                     <>
                       <DialogHeader>
