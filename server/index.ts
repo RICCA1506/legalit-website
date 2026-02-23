@@ -55,11 +55,19 @@ app.use((req, res, next) => {
   next();
 });
 
-if (!isProduction) {
-  const attachedAssetsPath = path.resolve(process.cwd(), "attached_assets");
-  if (fs.existsSync(attachedAssetsPath)) {
-    app.use("/attached_assets", express.static(attachedAssetsPath));
-  }
+const attachedAssetsPath = path.resolve(process.cwd(), "attached_assets");
+if (fs.existsSync(attachedAssetsPath)) {
+  app.use("/attached_assets", express.static(attachedAssetsPath, {
+    maxAge: isProduction ? "7d" : 0,
+    setHeaders: (res, filePath) => {
+      if (isProduction && /\.(avif|webp|jpg|jpeg|png|gif|svg)$/i.test(filePath)) {
+        res.setHeader("Cache-Control", "public, max-age=604800, stale-while-revalidate=86400");
+      }
+    },
+  }));
+  console.log(`[Static] Serving attached_assets from: ${attachedAssetsPath}`);
+} else {
+  console.warn(`[Static] attached_assets directory not found at: ${attachedAssetsPath}`);
 }
 const httpServer = createServer(app);
 

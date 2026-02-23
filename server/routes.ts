@@ -9,7 +9,6 @@ import { setupAuth, setupAdminRoutes, isAuthenticated, generateInviteToken } fro
 import { insertNewsArticleSchema, insertProfessionalSchema, insertNewsCategorySchema, insertNewsletterSubscriberSchema, insertContactMessageSchema } from "@shared/schema";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { sendContactEmail, sendJobApplicationEmail } from "./email";
-import { getLinkedInFollowers, updateLinkedInFollowers, startFollowerSync } from "./linkedin";
 import { syncDevDataToCurrentDb } from "./syncData";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -62,30 +61,6 @@ export async function registerRoutes(
   
   // Admin routes (user management, password reset)
   await setupAdminRoutes(app);
-
-  startFollowerSync();
-
-  app.get("/api/linkedin-followers", async (_req, res) => {
-    try {
-      const count = await getLinkedInFollowers();
-      res.json({ followers: count });
-    } catch (error) {
-      res.json({ followers: "788" });
-    }
-  });
-
-  app.patch("/api/linkedin-followers", isAuthenticated, async (req: any, res) => {
-    try {
-      const { followers } = req.body;
-      if (!followers || typeof followers !== "string") {
-        return res.status(400).json({ message: "Invalid follower count" });
-      }
-      await updateLinkedInFollowers(followers);
-      res.json({ followers });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to update follower count" });
-    }
-  });
 
   // Public news routes
   app.get("/api/news", async (_req, res) => {

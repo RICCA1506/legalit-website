@@ -6,13 +6,9 @@ import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import AnimatedElement from "@/components/AnimatedElement";
 
-interface LinkedInHeroCardProps {
-  followerCount?: string;
-}
-
 const LINKEDIN_URL = "https://www.linkedin.com/company/legalit---avvocati-associati/";
 
-export default function LinkedInHeroCard({ followerCount = "853" }: LinkedInHeroCardProps) {
+export default function LinkedInHeroCard() {
   const { language } = useLanguage();
   const [, navigate] = useLocation();
 
@@ -37,10 +33,6 @@ export default function LinkedInHeroCard({ followerCount = "853" }: LinkedInHero
                 <span>Law Practice</span>
                 <span>·</span>
                 <span>Roma, Lazio</span>
-                <span>·</span>
-                <span className="font-medium text-gray-600" data-testid="text-linkedin-followers">
-                  {followerCount} followers
-                </span>
               </div>
               <div className="flex gap-2 mt-3">
                 <Button
@@ -129,7 +121,7 @@ export default function LinkedInHeroCard({ followerCount = "853" }: LinkedInHero
           </div>
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-white text-sm truncate">Legalit - Società tra Avvocati</p>
-            <p className="text-white/70 text-xs truncate">{followerCount} followers · Law Practice</p>
+            <p className="text-white/70 text-xs truncate">Law Practice · Roma, Lazio</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <span className="text-xs bg-[#0A66C2] text-white px-3 py-1 rounded-full font-medium whitespace-nowrap">

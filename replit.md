@@ -84,6 +84,11 @@ Preferred communication style: Simple, everyday language.
 - Images served via /objects/:objectPath route
 - Frontend uses drag-and-drop ImageUpload component
 
+**Static Assets**
+- attached_assets served early in Express middleware chain (before routes) in both dev and production
+- Production: 7-day cache with stale-while-revalidate for image files
+- Diagnostic log on startup confirms directory availability
+
 **AI Chatbot (Gemini)**
 - POST /api/chat endpoint using Google Gemini 2.0 Flash
 - @google/generative-ai SDK, temperature 0.3, maxOutputTokens 1024

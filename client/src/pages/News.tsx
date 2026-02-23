@@ -79,11 +79,6 @@ export default function News() {
     queryKey: ["/api/professionals"],
   });
 
-  const { data: followersData } = useQuery<{ followers: string }>({
-    queryKey: ["/api/linkedin-followers"],
-    staleTime: 60 * 60 * 1000,
-  });
-  const followerCount = followersData?.followers || "788";
   const linkedInSentinelRef = useLinkedInSentinel();
 
   useEffect(() => {
@@ -406,7 +401,7 @@ export default function News() {
             </div>
             
             <div className="lg:flex-1">
-              <LinkedInHeroCard followerCount={followerCount} />
+              <LinkedInHeroCard />
             </div>
           </div>
         </div>
