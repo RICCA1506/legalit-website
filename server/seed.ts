@@ -37,17 +37,12 @@ export async function seedAdminUser() {
 
   if (isProduction) {
     try {
-      const allProfessionals = await db.select().from(professionals);
-      if (allProfessionals.length < 20) {
-        console.log(`[Seed] Production has ${allProfessionals.length} professionals (expected 26+). Running full data sync...`);
-        const result = await syncDevDataToCurrentDb();
-        console.log("[Seed] Full data sync result:", JSON.stringify(result));
-        return;
-      } else {
-        console.log(`[Seed] Production has ${allProfessionals.length} professionals. Data in sync.`);
-      }
+      console.log("[Seed] Production deploy detected. Syncing data from dev_data.json...");
+      const result = await syncDevDataToCurrentDb();
+      console.log("[Seed] Full data sync result:", JSON.stringify(result));
+      return;
     } catch (error) {
-      console.error("[Seed] Error checking production data, falling back to basic seed:", error);
+      console.error("[Seed] Error during production data sync, falling back to basic seed:", error);
     }
   }
 

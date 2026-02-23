@@ -1,39 +1,40 @@
 {
   "users": [
     {
-      "id": "29858295-4a77-43b6-a27d-f631c225ec9b",
-      "email": "ricca.sirtori@gmail.com",
-      "first_name": "Riccardo",
-      "last_name": "Sirtori",
-      "profile_image_url": null,
-      "created_at": "2026-01-21T13:14:57.040Z",
-      "updated_at": "2026-02-02T23:34:27.453Z",
-      "role": "superadmin",
-      "two_factor_enabled": "false"
-    },
-    {
       "id": "4967b04c-ce29-4764-8b2d-e54b03d8bda2",
       "email": "admin@legalit.it",
       "first_name": "Admin",
       "last_name": "Legalit",
-      "profile_image_url": null,
-      "created_at": "2025-12-11T18:52:42.935Z",
-      "updated_at": "2025-12-11T18:52:42.935Z",
       "role": "superadmin",
+      "profile_image_url": null,
       "two_factor_secret": null,
-      "two_factor_enabled": "false"
+      "two_factor_enabled": "false",
+      "created_at": "2025-12-11T18:52:42.935Z",
+      "updated_at": "2025-12-11T18:52:42.935Z"
+    },
+    {
+      "id": "29858295-4a77-43b6-a27d-f631c225ec9b",
+      "email": "ricca.sirtori@gmail.com",
+      "first_name": "Riccardo",
+      "last_name": "Sirtori",
+      "role": "superadmin",
+      "profile_image_url": null,
+      "two_factor_secret": "RD335R3QRUQ5RCV4M5GEB2D7FWS5UQ7C",
+      "two_factor_enabled": "true",
+      "created_at": "2026-01-21T13:14:57.040Z",
+      "updated_at": "2026-02-02T23:34:27.453Z"
     },
     {
       "id": "5d1182f1-35fb-4238-bb0e-d95b52f20fd8",
       "email": "f.liberati@legalit.it",
       "first_name": "Fabiana",
       "last_name": "Liberati",
-      "profile_image_url": null,
-      "created_at": "2026-01-21T14:15:15.817Z",
-      "updated_at": "2026-01-21T14:15:15.817Z",
       "role": "partner",
+      "profile_image_url": null,
       "two_factor_secret": null,
-      "two_factor_enabled": "false"
+      "two_factor_enabled": "false",
+      "created_at": "2026-01-21T14:15:15.817Z",
+      "updated_at": "2026-01-21T14:15:15.817Z"
     }
   ],
   "professionals": [
@@ -44,7 +45,6 @@
       "office": "Roma",
       "email": "f.liberati@legalit.it",
       "phone": "06 3213911",
-      "bio": "Si occupa prevalentemente di diritto del lavoro pubblico e privato, relazioni industriali, sicurezza sul lavoro, diritto della navigazione con particolare riferimento al trasporto aereo.",
       "full_bio": "Fabiana Liberati si occupa prevalentemente di diritto del lavoro pubblico e privato, relazioni industriali, sicurezza sul lavoro, diritto della navigazione con particolare riferimento al trasposto aereo. Presta consulenza e assistenza giudiziale per enti pubblici ed in favore di aziende operanti nel settore informatico, commercio e grande distribuzione, industria, metalmeccanico, servizi, editoriale, calcio professionistico F.I.G.C.\n\nPartner dello Studio Legalit – Avvocati Associati – sin dal 2012, ha collaborato come assistente nella cattedra del Prof. Piero Guido Alpa e con quella del Prof. Pietro Maria Putti, oltre a essere stata associata, per cinque anni, presso un primario Studio legale operante in ambito internazionale.\n\nLaureata presso l'Università degli Studi di Roma La Sapienza, con tesi in diritto privato dal titolo \"Danno estetico\", relatore Prof. Guido Alpa; ha conseguito un di Master di specializzazione in Diritto Sindacale e Relazioni Industriali nell'anno 2014. Ha inoltre partecipato al \"Corso di Alta Formazione per Operatori di Diritto e Professionisti dei Trasporti e della Navigazione\" tenuto dal Centro Studi S.T.A.S.A.\n\nAvvocato Cassazionista, è iscritto all'Ordine di Roma.",
       "education": [
         "Laurea in Giurisprudenza - Università degli Studi di Roma La Sapienza",
@@ -55,9 +55,11 @@
         "Inglese"
       ],
       "image_url": "/attached_assets/avv-fabiana-liberati.jpg",
+      "image_position": "top",
+      "image_zoom": 100,
       "order_index": 1,
       "created_at": "2025-12-11T23:56:10.918Z",
-      "updated_at": "2026-01-21T15:03:16.952Z",
+      "updated_at": "2026-02-11T16:20:32.229Z",
       "specializations": [
         "diritto-lavoro"
       ],
@@ -71,7 +73,6 @@
       "office": "Roma",
       "email": "l.passalacqua@legalit.it",
       "phone": "06 3213911",
-      "bio": "Si occupa prevalentemente di diritto del lavoro, sindacale e della previdenza sociale.",
       "full_bio": "Luigi Passalacqua si occupa prevalentemente di diritto del lavoro, sindacale e della previdenza sociale, sia in ambito di consulenza stragiudiziale (contrattualistica e negoziazione; gestione del rapporto di lavoro, anche di natura dirigenziale; sicurezza del lavoro; assistenza nelle procedure di riorganizzazione e trasferimento aziendale, riduzione del personale, outsourcing, dismissione o acquisizione di attività), sia di assistenza giudiziale.\n\nDopo un'esperienza di diversi anni presso uno studio legale italiano operante a livello internazionale, dal 2010 è partner fondatore dello Studio Legalit – Avvocati Associati.\n\nÈ avvocato fiduciario e consulente di numerosi enti e società pubbliche e private, enti locali ed associazioni di categoria.\n\nArbitro in numerose procedure di conciliazione, è inoltre componente del Collegio Nazionale dei Probiviri dell'Ente di Promozione Sportiva Confsport Italia.\n\nLaureato in Giurisprudenza presso l'Università di Roma Tre, ha poi conseguito, presso l'Università Tor Vergata di Roma, il diploma presso il Master di secondo livello in discipline del lavoro, sindacali e della sicurezza sociale. Successivamente, si è diplomato presso la Scuola di specializzazione per le professioni legali dell'Università di Roma Tre.\n\nÈ iscritto all'Ordine degli Avvocati di Roma ed è socio dell'AGI (Avvocati Giuslavoristi Italiani).\n\nParla l'inglese e lo spagnolo, appresi durante diversi periodi di permanenza all'estero.",
       "education": [
         "Laurea in Giurisprudenza - Università di Roma Tre",
@@ -83,9 +84,11 @@
         "Spagnolo"
       ],
       "image_url": "/attached_assets/avv-luigi-passalacqua.jpg",
+      "image_position": "65,0",
+      "image_zoom": 100,
       "order_index": 2,
       "created_at": "2025-12-11T23:56:10.932Z",
-      "updated_at": "2025-12-11T23:56:10.932Z",
+      "updated_at": "2026-02-11T23:01:57.137Z",
       "specializations": [
         "diritto-lavoro"
       ],
@@ -99,7 +102,6 @@
       "office": "Roma",
       "email": "f.vaccaro@legalit.it",
       "phone": "06 3213911",
-      "bio": "Si occupa prevalentemente di diritto penale dei 'colletti bianchi', di compliance, diritto commerciale, fallimentare, bancario, sanitario e sportivo.",
       "full_bio": "Francesco Vaccaro si occupa prevalentemente di diritto penale dei \"colletti bianchi\" (con particolare riferimento ai reati societari, fallimentari, tributari, finanziari, ambientali, ai reati contro la P.A., contro il patrimonio, alla colpa medica), di compliance (responsabilità degli enti ex d.lgs. 231/01, anticorruzione, antiriciclaggio e privacy), diritto commerciale, diritto fallimentare, diritto bancario, diritto sanitario e diritto sportivo.\n\nDopo un'esperienza di diversi anni prima nello studio di un professore ordinario e poi in uno studio legale operante a livello internazionale, dal 2010 è socio fondatore dello Studio Legalit – Avvocati Associati.\n\nPresidente e membro di numerosi Organismi di Vigilanza, anche di società partecipate pubbliche e gruppi internazionali, svolge altresì attività di consulenza nella redazione e aggiornamento dei Modelli di Organizzazione, Gestione e Controllo ex d.lgs. 231/01 e nella difesa degli Enti nei procedimenti 231.\n\nEsperto di Compliance anticorruzione, antiriciclaggio e privacy, oltre all'attività di consulenza, svolge l'incarico di Data Protection Officer per enti pubblici, enti previdenziali, società private ed è impegnato in attività di ricerca e formazione in materia di compliance con il Centro Studi Diritto e Impresa, di cui è socio fondatore.\n\nHa maturato significativa esperienza nel diritto sanitario e nella responsabilità medica, seguendo numerosi casi giudiziari di colpa medica e rivestendo importanti incarichi istituzionali in ambito sanitario: durante il Governo Letta, è stato Consigliere del Ministro della Salute, On. Beatrice Lorenzin. Dal 2017 al 2020 è stato, su nomina della Presidenza del Consiglio dei Ministri, Consigliere d'Amministrazione dell'AGENAS – Agenzia Nazionale per i Servizi Sanitari Regionali.\n\nDurante il II Governo Berlusconi, è stato Consigliere del Ministro dell'Istruzione, Università e Ricerca Dott.ssa. Letizia Moratti.\n\nDal 2011 al 2014 è stato, in rappresentanza del Ministero per lo Sviluppo Economico, Consigliere d'Amministrazione della Società partecipata statale SO.FI.COOP. – Società finanziaria per la cooperazione.\n\nSi occupa di diritto sportivo, patrocinando la difesa di atleti, arbitri, dirigenti, innanzi alla giustizia ordinaria, agli organi di giustizia sportiva delle federazioni sportive e al Tribunale Antidoping. Dall'ottobre 2014 è Giudice della Corte d'Appello Federale della Federazione Italiana Nuoto.\n\nSi occupa altresì della difesa di correntisti e risparmiatori lesi dalle condotte illegittime delle banche.\n\nHa conseguito la Laurea presso l'Università degli Studi di Roma Tre, con tesi in diritto penale commerciale dal titolo \"Principio d'offensività e soglie di punibilità nelle false comunicazioni sociali\", con relatore il Prof. Avv. Antonio Fiorella e il \"Master in diritto penale d'impresa\", presso la LUISS Guido Carli, diretto dalla Prof.ssa Avv. Paola Severino.\n\nHa conseguito la specializzazione in Diritto e Procedura Penale frequentando il III Corso Biennale della Scuola Nazionale di Specializzazione dell'Avvocato Penalista, organizzato dall'Unione delle Camere Penali Italiane in collaborazione con l'Università degli Studi di Roma \"La Sapienza\".\n\nRelatore e docente in numerosi master, corsi e convegni in materia di diritto penale, responsabilità degli enti ex d.lgs. 231/01, anticorruzione, protezione dei dati, responsabilità medica, diritto commerciale, diritto bancario.\n\nAvvocato Cassazionista, iscritto al Foro di Roma e socio della Camera Penale di Roma.",
       "education": [
         "Laurea in Giurisprudenza - Università degli Studi di Roma Tre",
@@ -110,6 +112,8 @@
         "Inglese"
       ],
       "image_url": "/attached_assets/avv-francesco-vaccaro.jpg",
+      "image_position": "top",
+      "image_zoom": 100,
       "order_index": 3,
       "created_at": "2025-12-11T23:56:10.937Z",
       "updated_at": "2025-12-11T23:56:10.937Z",
@@ -132,7 +136,6 @@
       "office": "Roma",
       "email": "p.passalacqua@legalit.it",
       "phone": "06 3213911",
-      "bio": "Professore Ordinario di Diritto del lavoro presso l'Università di Roma Tor Vergata. Avvocato Cassazionista dal 2011.",
       "full_bio": "Pasquale Passalacqua (Napoli, 1968), si è laureato cum laude in Giurisprudenza nell'Università di Roma Tor Vergata; ha conseguito cum laude il diploma di specializzazione in Diritto Sindacale, del Lavoro e della Previdenza Sociale nell'Università di Macerata; è dottore di ricerca in Diritto Sindacale e del Lavoro (Università di Modena).\n\nÈ professore Ordinario di Diritto del lavoro presso il Dipartimento di Giurisprudenza dell'Università di Roma Tor Vergata, dove è titolare del corso di Diritto del lavoro nel corso di Laurea Magistrale in Giurisprudenza. Ricopre inoltre l'incarico di insegnamento di Diritto del Lavoro nella Facoltà di Diritto Civile dell'Università Pontificia Lateranense di Roma.\n\nAvvocato Cassazionista dal 2011, iscritto all'Ordine degli Avvocati di Roma.\n\nLa sua attività professionale si sviluppa nell'ambito della consulenza e del contenzioso in materia di rapporti di lavoro privato e pubblico, anche in relazione ai profili sindacale e previdenziali. Ha assistito e assiste anche dinanzi le Giurisdizioni Superiori (Corte di Cassazione e Consiglio di Stato) importanti imprese private nonché primari Enti pubblici.\n\nLa sua attività scientifica verte su tutte le principali tematiche del diritto del lavoro:  contrattazione collettiva, rappresentanza sindacale, lavori flessibili e atipici, collaborazioni coordinate e continuative, lavoro gratuito, licenziamento individuale e collettivo, sicurezza sul lavoro, infortuni e malattie professionali, processo del lavoro, sistemi pensionistici, previdenza dei liberi professionisti, previdenza complementare, trasferimenti d'imprese, enti bilaterali, impiego pubblico privatizzato ed altri.\n\nIn particolare: è autore del Manuale di Diritto del lavoro, sindacale e della previdenza sociale (con G. Zaccardi), Nel Diritto Editore; è inoltre autore di tre monografie: Autonomia collettiva e mercato del lavoro. La contrattazione gestionale e di rinvio, Ed. Giappichelli, Torino, 2005; La nuova disciplina del lavoro autonomo e associato, Ed. UTET, Torino, 2012 e Il nuovo contratto di lavoro a termine (con A. Pandolfo), Ed. Giappichelli, Torino, 2014; è autore altresì di altre 120 pubblicazioni in materia, edite su riviste di rilevanza nazionale e internazionale.\n\nÈ attualmente Direttore dell'ULSA (Ufficio del lavoro della Sede Apostolica).\n\nFa parte del Comitato scientifico della Rivista \"Lavoro e previdenza oggi\", edita da Iuridica Edizioni Distribuzioni S.r.l.; fa parte del Comitato scientifico della Rivista telematica \"Democrazie e diritti sociali\"; fa parte del Comitato editoriale della Rivista \"Lateran Law Review\", edita dalla Pontificia Università Lateranense; fa parte del Comitato di Redazione della \"Rivista del Diritto della Sicurezza Sociale\", edita da Il Mulino, Bologna; fa parte del Comitato dei Revisori della Rivista \"Diritto delle Relazioni Industriali\", edita da Giuffrè, Milano; fa parte del Comitato dei Revisori della Rivista \"Il Lavoro nella giurisprudenza\", edita da Wolters Kluver, Milano; fa parte del Comitato dei Revisori della \"Rivista italiana di diritto del lavoro\", edita da Giuffrè, Milano; fa parte del Comitato dei Revisori della Rivista telematica \"Federalismi\".\n\nÈ stato Commissario per l'esame di abilitazione alla professione di Avvocato, per la Corte di appello di Roma; è stato Commissario per l'esame di abilitazione per Dottori Commercialisti ed Esperti Contabili presso l'Università degli studi di Cassino e del Lazio meridionale; è stato Commissario per il Concorso a 360 posti di magistrato ordinario del 2017-2018.\n\nÈ socio dell'A.I.D.LA.S.S. (Associazione Italiana di Diritto del Lavoro e della Sicurezza Sociale); è socio dell'AGI (Avvocati Giuslavoristi Italiani); è componente del Comitato scientifico di COLAP (Coordinamento Libere Associazioni Professionali).",
       "education": [
         "Laurea cum laude in Giurisprudenza - Università di Roma Tor Vergata",
@@ -143,42 +146,16 @@
         "Inglese"
       ],
       "image_url": "/attached_assets/prof-avv-pasquale-passalacqua.jpg",
+      "image_position": "60,0",
+      "image_zoom": 100,
       "order_index": 4,
       "created_at": "2025-12-11T23:56:10.941Z",
-      "updated_at": "2025-12-11T23:56:10.941Z",
+      "updated_at": "2026-02-19T23:21:59.017Z",
       "specializations": [
         "diritto-lavoro"
       ],
       "role": "Partner",
       "pec": "pasqualepassalacqua@ordineavvocatiroma.org"
-    },
-    {
-      "id": 5,
-      "name": "Avv. Alessandro Santomauro",
-      "title": "Partner",
-      "office": "Roma",
-      "email": "a.santomauro@legalit.it",
-      "phone": "06 3213911",
-      "bio": "Specializzato nel settore del private M&A, del diritto societario e del diritto commerciale.",
-      "full_bio": "Alessandro Santomauro è specializzato nel settore del private M&A, del diritto societario e del diritto commerciale, e presta consulenza principalmente nel campo delle acquisizioni e dismissioni di pacchetti azionari, aziende o rami di esse, della costituzione di joint venture, redazione e negoziazione di contratti di acquisizione, patti parasociali, statuti e contratti commerciali.\n\nHa assistito società sia italiane che straniere in relazione a operazioni societarie straordinarie, curando ogni fase dell'operazione, dalle fasi preliminari, alla negoziazione e redazione dei contratti.\n\nPrima di divenire partner dello Studio Legalit – Avvocati Associati nel 2013, ha maturato una lunga e significativa esperienza in due primari studi legali italiani.\n\nLaureato in Giurisprudenza presso l'Università Roma Tre nel 2000, ha conseguito nel 2006 un Master of Laws (LL.M.) presso la University of Pennsylvania, Philadephia, PA, Stati Uniti.\n\nÈ iscritto all'Ordine degli Avvocati di Roma.\n\nAlessandro Santomauro is specialized in private M&A, corporate law and commercial law, with special focus on transfers of shares, companies or branches, the establishment of joint ventures, negotiation and drafting of acquisitions agreements, shareholders' agreements, by-laws and commercial contracts.\n\nHe has assisted both Italian and foreign companies in relation to extraordinary corporate transactions offering advice in every step of their execution, from the preliminary phases to the negotiation and contract drafting.\n\nBefore joining the Firm in 2013, Alessandro gained a long and extensive experience in two primary Italian law firms.\n\nGraduated in Law at the University \"Roma Tre\" in Rome in 2000, he obtained in 2006 a Master of Laws (LL.M.) at the University of Pennsylvania, Philadephia, PA, United States.\n\nHe is a member of the Italian Bar Association.",
-      "education": [
-        "Laurea in Giurisprudenza - Università Roma Tre (2000)",
-        "Master of Laws (LL.M.) - University of Pennsylvania (2006)"
-      ],
-      "languages": [
-        "Italiano",
-        "Inglese"
-      ],
-      "image_url": "/attached_assets/avv-alessandro-santomauro.jpg",
-      "order_index": 5,
-      "created_at": "2025-12-11T23:56:10.946Z",
-      "updated_at": "2025-12-11T23:56:10.946Z",
-      "specializations": [
-        "diritto-civile-commerciale",
-        "diritto-societario-ma"
-      ],
-      "role": "Partner",
-      "pec": "alessandrosantomauro@ordineavvocatiroma.org"
     },
     {
       "id": 6,
@@ -187,7 +164,6 @@
       "office": "Roma",
       "email": "r.biasci@legalit.it",
       "phone": "06 3213911",
-      "bio": "Si occupa prevalentemente di diritto civile, commerciale, fallimentare, famiglia, immobiliare e recupero crediti.",
       "full_bio": "Renato Piero Biasci si occupa prevalentemente di diritto civile, diritto commerciale, diritto fallimentare, diritto di famiglia, diritto immobiliare e recupero crediti, collaborando a due diligence per la valutazione degli stessi in ambito di società veicolo.\n\nDopo aver collaborato con un primario Studio Legale multidisciplinare operante a livello internazionale, ne diveniva nell'anno 2000 uno dei soci senior; dal 2010 è socio fondatore dello Studio Legalit – Avvocati Associati.\n\nFin dal 1993 ha svolto l'attività di Curatore Fallimentare, dal 2010 è divenuto Custode e Delegato alle vendite nelle esecuzioni immobiliari presso il Tribunale di Roma.\n\nÈ Mediatore Civile e Commerciale Professionista presso l'Organismo di Mediazione dell'Ordine degli Avvocati di Roma oggi costituitosi in Fondazione.\n\nHa svolto incarichi di consulenza presso primari Enti Pubblici che si occupano della difesa e conservazione del patrimonio artistico e culturale italiano nonché presso Enti che si occupano di Turismo.\n\nHa svolto anche incarichi di difesa di società commerciali in arbitrati civili e fatto parte del Collegio Arbitrale.\n\nE' fiduciario di primaria società internazionale di Assicurazioni Vita e Danni di cui si occupa della consulenza stragiudiziale e patrocinio davanti a tutte le Corti Italiane in controversie corporate.\n\nSi occupa altresì della difesa di correntisti e risparmiatori lesi dalle condotte contra legem poste in essere dagli istituti di credito.\n\nHa conseguito la Laurea presso l'Università degli Studi La Sapienza in Roma nell'anno 1983, con tesi in diritto del lavoro dal titolo \"L'unità produttiva\" con relatore il Prof. Avv. Renato Scognamiglio; ha, inoltre, partecipato a numerosi corsi tenuti dall'Ordine degli Avvocati di Roma.\n\nAvvocato Cassazionista, è iscritto all'Ordine degli Avvocati di Roma.",
       "education": [
         "Laurea in Giurisprudenza - Università degli Studi La Sapienza (1983)"
@@ -197,7 +173,9 @@
         "Inglese"
       ],
       "image_url": "/attached_assets/avv-renato-piero-biasci.jpg",
-      "order_index": 6,
+      "image_position": "top",
+      "image_zoom": 100,
+      "order_index": 5,
       "created_at": "2025-12-11T23:56:10.951Z",
       "updated_at": "2025-12-11T23:56:10.951Z",
       "specializations": [
@@ -212,30 +190,33 @@
       "pec": "renatopierobiasci@ordineavvocatiroma.org"
     },
     {
-      "id": 7,
-      "name": "Avv. Sonja Puglionisi",
+      "id": 5,
+      "name": "Avv. Alessandro Santomauro",
       "title": "Partner",
       "office": "Roma",
-      "email": "s.puglionisi@legalit.it",
+      "email": "a.santomauro@legalit.it",
       "phone": "06 3213911",
-      "bio": "Si occupa prevalentemente di diritto civile, con significativa esperienza nel diritto del lavoro.",
-      "full_bio": "Sonja Puglionisi si occupa prevalentemente di diritto civile, con significativa esperienza acquisita nel campo del diritto del lavoro, maturata nell'assistenza giudiziale e nella consulenza stragiudiziale prestata anche in favore di Società partecipate da Enti Pubblici e Confindustria (Federterme – Federazione Italiana delle Industrie Termali e delle Acque Minerali Curative).\n\nSi occupa, inoltre, di consulenza in materia di responsabilità civile (contenzioso relativo alla responsabilità di organi societari, amministratori, sindaci, nonché, in ambito professionale, di medici, notai, avvocati, commercialisti); assistenza e consulenza nell'ambito del contenzioso amministrativo (in particolare, appalti), diritto bancario e attività di recupero credito per istituti bancari, diritto commerciale, diritto societario, intermediazione finanziaria, Codice delle comunicazioni elettroniche, Codice del Consumo.\n\nDopo aver svolto la pratica forense presso lo studio legale del Prof. Elio Blasio, occupandosi di diritto societario e revocatorie fallimentari (anche infragruppo) per conto di Procedure di Amministrazione Straordinaria (IRA, Federici Stirling; Giacomelli, Postalmarket), ha svolto in via autonoma la sua professione; dal 2013 è partner dello Studio Legalit – Avvocati Associati.\n\nHa partecipato – a seguito di selezione per borsa di studio – presso l'Istituto Carlo Arturo Jemolo al Corso di formazione per le professioni forensi (anno 2006). Presso il medesimo Istituto ha conseguito un master in diritto fallimentare.\n\nSi è laureata in Giurisprudenza nel 2004 presso l'Università degli Studi di Roma Tre, con tesi in Diritto Penale dal titolo \"L'eccesso nelle cause di giustificazione del reato con particolare riferimento alla difesa legittima\", con relatore il Prof. Avv. Antonio Fiorella.\n\nÈ iscritto all'Ordine degli Avvocati di Roma.",
+      "full_bio": "Alessandro Santomauro è specializzato nel settore del private M&A, del diritto societario e del diritto commerciale, e presta consulenza principalmente nel campo delle acquisizioni e dismissioni di pacchetti azionari, aziende o rami di esse, della costituzione di joint venture, redazione e negoziazione di contratti di acquisizione, patti parasociali, statuti e contratti commerciali.\n\nHa assistito società sia italiane che straniere in relazione a operazioni societarie straordinarie, curando ogni fase dell'operazione, dalle fasi preliminari, alla negoziazione e redazione dei contratti.\n\nPrima di divenire partner dello Studio Legalit – Avvocati Associati nel 2013, ha maturato una lunga e significativa esperienza in due primari studi legali italiani.\n\nLaureato in Giurisprudenza presso l'Università Roma Tre nel 2000, ha conseguito nel 2006 un Master of Laws (LL.M.) presso la University of Pennsylvania, Philadephia, PA, Stati Uniti.\n\nÈ iscritto all'Ordine degli Avvocati di Roma.\n\nAlessandro Santomauro is specialized in private M&A, corporate law and commercial law, with special focus on transfers of shares, companies or branches, the establishment of joint ventures, negotiation and drafting of acquisitions agreements, shareholders' agreements, by-laws and commercial contracts.\n\nHe has assisted both Italian and foreign companies in relation to extraordinary corporate transactions offering advice in every step of their execution, from the preliminary phases to the negotiation and contract drafting.\n\nBefore joining the Firm in 2013, Alessandro gained a long and extensive experience in two primary Italian law firms.\n\nGraduated in Law at the University \"Roma Tre\" in Rome in 2000, he obtained in 2006 a Master of Laws (LL.M.) at the University of Pennsylvania, Philadephia, PA, United States.\n\nHe is a member of the Italian Bar Association.",
       "education": [
-        "Laurea in Giurisprudenza - Università degli Studi di Roma Tre (2004)"
+        "Laurea in Giurisprudenza - Università Roma Tre (2000)",
+        "Master of Laws (LL.M.) - University of Pennsylvania (2006)"
       ],
       "languages": [
         "Italiano",
         "Inglese"
       ],
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 7,
-      "created_at": "2025-12-11T23:56:10.956Z",
-      "updated_at": "2025-12-11T23:56:10.956Z",
+      "image_url": "/attached_assets/avv-alessandro-santomauro.jpg",
+      "image_position": "50,50",
+      "image_zoom": 100,
+      "order_index": 6,
+      "created_at": "2025-12-11T23:56:10.946Z",
+      "updated_at": "2026-02-11T23:06:35.051Z",
       "specializations": [
-        "diritto-lavoro"
+        "diritto-civile-commerciale",
+        "diritto-societario-ma"
       ],
       "role": "Partner",
-      "pec": "sonjapuglionisi@ordineavvocatiroma.org"
+      "pec": "alessandrosantomauro@ordineavvocatiroma.org"
     },
     {
       "id": 8,
@@ -244,7 +225,6 @@
       "office": "Roma",
       "email": "f.pastorello@legalit.it",
       "phone": "06 3213911",
-      "bio": "Si occupa principalmente di diritto penale e di diritto sanitario, compliance.",
       "full_bio": "Francesco Pastorello si occupa principalmente di diritto penale e di diritto sanitario, nonché nella consulenza ad imprese ed enti nell'ambito della compliance, con particolare riferimento ai settori della prevenzione dei reati (redazione e aggiornamento di modelli di organizzazione, gestione e controllo e partecipazione a O.d.V. ex D.Lgs. 231/01) e della prevenzione della corruzione (L. 190/2012).\n\nÈ Presidente del Consiglio Direttivo del Comitato della Croce Rossa Italiana dei Municipi 2 e 3 di Roma, associazione della quale è socio dal 2005, ed è stato insignito dalla Presidenza del Consiglio dei Ministri dell'Attestato di Pubblica Benemerenza per l'attività svolta in occasione del terremoto in Abruzzo del 2009.\n\nAll'esito della conclusione degli studi universitari, culminati nel conferimento del riconoscimento di \"Laureato Eccellente Anno Accademico 2012-2013\" da parte della Fondazione Roma Sapienza, ha conseguito due master in materia di responsabilità da reato degli enti (D. Lgs. 231/2001) e di responsabilità delle strutture sanitarie.\n\nE' iscritto all'ordine degli Avvocati di Roma.",
       "education": [
         "Laurea in Giurisprudenza - Università La Sapienza"
@@ -254,7 +234,9 @@
         "Inglese"
       ],
       "image_url": "/attached_assets/avv-francesco-pastorello.jpg",
-      "order_index": 8,
+      "image_position": "top",
+      "image_zoom": 100,
+      "order_index": 7,
       "created_at": "2025-12-11T23:56:10.960Z",
       "updated_at": "2025-12-11T23:56:10.960Z",
       "specializations": [
@@ -272,7 +254,6 @@
       "office": "Roma",
       "email": "b.fabbri@legalit.it",
       "phone": "06 3213911",
-      "bio": "Si occupa prevalentemente di compliance privacy, responsabilità degli enti ex D.Lgs. 231/01.",
       "full_bio": "Bernardo Fabbri si occupa prevalentemente di compliance privacy, responsabilità degli enti ex D.Lgs. 231/01, anticorruzione e antiriciclaggio\n\nSvolge attività di consulenza nella redazione e aggiornamento di Modelli Privacy e di Modelli di Organizzazione Gestione e Controllo 231/01. Ha acquisito esperienza, inoltre, nella redazione e aggiornamento di Piani Triennali di Prevenzione della Corruzione e di Programmi Triennali per la Trasparenza e l'Integrità.\n\nSvolge l'incarico di Responsabile della Protezione dei Dati, anche all'interno di gruppi di lavoro stabili, per società partecipate pubbliche, associazioni e società private, operanti anche nel settore sanitario.\n\nCollabora con il Centro Studi Diritto e Impresa, partecipando al gruppo di lavoro \"DPO – Implementazione GDPR\" e al gruppo di lavoro \"231\".\n\nSi è laureato in Giurisprudenza presso l'Università degli Studi di Roma La Sapienza con tesi in Tesi in diritto tributario dal titolo \"La tutela della riservatezza nell'accertamento sintetico\", relatore Prof. Andrea Fedele, elaborato volto all'analisi delle problematicità di detto strumento di accertamento soprattutto sotto il profilo della tutela della riservatezza e alle ragioni che hanno reso necessario un intervento del Garante per la protezione dei dati personali.\n\nHa successivamente conseguito il master di specializzazione \"Data Protecion Officer – Ruolo e compiti della nuova figura prevista dal Regolamento 2016/679/UE\" e il master di specializzazione \"Laboratorio di pratica professionale sulla privacy\", promossi da Euroconference – Centro Studi Forense e con il Patrocinio scientifico di ANORC Professioni.\n\nSta frequentando il Corso di formazione tecnica e deontologica dell'avvocato penalista (biennio 2019/2020), organizzato dalla Scuola Territoriale della UCPI Camera Penale di Roma, finalizzato all'iscrizione all'elenco unico nazionale dei difensori d'ufficio.\n\nE' relatore e docente in numerosi corsi di formazione e convegni in materia di privacy e protezione dei dati personali.\n\nParla l'inglese ed il francese.",
       "education": [
         "Laurea in Giurisprudenza - Università degli Studi di Roma La Sapienza"
@@ -283,7 +264,9 @@
         "Francese"
       ],
       "image_url": "/attached_assets/avv-bernardo-fabbri.jpg",
-      "order_index": 9,
+      "image_position": "top",
+      "image_zoom": 100,
+      "order_index": 8,
       "created_at": "2025-12-11T23:56:10.964Z",
       "updated_at": "2025-12-11T23:56:10.964Z",
       "specializations": [
@@ -302,7 +285,6 @@
       "office": "Roma",
       "email": "a.silvestri@legalit.it",
       "phone": "06 3213911",
-      "bio": "Si occupa prevalentemente di diritto societario e bancario, con esperienza nel gaming.",
       "full_bio": "Andrea Silvestri si occupa prevalentemente di diritto societario e diritto bancario, con esperienza specifica acquisita anche attraverso la frequentazione di specifici corsi di formazione e master. E' altresì esperto nel settore del gaming ed in particolare nel comparto del c.d. \"gioco lecito\" ai sensi dell'art. 110 del TULPS.\n\nDa settembre 2012 collabora stabilmente presso studio Legalit – Avvocati Associati.\n\nE' segretario nazionale dell'Osservatorio sugli illeciti bancari e finanziari.\n\nDal 2016 è referente dello Studio, incluso nella lista dei 22 studi legali accreditati, presso il Ministero degli Affari Esteri russo, ed è presente sui siti dell'Ambasciata russa e dei Consolati russi in Italia.\n\nHa conseguito Laurea triennale in Scienze Giuridiche conseguita presso l'Università degli studi di Roma Tre nell'anno accademico 2008/2009, con tesi in storia del diritto medievale e moderno, dal titolo: \"Le società commerciali nell'Italia dell'antico regime\".\n\nHa poi conseguito, presso la medesima Università, la Laurea Specialistica in Giurisprudenza, con tesi in diritto penale dal titolo: \"La responsabilità per difetto di organizzazione nel D.Lgs 231/01\".\n\nSuccessivamente, nell'anno accademico 2016/2017, ha anche conseguito il Grado en derecho presso l'Universidad Antonio de Nebrija de Madrid, e presso la medesima università ha conseguito il Máster Universitario en acceso a la Abogacía.\n\nE' iscritto come abogado ejerciente presso il Colegio de Abogados de Madrid nonché come avvocato stabilito presso l'Ordine degli Avvocati di Roma.",
       "education": [
         "Laurea in Giurisprudenza - Università di Roma Tre"
@@ -313,9 +295,11 @@
         "Spagnolo"
       ],
       "image_url": "/attached_assets/avv-carmine-andrea-silvestri.jpg",
-      "order_index": 10,
+      "image_position": "35,57",
+      "image_zoom": 105,
+      "order_index": 9,
       "created_at": "2025-12-11T23:56:10.967Z",
-      "updated_at": "2025-12-11T23:56:10.967Z",
+      "updated_at": "2026-02-11T23:03:51.792Z",
       "specializations": [
         "diritto-societario-ma",
         "diritto-civile-commerciale",
@@ -333,7 +317,6 @@
       "office": "Roma",
       "email": "c.iafrate@legalit.it",
       "phone": "06 3213911",
-      "bio": "Si occupa prevalentemente di diritto civile, societario e assicurativo.",
       "full_bio": "Claudio Iafrate si occupa prevalentemente del settore del diritto civile, in particolar modo diritto societario e assicurativo, nonché esecuzioni mobiliari e immobiliari.\n\nPresta la sua assistenza e consulenza nell'ambito della contrattualistica avente ad oggetto diritti reali nelle esecuzioni per il recupero di immobili locati in caso di inadempimento degli obblighi contrattuali nonchè per la risoluzione giudiziale e/o stragiudiziale delle controversie nascenti dai rapporti condominiali.\n\nE' altresì consulente in tema di diritto d'autore, con particolare riferimento alle produzioni cinematografiche e audiovisive, in collaborazione con la SIEDAS – Società Italiana Esperti di Diritto delle Arti e dello Spettacolo.\n\nSvolge l'attività di Delegato alle vendite immobiliari e custode giudiziario iscritto presso il circondario del Tribunale di Roma per il triennio 2018/2020, dal 2019 è iscritto all'albo del MEPA ai fini della prestazione di servizio di consulenza giudiziale e stragiudiziale in favore delle Pubbliche amministrazioni ed alle liste dei difensori d'ufficio presso il Tribunale e la Corte d'Appello di Roma.\n\nHa conseguito nel 2013 la Laurea presso l'Università degli Studi di Roma Tre, con tesi in diritto cinese dal titolo \"L'arbitrato nella Repubblica Popolare Cinese\", con relatore il Prof. Guido Rossi e Prof. Avv. Enrico Toti approfondendo gli aspetti procedurali delle ADR nel territorio cinese dopo il suo ingresso nella WTO.\n\nE' iscritto all'albo dell'Ordine degli Avvocati di Roma.",
       "education": [
         "Laurea in Giurisprudenza - Università degli Studi di Roma Tre (2013)"
@@ -343,9 +326,11 @@
         "Inglese"
       ],
       "image_url": "/attached_assets/avv-claudio-iafrate.jpg",
-      "order_index": 11,
+      "image_position": "51,8",
+      "image_zoom": 100,
+      "order_index": 10,
       "created_at": "2025-12-11T23:56:10.972Z",
-      "updated_at": "2025-12-11T23:56:10.972Z",
+      "updated_at": "2026-02-11T23:04:02.005Z",
       "specializations": [
         "diritto-civile-commerciale",
         "recupero-crediti",
@@ -364,7 +349,6 @@
       "office": "Roma",
       "email": "l.ferrara@legalit.it",
       "phone": "06 3213911",
-      "bio": "Si occupa prevalentemente di diritto penale, diritto penale di impresa e compliance.",
       "full_bio": "Lorenzo Ferrara si occupa prevalentemente di diritto penale, diritto penale di impresa e compliance aziendale (con particolare riferimento alla responsabilità degli enti ex d.lgs. 231/01), contribuendo al costante monitoraggio delle novità normative in materia.\n\nSubito dopo la Laurea matura la sua prima esperienza nel diritto civile e penale presso un affermato studio legale di Roma; dal 2019 collabora con lo Studio Legalit – Avvocati Associati.\n\nNel 2017 lavora presso la Presidenza del Consiglio dei Ministri – Dipartimento per gli Affari Regionali, nell'ufficio dedicato al controllo di legittimità delle leggi regionali e delle modifiche statutarie.\n\nSi è laureato presso l'Università degli Studi di Roma Tre, con tesi in diritto costituzionale regionale dal titolo \"Il dialogo tra amministrazioni nella fase governativa del controllo di legittimità costituzionale delle leggi regionali\".\n\nÈ iscritto all'Ordine degli Avvocati di Roma.",
       "education": [
         "Laurea in Giurisprudenza - Università degli Studi di Roma Tre"
@@ -374,7 +358,9 @@
         "Inglese"
       ],
       "image_url": "/attached_assets/avv-lorenzo-ferrara.jpg",
-      "order_index": 12,
+      "image_position": "top",
+      "image_zoom": 100,
+      "order_index": 11,
       "created_at": "2025-12-11T23:56:10.977Z",
       "updated_at": "2025-12-11T23:56:10.977Z",
       "specializations": [
@@ -389,169 +375,21 @@
       "pec": "l.ferrara@ordineavvocatiroma.org"
     },
     {
-      "id": 13,
-      "name": "Avv. Laura Stefanelli",
-      "title": "Of Counsel",
-      "office": "Roma",
-      "email": "l.stefanelli@legalit.it",
-      "phone": "06 3213911",
-      "bio": "Si occupa prevalentemente di diritto civile, famiglia, lavoro e tributario.",
-      "full_bio": "Laura Stefanelli si occupa prevalentemente di diritto civile, diritto di famiglia, diritto del lavoro e diritto tributario.\n\nDopo un'esperienza di alcuni anni presso un primario Studio Legale operante nell'ambito del diritto civile, penale e commerciale, dal 2011 fa parte dello Studio Legalit – Avvocati Associati.\n\nDal 2017 è legale fiduciario del Comune di Anzio (RM).\n\nDal 2018 è inclusa nell'elenco dei professionisti che provvedono alle operazioni di vendita ex art. 179 ter disp. att. c.p.c. nelle procedure esecutive dinanzi il Tribunale di Roma.\n\nLaureata in Giurisprudenza il 22.04.2008 presso l'Università degli Studi di Roma La Sapienza con tesi in diritto civile dal titolo \"La vendita dei beni di consumo\", relatore il Prof. Gianfranco Palermo.\n\nLaureata in Scienze Giuridiche il 31.01.2006 presso l'Università degli Studi di Roma La Sapienza con tesi in diritto costituzionale dal titolo \"Il Presidente della Repubblica\", relatore il Prof. Giuseppe Ugo Rescigno.\n\nE' iscritto all'albo dell'Ordine degli Avvocati di Roma.\n\nNel corso degli anni ha frequentato convegni, corsi di perfezionamento, nonché master relativi alle varie aree del diritto, Tra gli altri: \"Famiglia: sviluppi normative e giurisprudenziali. La mediazione familiare\" (nel 2019); \"Procedure esecutive immobiliari – Le aste telematiche e la delega al professionista – Compiti ed oneri del Custode e del professionista delegato\" (nel 2018); \"Rottamazione ter – cedolare secca – flat tax e pace fiscale\" (nel 2018); \"Esecuzioni Immobiliari: portale vendite pubbliche, vendita telematica\" (nel 2017); Corso di perfezionamento in diritto tributario organizzato dall'Associazione \"La Tutela dei diritti\" (nel 2015), Corso di alta formazione per avvocati mediatori organizzato da Istituto Nazionale per la Formazione Continua (nel 2015), Seminario in materia di \"Illegittima segnalazione alla centrale dei rischi: danno e rimedi risarcitori\" organizzato da Altalex (nel 2014); Master in diritto di famiglia organizzato da Altalex, presso Centro Congressi Carte Geografiche di Roma, diretto e coordinato da Avv. Laura Buzzolani del Foro di Milano (nel 2012).",
-      "education": [
-        "Laurea in Giurisprudenza - Università degli Studi di Roma La Sapienza (2008)"
-      ],
-      "languages": [
-        "Italiano",
-        "Inglese"
-      ],
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 13,
-      "created_at": "2025-12-11T23:56:10.980Z",
-      "updated_at": "2025-12-11T23:56:10.980Z",
-      "specializations": [
-        "diritto-civile-commerciale",
-        "recupero-crediti",
-        "tutela-patrimoni"
-      ],
-      "role": "Of Counsel",
-      "pec": "l.stefanelli@ordineavvocatiroma.org"
-    },
-    {
-      "id": 14,
-      "name": "Avv. Carmelina Adamo",
-      "title": "Partner",
-      "office": "Milano",
-      "email": "c.adamo@legalit.it",
-      "phone": "02 83424497",
-      "bio": "Si occupa prevalentemente di diritto penale, famiglia, immigrazione e recupero credito.",
-      "full_bio": "Carmelina Adamo si occupa prevalentemente di diritto penale (anche minorile), diritto di famiglia, diritto dell'immigrazione e recupero credito.\n\nDopo qualche mese dal superamento dell'esame da avvocato si è resa indipendente con uno studio proprio; dal 2016 è partner dello Studio Legalit – Avvocati Associati.\n\nÈ iscritta nelle liste dei difensori d'ufficio penale e minorile del CNF e nelle liste del patrocinio gratuito.\n\nHa conseguito la Laurea presso l'Università degli Studi di Milano, con tesi in diritto processuale penale dal titolo \"L'irrilevanza del fatto nel diritto penale minorile\", con relatore il Prof. Gianluigi Ponti.\n\nAvvocato Cassazionista, è iscritta presso l'Ordine degli Avvocati di Milano.\n\nParla l'inglese e il francese.",
-      "education": [
-        "Laurea in Giurisprudenza - Università degli Studi di Milano"
-      ],
-      "languages": [
-        "Italiano",
-        "Inglese",
-        "Francese"
-      ],
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 14,
-      "created_at": "2025-12-11T23:56:10.987Z",
-      "updated_at": "2025-12-11T23:56:10.987Z",
-      "specializations": [
-        "diritto-penale",
-        "diritto-civile-commerciale"
-      ],
-      "role": "Partner",
-      "pec": "carmelina.adamo@milano.pecavvocati.it"
-    },
-    {
-      "id": 15,
-      "name": "Avv. Tommaso Giannini",
-      "title": "Partner",
-      "office": "Milano",
-      "email": "t.giannini@legalit.it",
-      "phone": "02 83424497",
-      "bio": "Si occupa prevalentemente di diritto del lavoro.",
-      "full_bio": "Tommaso Giannini si occupa prevalentemente di diritto del lavoro, patrocinando società e lavoratori sia del settore pubblico che privato per le problematiche inerenti il rapporto di lavoro a tempo indeterminato, contratti a termine, di formazione lavoro ed apprendistato, lavoro interinale, impugnazione di sanzioni disciplinari, risarcimento danni da demansionamento e da infortunio sul lavoro, differenze retributive, riconoscimento mansioni superiori, rapporti di agenzia, lavoro parasubordinato.\n\nAssiste i suoi Clienti, oltre che in ambito giuslavoristico, anche in ambito contrattualistico, fallimentare, del recupero credito e delle relazioni sindacali.\n\nParticolare attenzione ha dedicato anche alle problematiche inerenti i rapporti di lavoro con la scuola offrendo consulenza e sostegno agli iscritti della UIL Scuola di Lecco, con un vasto contenzioso con il Ministero dell'Istruzione e l'Amministrazione scolastica per il riconoscimento dell'anzianità di servizio preruolo, ricostruzione di carriera, errori nella formazione delle graduatorie, impugnazione sanzioni disciplinari, condotte antisindacali ex art 28 L.300/70.\n\nHa maturato significativa esperienza anche nell'infortunistica stradale, separazioni e divorzi, nelle esecuzioni mobiliari ed immobiliari e recupero crediti.\n\nLaureato all'Università degli Studi di Salerno, è Avvocato Cassazionista iscritto presso l'Ordine degli Avvocati di Milano.",
-      "education": [
-        "Laurea in Giurisprudenza - Università degli Studi di Milano"
-      ],
-      "languages": [
-        "Italiano",
-        "Inglese"
-      ],
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 15,
-      "created_at": "2025-12-11T23:56:10.990Z",
-      "updated_at": "2025-12-11T23:56:10.990Z",
-      "specializations": [
-        "diritto-civile-commerciale",
-        "diritto-lavoro"
-      ],
-      "role": "Partner",
-      "pec": "tommaso.giannini@milano.pecavvocati.it"
-    },
-    {
-      "id": 19,
-      "name": "Avv. Giorgio Ialongo",
-      "title": "Partner",
-      "office": "Latina",
-      "email": "g.ialongo@legalit.it",
-      "phone": "+39 0773 621157",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 17,
-      "created_at": "2026-01-25T21:42:08.794Z",
-      "updated_at": "2026-01-25T21:42:08.794Z",
-      "specializations": [
-        "diritto-civile-commerciale",
-        "recupero-crediti",
-        "diritto-assicurazioni",
-        "crisi-impresa"
-      ],
-      "role": "Partner",
-      "pec": "giorgioialongo@pec.it"
-    },
-    {
-      "id": 20,
-      "name": "Prof. Avv. Marco Mocella",
-      "title": "Partner",
-      "office": "Napoli",
-      "email": "m.mocella@legalit.it",
-      "phone": "+39 081 5523475",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 18,
-      "created_at": "2026-01-25T21:42:08.794Z",
-      "updated_at": "2026-01-25T21:42:08.794Z",
-      "specializations": [
-        "diritto-lavoro"
-      ],
-      "role": "Partner",
-      "pec": "marcomocella@legalmail.it"
-    },
-    {
-      "id": 21,
-      "name": "Avv. Daniela Mocella",
-      "title": "Partner",
-      "office": "Napoli",
-      "email": "d.mocella@legalit.it",
-      "phone": "+39 081 5523475",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 19,
-      "created_at": "2026-01-25T21:42:08.794Z",
-      "updated_at": "2026-01-25T21:42:08.794Z",
-      "specializations": [
-        "diritto-lavoro"
-      ],
-      "role": "Partner",
-      "pec": "danielamocella@avvocatinapoli.legalmail.it"
-    },
-    {
       "id": 22,
       "name": "Prof. Avv. Stefano Cherti",
       "title": "Of Counsel",
       "office": "Roma",
       "email": "s.cherti@legalit.it",
       "phone": "+39 06 3213911",
-      "bio": "Professore associato di diritto privato nell'Università degli Studi di Cassino e del Lazio Meridionale. Ha fatto parte dell'Arbitro Bancario Finanziario istituito dalla Banca d'Italia ed è stato membro dell'Arbitro per le Controversie Finanziarie istituito dalla Consob.",
       "full_bio": "Stefano Cherti è professore associato di diritto privato (abilitato alle funzioni di professore ordinario) nell'Università degli Studi di Cassino e del Lazio Meridionale. Ha fatto parte dell'Arbitro Bancario Finanziario istituito dalla Banca d'Italia ed è stato membro dell'Arbitro per le Controversie Finanziarie istituito dalla Consob.\n\nAttualmente è componente del collegio dell'Arbitro per le Controversie Assicurative istituito presso IVASS.\n\nSi occupa da diversi anni di casi e questioni nell'ambito del diritto civile e commerciale, con un particolare focus sui contratti del commercio interno ed internazionale. Vanta una lunga esperienza di ricerche nel campo del diritto bancario e assicurativo e della responsabilità per medical malpractice.\n\nÈ autore di importanti studi dedicati al diritto delle obbligazioni e dei contratti, tra i quali si segnalano:\n\n• Le garanzie convenzionali nella vendita, Padova (Cedam), 2004.\n• L'obbligazione Alternativa. Nozione e realtà applicativa (II ed.), Torino (Giappichelli), 2008.\n• La risoluzione mediante caparra, Padova (Cedam), 2012.\n• Sulle clausole \"di uscita\" dal contratto. Contributo allo studio della risoluzione di diritto, Torino (Giappichelli), 2020.\n• Contratti Bancari a cura di S. Cherti e F. Piraino, in Trattato di diritto privato diretto da M. Bessone, XIV, Torino (Giappichelli), 2025.",
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/optimized/d7d8d555-b7c2-41e6-af15-eedf97291ed8_1769385370447.webp",
-      "order_index": 20,
+      "education": [],
+      "languages": [],
+      "image_url": "/attached_assets/avv-stefano-cherti.jpg",
+      "image_position": "30,47",
+      "image_zoom": 135,
+      "order_index": 12,
       "created_at": "2026-01-25T21:42:08.794Z",
-      "updated_at": "2026-01-25T21:42:08.794Z",
+      "updated_at": "2026-02-18T21:20:56.318Z",
       "specializations": [
         "banking-finance",
         "diritto-assicurazioni",
@@ -565,20 +403,79 @@
       "pec": "stefanocherti@pec.it"
     },
     {
+      "id": 13,
+      "name": "Avv. Laura Stefanelli",
+      "title": "Of Counsel",
+      "office": "Roma",
+      "email": "l.stefanelli@legalit.it",
+      "phone": "06 3213911",
+      "full_bio": "Laura Stefanelli si occupa prevalentemente di diritto civile, diritto di famiglia, diritto del lavoro e diritto tributario.\n\nDopo un'esperienza di alcuni anni presso un primario Studio Legale operante nell'ambito del diritto civile, penale e commerciale, dal 2011 fa parte dello Studio Legalit – Avvocati Associati.\n\nDal 2017 è legale fiduciario del Comune di Anzio (RM).\n\nDal 2018 è inclusa nell'elenco dei professionisti che provvedono alle operazioni di vendita ex art. 179 ter disp. att. c.p.c. nelle procedure esecutive dinanzi il Tribunale di Roma.\n\nLaureata in Giurisprudenza il 22.04.2008 presso l'Università degli Studi di Roma La Sapienza con tesi in diritto civile dal titolo \"La vendita dei beni di consumo\", relatore il Prof. Gianfranco Palermo.\n\nLaureata in Scienze Giuridiche il 31.01.2006 presso l'Università degli Studi di Roma La Sapienza con tesi in diritto costituzionale dal titolo \"Il Presidente della Repubblica\", relatore il Prof. Giuseppe Ugo Rescigno.\n\nE' iscritto all'albo dell'Ordine degli Avvocati di Roma.\n\nNel corso degli anni ha frequentato convegni, corsi di perfezionamento, nonché master relativi alle varie aree del diritto, Tra gli altri: \"Famiglia: sviluppi normative e giurisprudenziali. La mediazione familiare\" (nel 2019); \"Procedure esecutive immobiliari – Le aste telematiche e la delega al professionista – Compiti ed oneri del Custode e del professionista delegato\" (nel 2018); \"Rottamazione ter – cedolare secca – flat tax e pace fiscale\" (nel 2018); \"Esecuzioni Immobiliari: portale vendite pubbliche, vendita telematica\" (nel 2017); Corso di perfezionamento in diritto tributario organizzato dall'Associazione \"La Tutela dei diritti\" (nel 2015), Corso di alta formazione per avvocati mediatori organizzato da Istituto Nazionale per la Formazione Continua (nel 2015), Seminario in materia di \"Illegittima segnalazione alla centrale dei rischi: danno e rimedi risarcitori\" organizzato da Altalex (nel 2014); Master in diritto di famiglia organizzato da Altalex, presso Centro Congressi Carte Geografiche di Roma, diretto e coordinato da Avv. Laura Buzzolani del Foro di Milano (nel 2012).",
+      "education": [
+        "Laurea in Giurisprudenza - Università degli Studi di Roma La Sapienza (2008)"
+      ],
+      "languages": [
+        "Italiano",
+        "Inglese"
+      ],
+      "image_url": "/attached_assets/logo_legalit_cropped_(1)_1771133031977_1771461171783.png",
+      "image_position": "top",
+      "image_zoom": 100,
+      "order_index": 13,
+      "created_at": "2025-12-11T23:56:10.980Z",
+      "updated_at": "2025-12-11T23:56:10.980Z",
+      "specializations": [
+        "diritto-civile-commerciale",
+        "recupero-crediti",
+        "tutela-patrimoni"
+      ],
+      "role": "Of Counsel",
+      "pec": "l.stefanelli@ordineavvocatiroma.org"
+    },
+    {
+      "id": 19,
+      "name": "Avv. Giorgio Ialongo",
+      "title": "Partner",
+      "office": "Latina",
+      "email": "g.ialongo@legalit.it",
+      "phone": "+39 0773 621157",
+      "full_bio": "Giorgio Ialongo è Avvocato e Ph.D. di ricerca.\n\nGià fondatore dell’omonimo studio legale con sede in Latina, dal 2024 ha aderito a Legalit, di cui guida la sede locale, contribuendo allo sviluppo territoriale dello Studio e al consolidamento dei rapporti con il tessuto imprenditoriale del Lazio.\n\nLa sua attività è rivolta prevalentemente alle piccole e medie imprese, che assiste sia nella consulenza continuativa sia nella gestione del contenzioso civile e commerciale. \nAffianca l’imprenditore nella strutturazione e revisione dei contratti, nella prevenzione e gestione della responsabilità civile, nella tutela del credito, nella gestione dei rapporti con fornitori, clienti, dipendenti e partner strategici, nonché nelle problematiche connesse alla sicurezza sul lavoro e alla governance aziendale.\n\nHa maturato una significativa esperienza nella compliance e nella prevenzione e gestione del rischio legale, con particolare riferimento alla redazione, implementazione e aggiornamento dei Modelli di Organizzazione, Gestione e Controllo ex D.Lgs. 231/2001. \n\nSi occupa inoltre di responsabilità professionale – con specifica attenzione alla responsabilità medica –diritto ambientale, diritto degli enti locali, diritto del lavoro e previdenziale, giustizia sportiva difendendo atleti, tecnici e dirigenti dinanzi agli organi federali competenti.\n\nL’attività professionale si integra con un costante impegno nella ricerca giuridica, con un approccio sistematico e critico alle trasformazioni del diritto contemporaneo, con particolare attenzione al rapporto tra normativa, prassi applicativa e tutela effettiva dei diritti. In tale ottica è Ph.D. di ricerca in “Law and Cognitive Neuroscience” (XXXVIII ciclo) presso l’Università degli Studi Niccolò Cusano, dove conduce attività di ricerca interdisciplinare sui rapporti tra diritto, tutela dei diritti fondamentali e processi decisionali, con particolare attenzione ai profili di protezione sociale e alle ricadute applicative nell’ordinamento giuridico.\n\nAccanto all’attività professionale e di ricerca, ha ricoperto incarichi istituzionali quale Consigliere Comunale della Città di Latina – risultando primo degli eletti e Presidente del Gruppo Consiliare – nonché Delegato del Presidente della Provincia di Latina, maturando una profonda conoscenza delle dinamiche amministrative e dei rapporti tra imprese e pubblica amministrazione.\n",
+      "education": [
+        "Ph.D. in Law and Cognitive Neuroscience (XXXVIII ciclo) - Università degli Studi Niccolò Cusano"
+      ],
+      "languages": [
+        "Italiano"
+      ],
+      "image_url": "/attached_assets/upload_d5e5f8cb-5267-4845-bfe9-f7b0512e0aa9.png",
+      "image_position": "55,33",
+      "image_zoom": 115,
+      "order_index": 14,
+      "created_at": "2026-01-25T21:42:08.794Z",
+      "updated_at": "2026-02-20T00:16:31.021Z",
+      "specializations": [
+        "diritto-civile-commerciale",
+        "recupero-crediti",
+        "diritto-assicurazioni",
+        "crisi-impresa"
+      ],
+      "role": "Partner",
+      "pec": "giorgioialongo@pec.it"
+    },
+    {
       "id": 23,
       "name": "Avv. Giovanni Puntarello",
       "title": "Partner",
       "office": "Palermo",
       "email": "g.puntarello@legalit.it",
       "phone": "+39 091 7781494",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 21,
+      "full_bio": "",
+      "education": [],
+      "languages": [],
+      "image_url": "/attached_assets/avv-giovanni-puntarello.jpg",
+      "image_position": "55,19",
+      "image_zoom": 130,
+      "order_index": 15,
       "created_at": "2026-01-25T21:42:25.222Z",
-      "updated_at": "2026-01-25T21:42:25.222Z",
+      "updated_at": "2026-02-19T00:43:39.964Z",
       "specializations": [
         "diritto-amministrativo",
         "diritto-ambiente",
@@ -589,20 +486,78 @@
       "pec": "giovannipuntarello@pec.it"
     },
     {
+      "id": 14,
+      "name": "Avv. Carmelina Adamo",
+      "title": "Partner",
+      "office": "Milano",
+      "email": "c.adamo@legalit.it",
+      "phone": "02 83424497",
+      "full_bio": "Carmelina Adamo si occupa prevalentemente di diritto penale (anche minorile), diritto di famiglia, diritto dell'immigrazione e recupero credito.\n\nDopo qualche mese dal superamento dell'esame da avvocato si è resa indipendente con uno studio proprio; dal 2016 è partner dello Studio Legalit – Avvocati Associati.\n\nÈ iscritta nelle liste dei difensori d'ufficio penale e minorile del CNF e nelle liste del patrocinio gratuito.\n\nHa conseguito la Laurea presso l'Università degli Studi di Milano, con tesi in diritto processuale penale dal titolo \"L'irrilevanza del fatto nel diritto penale minorile\", con relatore il Prof. Gianluigi Ponti.\n\nAvvocato Cassazionista, è iscritta all'Ordine degli Avvocati di Milano dal 1999.\n\nParla l'inglese e il francese.",
+      "education": [
+        "Laurea in Giurisprudenza - Università degli Studi di Milano"
+      ],
+      "languages": [
+        "Italiano",
+        "Inglese",
+        "Francese"
+      ],
+      "image_url": "/attached_assets/logo_legalit_cropped_(1)_1771133031977_1771461171783.png",
+      "image_position": "top",
+      "image_zoom": 100,
+      "order_index": 16,
+      "created_at": "2025-12-11T23:56:10.987Z",
+      "updated_at": "2025-12-11T23:56:10.987Z",
+      "specializations": [
+        "diritto-penale",
+        "tutela-patrimoni"
+      ],
+      "role": "Partner",
+      "pec": "carmelina.adamo@milano.pecavvocati.it"
+    },
+    {
+      "id": 15,
+      "name": "Avv. Tommaso Giannini",
+      "title": "Partner",
+      "office": "Milano",
+      "email": "t.giannini@legalit.it",
+      "phone": "02 83424497",
+      "full_bio": "Tommaso Giannini si occupa prevalentemente di diritto del lavoro, patrocinando società e lavoratori sia del settore pubblico che privato per le problematiche inerenti il rapporto di lavoro a tempo indeterminato, contratti a termine, di formazione lavoro ed apprendistato, lavoro interinale, impugnazione di sanzioni disciplinari, risarcimento danni da demansionamento e da infortunio sul lavoro, differenze retributive, riconoscimento mansioni superiori, rapporti di agenzia, lavoro parasubordinato.\n\nAssiste i suoi Clienti, oltre che in ambito giuslavoristico, anche in ambito contrattualistico, fallimentare, del recupero credito e delle relazioni sindacali.\n\nParticolare attenzione ha dedicato anche alle problematiche inerenti i rapporti di lavoro con la scuola offrendo consulenza e sostegno agli iscritti della UIL Scuola di Lecco, con un vasto contenzioso con il Ministero dell'Istruzione e l'Amministrazione scolastica per il riconoscimento dell'anzianità di servizio preruolo, ricostruzione di carriera, errori nella formazione delle graduatorie, impugnazione sanzioni disciplinari, condotte antisindacali ex art 28 L.300/70.\n\nHa maturato significativa esperienza anche nell'infortunistica stradale, separazioni e divorzi, nelle esecuzioni mobiliari ed immobiliari e recupero crediti.\n\nLaureato all'Università degli Studi di Salerno, è Avvocato Cassazionista iscritto presso l'Ordine degli Avvocati di Milano.",
+      "education": [
+        "Laurea in Giurisprudenza - Università degli Studi di Milano"
+      ],
+      "languages": [
+        "Italiano",
+        "Inglese"
+      ],
+      "image_url": "/attached_assets/upload_81f2881b-e0c2-42a7-9324-1828dd9e0924.png",
+      "image_position": "89,40",
+      "image_zoom": 120,
+      "order_index": 17,
+      "created_at": "2025-12-11T23:56:10.990Z",
+      "updated_at": "2026-02-19T23:20:56.338Z",
+      "specializations": [
+        "diritto-civile-commerciale",
+        "diritto-lavoro"
+      ],
+      "role": "Partner",
+      "pec": "tommaso.giannini@milano.pecavvocati.it"
+    },
+    {
       "id": 24,
       "name": "Avv. Elena Preite",
       "title": "Partner",
       "office": "Milano",
       "email": "e.preite@legalit.it",
       "phone": "+39 02 83424497",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 22,
+      "full_bio": "",
+      "education": [],
+      "languages": [],
+      "image_url": "/attached_assets/upload_a19fa7e9-cace-47c1-abce-4bbec5c478be.png",
+      "image_position": "58,96",
+      "image_zoom": 120,
+      "order_index": 18,
       "created_at": "2026-01-25T21:42:25.222Z",
-      "updated_at": "2026-01-25T21:42:25.222Z",
+      "updated_at": "2026-02-19T23:20:42.432Z",
       "specializations": [
         "diritto-civile-commerciale",
         "diritto-lavoro"
@@ -617,12 +572,13 @@
       "office": "Roma",
       "email": "f.cracchiolo@legalit.it",
       "phone": "+39 06 3213911",
-      "bio": "",
       "full_bio": null,
       "education": null,
       "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 23,
+      "image_url": "/attached_assets/logo_legalit_cropped_(1)_1771133031977_1771461171783.png",
+      "image_position": "top",
+      "image_zoom": 100,
+      "order_index": 19,
       "created_at": "2026-01-25T21:42:25.222Z",
       "updated_at": "2026-01-25T21:42:25.222Z",
       "specializations": [
@@ -638,14 +594,15 @@
       "office": "Palermo",
       "email": "s.causa@legalit.it",
       "phone": "+39 091 7781494",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 24,
+      "full_bio": "",
+      "education": [],
+      "languages": [],
+      "image_url": "/attached_assets/avv-sabrina-causa.jpg",
+      "image_position": "top",
+      "image_zoom": 100,
+      "order_index": 20,
       "created_at": "2026-01-25T21:42:25.222Z",
-      "updated_at": "2026-01-25T21:42:25.222Z",
+      "updated_at": "2026-02-18T21:20:44.099Z",
       "specializations": [
         "diritto-amministrativo",
         "diritto-civile-commerciale"
@@ -660,14 +617,15 @@
       "office": "Palermo",
       "email": "p.saladino@legalit.it",
       "phone": "+39 091 7781494",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 25,
+      "full_bio": "",
+      "education": [],
+      "languages": [],
+      "image_url": "/attached_assets/avv-paola-saladino.jpg",
+      "image_position": "39,44",
+      "image_zoom": 125,
+      "order_index": 21,
       "created_at": "2026-01-25T21:42:25.222Z",
-      "updated_at": "2026-01-25T21:42:25.222Z",
+      "updated_at": "2026-02-18T21:19:42.728Z",
       "specializations": [
         "diritto-amministrativo",
         "diritto-civile-commerciale"
@@ -682,14 +640,15 @@
       "office": "Palermo",
       "email": "l.russo@legalit.it",
       "phone": "+39 091 7781494",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 26,
+      "full_bio": "",
+      "education": [],
+      "languages": [],
+      "image_url": "/attached_assets/avv-luciana-maria-russo.jpg",
+      "image_position": "50,78",
+      "image_zoom": 115,
+      "order_index": 22,
       "created_at": "2026-01-25T21:42:25.222Z",
-      "updated_at": "2026-01-25T21:42:25.222Z",
+      "updated_at": "2026-02-18T21:20:05.655Z",
       "specializations": [
         "diritto-amministrativo",
         "diritto-civile-commerciale"
@@ -698,43 +657,21 @@
       "pec": "lucianarusso0605@pec.it"
     },
     {
-      "id": 29,
-      "name": "Avv. Calogero Gianluca Rizzuto",
-      "title": "Senior Associate",
-      "office": "Palermo",
-      "email": "c.rizzuto@legalit.it",
-      "phone": "+39 091 7781494",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 27,
-      "created_at": "2026-01-25T21:42:25.222Z",
-      "updated_at": "2026-01-25T21:42:25.222Z",
-      "specializations": [
-        "diritto-penale",
-        "corporate-compliance",
-        "diritto-civile-commerciale"
-      ],
-      "role": "Senior Associate",
-      "pec": "calogerorizzuto@pecavvpa.it"
-    },
-    {
       "id": 30,
       "name": "Avv. Riccardo Costa",
       "title": "Associate",
       "office": "Palermo",
       "email": "r.costa@legalit.it",
       "phone": "+39 091 7781494",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 28,
+      "full_bio": "",
+      "education": [],
+      "languages": [],
+      "image_url": "/attached_assets/avv-riccardo-costa.jpg",
+      "image_position": "68,0",
+      "image_zoom": 100,
+      "order_index": 23,
       "created_at": "2026-01-25T21:42:37.138Z",
-      "updated_at": "2026-01-25T21:42:37.138Z",
+      "updated_at": "2026-02-18T21:20:28.606Z",
       "specializations": [
         "diritto-amministrativo",
         "diritto-civile-commerciale"
@@ -749,14 +686,15 @@
       "office": "Palermo",
       "email": "a.miliziano@legalit.it",
       "phone": "+39 091 7781494",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 29,
+      "full_bio": "",
+      "education": [],
+      "languages": [],
+      "image_url": "/attached_assets/avv-alessandro-miliziano.jpg",
+      "image_position": "32,0",
+      "image_zoom": 100,
+      "order_index": 24,
       "created_at": "2026-01-25T21:42:37.138Z",
-      "updated_at": "2026-01-25T21:42:37.138Z",
+      "updated_at": "2026-02-18T21:20:20.789Z",
       "specializations": [
         "diritto-amministrativo",
         "diritto-civile-commerciale"
@@ -771,14 +709,15 @@
       "office": "Roma",
       "email": "m.pauletti@legalit.it",
       "phone": "+39 06 3213911",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 30,
+      "full_bio": "",
+      "education": [],
+      "languages": [],
+      "image_url": "/attached_assets/upload_71e45333-fb3e-47f0-ad63-e81c6459fab4.png",
+      "image_position": "57,70",
+      "image_zoom": 115,
+      "order_index": 25,
       "created_at": "2026-01-25T21:42:37.138Z",
-      "updated_at": "2026-01-25T21:42:37.138Z",
+      "updated_at": "2026-02-21T04:05:57.358Z",
       "specializations": [
         "diritto-penale",
         "corporate-compliance"
@@ -788,19 +727,20 @@
     },
     {
       "id": 33,
-      "name": "Dott. Angela Martina Tortorici",
+      "name": "Dott.ssa Angela Martina Tortorici",
       "title": "Trainee",
       "office": "Palermo",
       "email": "m.tortorici@legalit.it",
       "phone": "+39 091 7781494",
-      "bio": "",
-      "full_bio": null,
-      "education": null,
-      "languages": null,
-      "image_url": "/attached_assets/000_LOGO_LEGALIT_STA.JPG_(3)_1769379554317.png",
-      "order_index": 31,
+      "full_bio": "",
+      "education": [],
+      "languages": [],
+      "image_url": "/attached_assets/avv-angela-martina-tortorici.jpg",
+      "image_position": "71,9",
+      "image_zoom": 120,
+      "order_index": 26,
       "created_at": "2026-01-25T21:42:37.138Z",
-      "updated_at": "2026-01-25T21:42:37.138Z",
+      "updated_at": "2026-02-18T21:23:20.092Z",
       "specializations": [
         "diritto-amministrativo",
         "diritto-civile-commerciale"
@@ -816,29 +756,34 @@
       "content": "Il nostro Marco Pauletti su ItaliaOggi delinea i profili e limiti di responsabilità del datore di lavoro in caso di infortuni dovuti a imprudenza del lavoratore.\n\nL'articolo analizza in dettaglio i confini della responsabilità datoriale quando l'infortunio sul lavoro è causato, in tutto o in parte, da comportamenti imprudenti del lavoratore stesso. Un tema di grande attualità che coinvolge sia i profili penali che quelli civilistici della sicurezza sul lavoro.\n\nLa normativa in materia di sicurezza sul lavoro (D.Lgs. 81/08) impone al datore di lavoro obblighi stringenti di prevenzione e protezione, ma la giurisprudenza ha progressivamente definito i limiti di tale responsabilità, soprattutto nei casi in cui il lavoratore pone in essere condotte abnormi o manifestamente imprudenti.\n\nL'analisi affronta le recenti pronunce della Cassazione che hanno contribuito a delineare un quadro più chiaro dei criteri di valutazione, distinguendo tra comportamenti del lavoratore prevedibili (che non escludono la responsabilità del datore) e condotte abnormi ed eccentriche rispetto alle mansioni affidate.",
       "excerpt": "Il nostro Marco Pauletti su ItaliaOggi delinea i profili e limiti di responsabilità del datore di lavoro in caso di infortuni dovuti a imprudenza del lavoratore.",
       "category": "Diritto del Lavoro",
-      "image_url": null,
+      "image_url": "/images/news/workplace-safety.jpg",
+      "image_position": "0,55",
+      "image_zoom": 120,
       "read_time": "4 min",
       "author_id": null,
       "author_name": "Avv. Marco Pauletti",
       "created_at": "2026-02-02T10:00:00.000Z",
-      "updated_at": "2026-02-02T10:00:00.000Z",
-      "document_url": null,
-      "document_name": null,
+      "updated_at": "2026-02-16T10:17:52.505Z",
+      "document_url": "",
+      "document_name": "",
       "news_type": "studio",
       "macro_category": "Diritto Penale",
       "micro_category": null,
       "linkedin_url": "https://it.linkedin.com/posts/legalit---avvocati-associati_responsabilit%C3%A0-infortuni-imprudenza-activity-7423988872574873601-i1aH",
-      "linked_professional_id": null,
+      "linked_professional_id": "1",
+      "linked_professional_ids": [
+        "1",
+        "2",
+        "4",
+        "7",
+        "15",
+        "24",
+        "25",
+        "32"
+      ],
       "linked_practice_area": "diritto-lavoro",
-      "tags": [
-        "Sicurezza Sul Lavoro",
-        "HSE",
-        "Diritto Penale Del Lavoro",
-        "D.Lgs. 81/08",
-        "D.Lgs. 231/01",
-        "Responsabilità Del Datore",
-        "Compliance"
-      ]
+      "tags": [],
+      "linkedin_summary": ""
     },
     {
       "id": 69,
@@ -846,12 +791,14 @@
       "content": "DIRITTO PENALE DELL'AMBIENTE: IL CONSIGLIO DEI MINISTRI HA APPROVATO IN ESAME PRELIMINARE IL DECRETO ATTUATIVO DELLA DIRETTIVA UE 2024/1203. INTRODOTTI NUOVI REATI PRESUPPOSTO 231.\n\nIl Consiglio dei Ministri ha approvato il 20/1, in esame preliminare, il decreto legislativo recante attuazione della Direttiva (UE) 2024/1203 sulla tutela penale dell'ambiente, che sostituisce le precedenti Direttive 2008/99/CE e 2009/123/CE e rafforza il contrasto ai reati ambientali aggiornando le fattispecie, le sanzioni e i criteri normativi nazionali.\n\nIl Decreto attuativo, secondo quanto si legge nel Comunicato Stampa della Presidenza del Consiglio dei Ministri, prevede:\n\n- Aggiornamento della disciplina dei c.d. ecoreati, apportando modifiche a reati esistenti, con particolare riferimento alle fattispecie di inquinamento ambientale, ed introducendo nuove ipotesi di commercio prodotti inquinanti, produzione e commercio di sostanze ozono-lesive e di gas ad effetto serra.\n\n- Introduzione di nuove circostanze aggravanti, precisando la nozione di condotta abusiva ed inasprendo il trattamento sanzionatorio, in coerenza con le indicazioni della direttiva europea.\n\n- Ampliamento del catalogo dei Reati Presupposto della Responsabilità 231, con adeguamento delle sanzioni.\n\n- Istituzione presso la Procura Generale presso la Corte di Cassazione del \"Sistema di Coordinamento Nazionale per il Contrasto alla Criminalità Ambientale\", di cui fanno parte anche i Procuratori Generali presso le Corti d'Appello ed il Procuratore Nazionale Antimafia, al fine di un più efficace coordinamento delle indagini in materia di reati ambientali.\n\n- Entro il 21 maggio 2027 il Parlamento dovrà elaborare e pubblicare la \"Strategia Nazionale di Contrasto ai Crimini Ambientali\", con successivo aggiornamento triennale.\n\nAlla luce delle modifiche normative introdotte alla disciplina dei reati ambientali e al catalogo dei reati presupposto della Responsabilità 231, le aziende dovranno quindi:\n\n- Aggiornare la Mappatura dei Rischi alla luce dei nuovi reati presupposto e delle modifiche alle fattispecie già esistenti;\n- Aggiornare e rivedere in modo strutturato i propri Modelli di Organizzazione, Gestione e Controllo per includere i nuovi reati presupposto;\n- Aggiornare le Procedure Aziendali ed i Presidi di Controllo Interno;\n- Aggiornare la Formazione dei dipendenti.\n\nIl nostro Studio, anche considerata la portata più ampia della Direttiva rispetto alle novità rese note con il Comunicato della Presidenza del Consiglio dei Ministri, continuerà a seguire con attenzione l'iter di recepimento, al fine di poter tempestivamente supportare i clienti nell'adeguamento di Modelli 231 e Sistemi di Compliance Ambientale al nuovo quadro normativo europeo.",
       "excerpt": "Il Consiglio dei Ministri ha approvato in esame preliminare il decreto attuativo della Direttiva UE 2024/1203 sulla tutela penale dell'ambiente. Introdotti nuovi reati presupposto 231.",
       "category": "Compliance",
-      "image_url": null,
+      "image_url": "/images/news/environment-law.jpg",
+      "image_position": "50,50",
+      "image_zoom": 100,
       "read_time": "6 min",
       "author_id": null,
       "author_name": "Avv. Francesco Vaccaro",
       "created_at": "2026-01-22T10:00:00.000Z",
-      "updated_at": "2026-01-22T10:00:00.000Z",
+      "updated_at": "2026-02-14T01:46:03.679Z",
       "document_url": null,
       "document_name": null,
       "news_type": "studio",
@@ -859,21 +806,239 @@
       "micro_category": null,
       "linkedin_url": "https://it.linkedin.com/posts/legalit---avvocati-associati_ecoreati-reatipresupposto-responsabilit%C3%A0231-activity-7420001027921178625-_WNn",
       "linked_professional_id": null,
-      "linked_practice_area": "compliance",
+      "linked_professional_ids": null,
+      "linked_practice_area": "ambiente-energia",
       "tags": [
-        "Diritto Penale Ambientale",
-        "EcoReati",
+        "diritto-penale",
+        "corporate-compliance"
+      ],
+      "linkedin_summary": null
+    },
+    {
+      "id": 70,
+      "title": "Whistleblowing: scadenza D.lgs. 24/2023 e obblighi per le imprese con Modello 231",
+      "content": "Il D.lgs. 24/2023, che recepisce la Direttiva UE 2019/1937, ha introdotto nuovi obblighi in materia di whistleblowing per le imprese italiane. La normativa si applica a tutte le aziende con più di 50 dipendenti e a quelle dotate di Modello 231, indipendentemente dalle dimensioni.\n\nLe imprese devono predisporre canali interni di segnalazione sicuri e riservati, garantendo la protezione dell'identità del segnalante attraverso strumenti di crittografia e procedure di riservatezza. Il sistema deve consentire di ricevere la segnalazione, confermarla entro 7 giorni e fornire riscontro entro 3 mesi.\n\nÈ fondamentale che le aziende aggiornino i propri Modelli Organizzativi 231 integrandovi le procedure di whistleblowing, prevedendo sanzioni per chi attua ritorsioni nei confronti dei segnalanti. Per supporto nell'implementazione, lo studio è disponibile attraverso il canale dedicato 231@legalit.it.\n\nLa Guida Operativa pubblicata da Confindustria rappresenta un utile strumento per orientare le imprese nell'adeguamento, illustrando le modalità pratiche di implementazione dei canali di segnalazione e le garanzie da assicurare ai whistleblower.",
+      "excerpt": "Il D.lgs. 24/2023 introduce nuovi obblighi di whistleblowing per imprese con più di 50 dipendenti e quelle con Modello 231. Canali di segnalazione sicuri e protezione del segnalante sono ora obbligatori.",
+      "category": "Compliance",
+      "image_url": "/images/news/whistleblowing.jpg",
+      "image_position": "50,50",
+      "image_zoom": 100,
+      "read_time": "4 min",
+      "author_id": "4967b04c-ce29-4764-8b2d-e54b03d8bda2",
+      "author_name": "LEGALIT",
+      "created_at": "2025-12-17T10:00:00.000Z",
+      "updated_at": "2026-02-14T01:47:22.206Z",
+      "document_url": null,
+      "document_name": null,
+      "news_type": "studio",
+      "macro_category": null,
+      "micro_category": null,
+      "linkedin_url": null,
+      "linked_professional_id": null,
+      "linked_professional_ids": null,
+      "linked_practice_area": "corporate-compliance",
+      "tags": [],
+      "linkedin_summary": "Nuovi obblighi di #whistleblowing per le imprese: il D.lgs. 24/2023 richiede canali di segnalazione sicuri e protezione del segnalante. Scopri come adeguarti. #compliance #231"
+    },
+    {
+      "id": 71,
+      "title": "Corte di Giustizia Tributaria del Lazio: l'importanza della verifica del mittente nelle notifiche PEC",
+      "content": "La sentenza n. 1828/2025 della Corte di Giustizia Tributaria del Lazio ha ribadito un principio fondamentale in materia di notificazioni digitali: la necessità di verificare l'autenticità del mittente nelle comunicazioni effettuate via PEC (Posta Elettronica Certificata).\n\nIl caso riguardava un contribuente che aveva contestato la validità di un atto notificato via PEC, eccependo l'impossibilità di verificare con certezza l'identità del mittente. La Corte ha accolto il ricorso, sottolineando come il sistema di notifica PEC debba garantire non solo la certezza della ricezione, ma anche l'identificabilità univoca del soggetto notificante.\n\nQuesta pronuncia si inserisce in un filone giurisprudenziale che mira a rafforzare le garanzie del contribuente nell'ambito del processo tributario digitale, richiedendo che le Amministrazioni finanziarie utilizzino indirizzi PEC ufficiali e verificabili attraverso i registri pubblici.\n\nLo studio LEGALIT sottolinea l'importanza per i contribuenti di verificare sempre la provenienza delle comunicazioni PEC ricevute dall'Agenzia delle Entrate e dagli altri enti impositori, potendo in caso contrario contestare la validità della notifica.",
+      "excerpt": "La sentenza n. 1828/2025 della Corte di Giustizia Tributaria del Lazio ribadisce l'obbligo di verificare il mittente nelle notifiche PEC. Rafforzate le garanzie per i contribuenti nel processo tributario digitale.",
+      "category": "Diritto Tributario",
+      "image_url": "/images/news/tax-court.jpg",
+      "image_position": "50,50",
+      "image_zoom": 120,
+      "read_time": "3 min",
+      "author_id": "4967b04c-ce29-4764-8b2d-e54b03d8bda2",
+      "author_name": "LEGALIT",
+      "created_at": "2025-01-15T09:00:00.000Z",
+      "updated_at": "2026-02-14T11:24:49.610Z",
+      "document_url": "",
+      "document_name": "",
+      "news_type": "studio",
+      "macro_category": null,
+      "micro_category": null,
+      "linkedin_url": "",
+      "linked_professional_id": "",
+      "linked_professional_ids": null,
+      "linked_practice_area": "diritto-tributario",
+      "tags": [],
+      "linkedin_summary": "Importante sentenza della Corte di Giustizia Tributaria del Lazio sulla validità delle notifiche PEC: verificare sempre il mittente! #dirittotributario #PEC"
+    },
+    {
+      "id": 72,
+      "title": "Messa alla prova per gli enti: la Cassazione conferma l'esclusione dopo le Sezioni Unite",
+      "content": "Con una recente pronuncia che segue l'orientamento delle Sezioni Unite (sentenza n. 14840/2023), la Corte di Cassazione ha confermato che gli enti e le persone giuridiche non possono accedere all'istituto della messa alla prova previsto dall'art. 168-bis c.p.\n\nLe Sezioni Unite avevano già chiarito che la messa alla prova, introdotta dalla L. 67/2014, è un istituto pensato esclusivamente per le persone fisiche, essendo collegato a un percorso di rieducazione e reinserimento sociale incompatibile con la natura giuridica degli enti.\n\nQuesta interpretazione ha importanti conseguenze pratiche per le società sottoposte a procedimenti penali ai sensi del D.lgs. 231/2001: l'impossibilità di accedere alla messa alla prova rende ancora più cruciale l'adozione preventiva di adeguati Modelli Organizzativi e di efficaci sistemi di compliance.\n\nLo studio LEGALIT, da sempre impegnato nell'assistenza alle imprese in materia di responsabilità amministrativa degli enti, evidenzia come questa pronuncia rafforzi la necessità per le aziende di investire nella prevenzione attraverso l'adozione e l'aggiornamento costante dei Modelli 231.",
+      "excerpt": "La Cassazione conferma: gli enti non possono accedere alla messa alla prova (art. 168-bis c.p.), in linea con le Sezioni Unite n. 14840/2023. Cruciale l'adozione preventiva di Modelli 231.",
+      "category": "Diritto Penale",
+      "image_url": "/images/news/corporate-compliance.jpg",
+      "image_position": "50,50",
+      "image_zoom": 100,
+      "read_time": "4 min",
+      "author_id": "4967b04c-ce29-4764-8b2d-e54b03d8bda2",
+      "author_name": "LEGALIT",
+      "created_at": "2025-02-10T11:00:00.000Z",
+      "updated_at": "2026-02-14T01:46:03.688Z",
+      "document_url": null,
+      "document_name": null,
+      "news_type": "studio",
+      "macro_category": null,
+      "micro_category": null,
+      "linkedin_url": null,
+      "linked_professional_id": null,
+      "linked_professional_ids": null,
+      "linked_practice_area": "diritto-penale",
+      "tags": [
+        "corporate-compliance"
+      ],
+      "linkedin_summary": "La Cassazione conferma: niente messa alla prova per gli enti. Fondamentale investire nella prevenzione con Modelli 231 adeguati. #diritto231 #compliance #cassazione"
+    },
+    {
+      "id": 73,
+      "title": "Privacy e GDPR: nuove linee guida del Garante per il trattamento dei dati in ambito lavorativo",
+      "content": "Il Garante per la Protezione dei Dati Personali ha pubblicato nuove linee guida relative al trattamento dei dati personali dei dipendenti in ambito lavorativo, con particolare attenzione all'utilizzo di strumenti tecnologici e sistemi di monitoraggio.\n\nLe nuove indicazioni chiariscono i limiti entro cui il datore di lavoro può trattare i dati dei dipendenti raccolti attraverso strumenti informatici, sistemi di videosorveglianza e dispositivi di geolocalizzazione, nel rispetto dei principi di necessità, proporzionalità e minimizzazione previsti dal GDPR.\n\nTra i punti salienti delle linee guida:\n- Obbligo di informativa preventiva ai dipendenti sui sistemi di monitoraggio utilizzati\n- Necessità di una valutazione d'impatto (DPIA) per trattamenti ad alto rischio\n- Limitazioni temporali alla conservazione dei dati raccolti\n- Divieto di monitoraggio sistematico e continuativo dell'attività lavorativa\n\nLo studio LEGALIT, attraverso i propri professionisti specializzati in materia di privacy e data protection, offre consulenza alle imprese per l'adeguamento ai nuovi standard, dalla redazione delle informative alla conduzione delle DPIA, fino all'implementazione di policy interne conformi.",
+      "excerpt": "Nuove linee guida del Garante Privacy sul trattamento dei dati dei dipendenti. Chiariti i limiti per videosorveglianza, geolocalizzazione e monitoraggio informatico in ambito lavorativo.",
+      "category": "Privacy",
+      "image_url": "/images/news/data-protection.jpg",
+      "image_position": "50,50",
+      "image_zoom": 140,
+      "read_time": "3 min",
+      "author_id": "4967b04c-ce29-4764-8b2d-e54b03d8bda2",
+      "author_name": "LEGALIT",
+      "created_at": "2025-03-20T14:00:00.000Z",
+      "updated_at": "2026-02-14T13:34:21.523Z",
+      "document_url": "",
+      "document_name": "",
+      "news_type": "studio",
+      "macro_category": null,
+      "micro_category": null,
+      "linkedin_url": "",
+      "linked_professional_id": "",
+      "linked_professional_ids": null,
+      "linked_practice_area": "ia-privacy-cybersecurity",
+      "tags": [
+        "privacy-cybersecurity"
+      ],
+      "linkedin_summary": "Nuove linee guida del #Garante Privacy per il trattamento dati in ambito lavorativo. Limiti su videosorveglianza e monitoraggio dipendenti. #GDPR #privacy #lavoro"
+    },
+    {
+      "id": 74,
+      "title": "Riforma del processo penale: le novità della Riforma Cartabia a due anni dall'entrata in vigore",
+      "content": "A due anni dall'entrata in vigore della Riforma Cartabia (D.lgs. 150/2022), è possibile tracciare un primo bilancio delle novità introdotte nel sistema processuale penale italiano.\n\nTra le innovazioni più significative si segnalano:\n- L'introduzione della giustizia riparativa come paradigma complementare al processo penale tradizionale\n- La riforma dei criteri di priorità nell'esercizio dell'azione penale\n- Le modifiche al regime delle impugnazioni, con l'obiettivo di ridurre i tempi processuali\n- L'ampliamento dell'ambito applicativo dei riti alternativi\n\nLa riforma ha inoltre inciso significativamente sulla disciplina della prescrizione, introducendo il meccanismo dell'improcedibilità per superamento dei termini di durata massima del giudizio di appello e di cassazione.\n\nLo studio LEGALIT, con la propria consolidata esperienza nel diritto penale processuale, accompagna i propri assistiti nell'interpretazione e nell'applicazione delle nuove norme, garantendo una difesa aggiornata e conforme al mutato quadro normativo.",
+      "excerpt": "Bilancio a due anni dalla Riforma Cartabia: giustizia riparativa, nuovi criteri di priorità dell'azione penale e modifiche alle impugnazioni tra le principali novità del processo penale.",
+      "category": "Diritto Penale",
+      "image_url": "/images/news/legislative-reform.jpg",
+      "image_position": "50,50",
+      "image_zoom": 100,
+      "read_time": "5 min",
+      "author_id": "4967b04c-ce29-4764-8b2d-e54b03d8bda2",
+      "author_name": "LEGALIT",
+      "created_at": "2025-04-05T09:30:00.000Z",
+      "updated_at": "2026-02-14T01:47:22.210Z",
+      "document_url": null,
+      "document_name": null,
+      "news_type": "studio",
+      "macro_category": null,
+      "micro_category": null,
+      "linkedin_url": null,
+      "linked_professional_id": null,
+      "linked_professional_ids": null,
+      "linked_practice_area": "diritto-penale",
+      "tags": [],
+      "linkedin_summary": "Riforma Cartabia a due anni: bilancio tra giustizia riparativa, nuovi riti alternativi e improcedibilità. #riformaCartabia #dirittoPenale"
+    },
+    {
+      "id": 75,
+      "title": "Anticorruzione: aggiornamento del Piano Nazionale Anticorruzione e obblighi per gli enti pubblici",
+      "content": "L'ANAC (Autorità Nazionale Anticorruzione) ha emanato le nuove indicazioni per l'aggiornamento dei Piani Triennali di Prevenzione della Corruzione e della Trasparenza (PTPCT), in linea con il Piano Nazionale Anticorruzione.\n\nLe principali novità riguardano:\n- Il rafforzamento degli obblighi di trasparenza per le amministrazioni pubbliche e le società a partecipazione pubblica\n- L'integrazione tra misure anticorruzione e sistemi di compliance 231\n- La valorizzazione del ruolo del Responsabile della Prevenzione della Corruzione e della Trasparenza (RPCT)\n- L'introduzione di nuovi indicatori di rischio per la mappatura dei processi sensibili\n\nPer le società a partecipazione pubblica, le nuove indicazioni richiedono una maggiore integrazione tra il Modello 231 e il Piano Anticorruzione, con l'obiettivo di creare un sistema unitario di prevenzione dei rischi di illegalità.\n\nLo studio LEGALIT, forte dell'esperienza maturata nella consulenza ad enti pubblici e società partecipate, supporta le amministrazioni nell'elaborazione e nell'aggiornamento dei propri piani anticorruzione, nella formazione del personale e nell'implementazione delle misure di trasparenza.",
+      "excerpt": "ANAC: nuove indicazioni per l'aggiornamento dei Piani Anticorruzione. Rafforzati gli obblighi di trasparenza e l'integrazione con i Modelli 231 per le società partecipate.",
+      "category": "Compliance",
+      "image_url": "/images/news/anticorruption.jpg",
+      "image_position": "50,50",
+      "image_zoom": 100,
+      "read_time": "4 min",
+      "author_id": "4967b04c-ce29-4764-8b2d-e54b03d8bda2",
+      "author_name": "LEGALIT",
+      "created_at": "2025-05-12T10:00:00.000Z",
+      "updated_at": "2026-02-14T01:46:03.684Z",
+      "document_url": null,
+      "document_name": null,
+      "news_type": "studio",
+      "macro_category": null,
+      "micro_category": null,
+      "linkedin_url": null,
+      "linked_professional_id": null,
+      "linked_professional_ids": null,
+      "linked_practice_area": "corporate-compliance",
+      "tags": [
+        "diritto-amministrativo"
+      ],
+      "linkedin_summary": "Nuove indicazioni ANAC per i Piani Anticorruzione: più trasparenza e integrazione con i Modelli 231. #anticorruzione #compliance #ANAC"
+    },
+    {
+      "id": 76,
+      "title": "Convegno PRIN 2022 PNRR: Digital Economy, New Technologies and Worker Health Protection",
+      "content": "Il nostro socio Prof. Avv. Pasquale Passalacqua organizza e presiede il convegno conclusivo del progetto PRIN 2022 PNRR sul tema \"DIGITAL ECONOMY, NEW TECHNOLOGIES AND WORKER HEALTH PROTECTION\".\n\nLa ricerca è stata condotta con un approccio interdisciplinare. Interverranno infatti professori universitari di medicina del lavoro, di diritto penale, di diritto del lavoro e di statistica.\n\nIl convegno coinvolge prestigiose istituzioni accademiche tra cui l'Università di Roma Tor Vergata, l'Università Mercatorum e l'Università degli Studi di Pavia.\n\nTra i relatori: Pasquale Passalacqua, Nicola Pisani, Pietro Pozzaglia, Andrea Bollani, Livia Tamburro e Antonio Leonardo Fraioli.\n\nUn'importante occasione di confronto interdisciplinare su temi cruciali come la sicurezza sul lavoro nell'era digitale, la protezione della salute dei lavoratori e le nuove sfide poste dalle tecnologie emergenti nel contesto lavorativo.",
+      "excerpt": "Il Prof. Avv. Passalacqua organizza il convegno conclusivo del progetto PRIN 2022 PNRR su economia digitale, nuove tecnologie e tutela della salute dei lavoratori.",
+      "category": "Diritto del Lavoro",
+      "image_url": null,
+      "image_position": "50,50",
+      "image_zoom": 100,
+      "read_time": "3 min",
+      "author_id": "4967b04c-ce29-4764-8b2d-e54b03d8bda2",
+      "author_name": "LEGALIT",
+      "created_at": "2026-02-19T16:28:43.884Z",
+      "updated_at": "2026-02-19T16:28:43.884Z",
+      "document_url": null,
+      "document_name": null,
+      "news_type": "evento",
+      "macro_category": null,
+      "micro_category": null,
+      "linkedin_url": "https://www.linkedin.com/posts/legalit---avvocati-associati_dirittodellavoro-sicurezzasullavoro-dirittopenaledellavoro-activity-7429207505316220928-XP9W",
+      "linked_professional_id": null,
+      "linked_professional_ids": null,
+      "linked_practice_area": "diritto-lavoro",
+      "tags": [
+        "Diritto del Lavoro",
+        "Sicurezza sul Lavoro",
+        "Diritto Penale del Lavoro",
+        "PRIN",
+        "Convegno"
+      ],
+      "linkedin_summary": "Il nostro socio Prof. Avv. Pasquale Passalacqua organizza e presiede il convegno conclusivo del progetto PRIN 2022 PNRR sul tema \"DIGITAL ECONOMY, NEW TECHNOLOGIES AND WORKER HEALTH PROTECTION\". #DirittoDelLavoro #SicurezzaSulLavoro #DirittoPenaleDelLavoro"
+    },
+    {
+      "id": 77,
+      "title": "Legalit rafforza il Banking & Finance con l'ingresso del Prof. Avv. Stefano Cherti",
+      "content": "LEGALIT RAFFORZA IL BANKING & FINANCE CON L'INGRESSO DEL PROF. AVV. STEFANO CHERTI\n\nLegalit - Avvocati Associati prosegue nel proprio percorso di consolidamento organizzativo e rafforzamento delle practice strategiche annunciando l'ingresso del Prof. Avv. Stefano Cherti.\n\nIl Prof. Avv. Cherti vanta una consolidata esperienza nel Diritto Bancario e finanziario, maturata nell'assistenza a istituti di credito, intermediari finanziari, fondi e imprese industriali in operazioni di finanziamento strutturato, ristrutturazione del debito, operazioni di finanza strutturata e gestione del contenzioso bancario. La sua attività si estende alla consulenza in materia di regolamentazione bancaria, governance degli intermediari e rapporti con le autorità di vigilanza, con particolare attenzione ai profili di compliance e alla gestione del rischio.\n\nAccademico, professore di diritto privato e diritto dell'economia, abilitato alle funzioni di professore ordinario, è titolare di insegnamenti anche in diritto dei contratti bancari e assicurativi. All'attività professionale e accademica affianca una significativa esperienza nel settore degli arbitrati: è stato per molti anni componente dell'Arbitro Bancario Finanziario istituito dalla Banca d'Italia, successivamente membro dell'Arbitro per le Controversie Finanziarie istituito dalla CONSOB e attualmente componente del Collegio dell'Arbitro per le Controversie Assicurative presso IVASS.\n\nCon il suo ingresso, Legalit rafforza in modo significativo la practice Banking & Finance, ampliando la capacità dello Studio di assistere imprese e gruppi industriali nelle operazioni di accesso al credito, ristrutturazione finanziaria e gestione dei rapporti con il sistema bancario, in stretto coordinamento con le aree Corporate, Compliance e Crisi d'Impresa.\n\n«L'ingresso del Prof. Avv. Stefano Cherti, che annunciamo con entusiasmo e orgoglio, rappresenta un passaggio di rilievo nel nostro attuale percorso di crescita che si va sviluppando lungo tre direttrici strategiche: il rafforzamento del modello organizzativo interno per meglio rispondere alle sfide imposte dall'evoluzione della professione, il consolidamento delle practice strategiche per l'assistenza alle imprese, aggregando professionisti di riconosciuto valore come Stefano e, da ultimo ma non per ultimo, l'ulteriore sviluppo territoriale dello Studio», commenta l'Avv. Francesco Vaccaro, Managing Partner di Legalit. «Stefano porta con sé competenze altamente specialistiche e, insieme al suo team – al quale rivolgiamo un caloroso benvenuto – contribuirà a qualificare ulteriormente la nostra presenza nel settore Banking & Finance, consolidando il ruolo di Legalit quale partner delle PMI nella difesa dei diritti, nella gestione dei rischi legali e nella creazione di valore».",
+      "excerpt": "Legalit annuncia l'ingresso del Prof. Avv. Stefano Cherti, rafforzando la practice Banking & Finance con competenze nel diritto bancario, finanziario e nella gestione del contenzioso.",
+      "category": "Compliance",
+      "image_url": null,
+      "image_position": "50,50",
+      "image_zoom": 100,
+      "read_time": "5 min",
+      "author_id": "4967b04c-ce29-4764-8b2d-e54b03d8bda2",
+      "author_name": "LEGALIT",
+      "created_at": "2026-02-19T16:29:22.520Z",
+      "updated_at": "2026-02-19T16:29:22.520Z",
+      "document_url": null,
+      "document_name": null,
+      "news_type": "comunicato",
+      "macro_category": null,
+      "micro_category": null,
+      "linkedin_url": "https://www.linkedin.com/posts/legalit---avvocati-associati_dirittobancario-finanziario-finanziamento-activity-7430138831682768896-QtAH",
+      "linked_professional_id": "22",
+      "linked_professional_ids": null,
+      "linked_practice_area": "banking-finance",
+      "tags": [
+        "Banking & Finance",
+        "Diritto Bancario",
+        "Diritto Finanziario",
         "Compliance",
-        "Responsabilità 231",
-        "Criminalità Ambientale",
-        "Corporate Compliance",
-        "Risk Management",
-        "Governance",
-        "Sostenibilità",
-        "ESG",
-        "Modello 231",
-        "Tutela Ambiente"
-      ]
+        "PMI"
+      ],
+      "linkedin_summary": "LEGALIT RAFFORZA IL BANKING & FINANCE CON L'INGRESSO DEL PROF. AVV. STEFANO CHERTI. Il Prof. Avv. Cherti vanta una consolidata esperienza nel #DirittoBancario e #finanziario. #BankingAndFinance #PMI #CorporateLaw #Compliance"
     }
   ],
   "news_categories": [
@@ -1104,8 +1269,8 @@
     },
     {
       "id": 26,
-      "name": "Diritto Penale d'Impresa",
-      "name_en": "Corporate Criminal Law",
+      "name": "Reati d'Impresa",
+      "name_en": "Corporate Crime",
       "type": "micro",
       "parent_category": "criminal",
       "is_default": "true",
@@ -1151,8 +1316,8 @@
   "site_settings": [
     {
       "key": "linkedin_followers",
-      "value": "833",
-      "updated_at": "2026-02-09T21:52:37.854Z"
+      "value": "880",
+      "updated_at": "2026-02-23T09:42:00.529Z"
     }
   ]
 }

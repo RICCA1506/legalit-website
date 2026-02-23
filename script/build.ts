@@ -1,6 +1,7 @@
 import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
 import { rm, readFile, copyFile, mkdir } from "fs/promises";
+import { execSync } from "child_process";
 
 const allowlist = [
   "@google/generative-ai",
@@ -31,6 +32,13 @@ const allowlist = [
 ];
 
 async function buildAll() {
+  console.log("exporting dev data to dev_data.json...");
+  try {
+    execSync("npx tsx server/exportDevData.ts", { stdio: "inherit" });
+  } catch (e) {
+    console.log("dev data export skipped (no database or error)");
+  }
+
   await rm("dist", { recursive: true, force: true });
 
   console.log("building client...");

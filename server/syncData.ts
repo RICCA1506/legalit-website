@@ -84,10 +84,10 @@ export async function syncDevDataToCurrentDb() {
 
     for (const prof of data.professionals) {
       await client.query(
-        `INSERT INTO professionals (id, name, title, office, email, phone, full_bio, education, languages, image_url, order_index, created_at, updated_at, specializations, role, pec) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+        `INSERT INTO professionals (id, name, title, office, email, phone, full_bio, education, languages, image_url, image_position, image_zoom, order_index, created_at, updated_at, specializations, role, pec) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
          ON CONFLICT (id) DO NOTHING`,
-        [prof.id, prof.name, prof.title, prof.office, prof.email, prof.phone, prof.full_bio, prof.education, prof.languages, prof.image_url, prof.order_index, prof.created_at, prof.updated_at, prof.specializations, prof.role, prof.pec]
+        [prof.id, prof.name, prof.title, prof.office, prof.email, prof.phone, prof.full_bio, prof.education, prof.languages, prof.image_url, prof.image_position || "center", prof.image_zoom || 100, prof.order_index, prof.created_at, prof.updated_at, prof.specializations, prof.role, prof.pec]
       );
     }
     console.log(`[Sync] Inserted ${data.professionals.length} professionals`);
@@ -95,10 +95,10 @@ export async function syncDevDataToCurrentDb() {
 
     for (const article of data.news_articles) {
       await client.query(
-        `INSERT INTO news_articles (id, title, content, excerpt, category, image_url, read_time, author_id, author_name, created_at, updated_at, document_url, document_name, news_type, macro_category, micro_category, linkedin_url, linked_professional_id, linked_practice_area, tags) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+        `INSERT INTO news_articles (id, title, content, excerpt, category, image_url, image_position, image_zoom, read_time, author_id, author_name, created_at, updated_at, document_url, document_name, news_type, macro_category, micro_category, linkedin_url, linked_professional_id, linked_professional_ids, linked_practice_area, tags, linkedin_summary) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
          ON CONFLICT (id) DO NOTHING`,
-        [article.id, article.title, article.content, article.excerpt, article.category, article.image_url, article.read_time, article.author_id, article.author_name, article.created_at, article.updated_at, article.document_url, article.document_name, article.news_type, article.macro_category, article.micro_category, article.linkedin_url, article.linked_professional_id, article.linked_practice_area, article.tags]
+        [article.id, article.title, article.content, article.excerpt, article.category, article.image_url, article.image_position || "50,50", article.image_zoom || 100, article.read_time, article.author_id, article.author_name, article.created_at, article.updated_at, article.document_url, article.document_name, article.news_type, article.macro_category, article.micro_category, article.linkedin_url, article.linked_professional_id, article.linked_professional_ids, article.linked_practice_area, article.tags, article.linkedin_summary]
       );
     }
     console.log(`[Sync] Inserted ${data.news_articles.length} news articles`);

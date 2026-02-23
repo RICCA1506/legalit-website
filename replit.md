@@ -117,6 +117,15 @@ Preferred communication style: Simple, everyday language.
 - Bundled dependencies reduce filesystem syscalls for faster cold starts
 - Separate client and server build processes
 - TypeScript compilation checking via tsc
+- Build automatically exports dev database to dev_data.json before building (via server/exportDevData.ts)
+
+**Automatic Data Sync (Dev → Production)**
+- On every production deploy, seed.ts triggers a full data sync from dev_data.json
+- syncDevDataToCurrentDb() in server/syncData.ts wipes and reloads: users, professionals, news_articles, news_categories, newsletter_subscribers, site_settings
+- Requires SEED_USER_PASSWORD env var to hash passwords during sync
+- Build process (script/build.ts) exports current dev database to dev_data.json, then copies it to dist/
+- This ensures production always matches the development database state on each deploy
+- server/exportDevData.ts can also be run standalone: `npx tsx server/exportDevData.ts`
 
 **Automatic Schema Sync**
 - server/migrate.ts runs ensureSchema() at server startup (before seed and routes)
