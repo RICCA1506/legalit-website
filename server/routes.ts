@@ -71,13 +71,7 @@ export async function registerRoutes(
   app.get("/robots.txt", (_req, res) => {
     res.type("text/plain").send(
 `User-agent: *
-Allow: /
-Disallow: /area-riservata
-Disallow: /login
-Disallow: /registrazione
-Disallow: /password-dimenticata
-Disallow: /reset-password
-Disallow: /api/
+Disallow: /
 
 Sitemap: ${SITE_URL}/sitemap.xml`
     );
