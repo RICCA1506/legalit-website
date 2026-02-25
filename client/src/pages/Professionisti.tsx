@@ -300,12 +300,12 @@ export default function Professionisti() {
             </div>
           </AnimatedElement>
 
-          <StaggerContainer staggerDelay={0.08} className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6">
+          <StaggerContainer staggerDelay={0.08} className="flex flex-wrap justify-center gap-2 md:gap-6">
             {filteredProfessionals.map((professional) => (
               <motion.div
                 key={professional.id}
                 variants={staggerItemVariants(40, 0.5)}
-                className="cursor-pointer min-w-0"
+                className="cursor-pointer min-w-0 w-[calc(33.333%-0.375rem)] md:w-[calc(33.333%-1.25rem)] lg:w-[calc(25%-1.125rem)]"
               >
                 <button
                   onClick={() => setSelectedProfessional(professional)}
