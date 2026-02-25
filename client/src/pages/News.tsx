@@ -427,9 +427,9 @@ export default function News() {
             </div>
           ) : filteredStudioNews.length > 0 ? (
             <>
-              <StaggerContainer staggerDelay={0.1} className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 lg:gap-8">
+              <StaggerContainer staggerDelay={0.1} className="flex flex-wrap justify-center gap-3 md:gap-6 lg:gap-8">
                 {paginatedStudioNews.map((article) => (
-                  <motion.div key={article.id} variants={staggerItemVariants(30, 0.5)}>
+                  <motion.div key={article.id} variants={staggerItemVariants(30, 0.5)} className="w-[calc(50%-0.375rem)] lg:w-[calc(33.333%-1.375rem)]">
                     <NewsCard article={article} />
                   </motion.div>
                 ))}
