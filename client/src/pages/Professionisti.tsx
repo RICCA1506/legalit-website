@@ -152,9 +152,9 @@ export default function Professionisti() {
           return aRoleOrder - bRoleOrder;
         }
         
-        const aId = parseInt(String(a.id)) || 999;
-        const bId = parseInt(String(b.id)) || 999;
-        return aId - bId;
+        const aOrder = (a as any).orderIndex ?? (a as any).order_index ?? 999;
+        const bOrder = (b as any).orderIndex ?? (b as any).order_index ?? 999;
+        return aOrder - bOrder;
       });
   }, [professionals, selectedRole, selectedOffice, selectedArea, searchQuery]);
 

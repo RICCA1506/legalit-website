@@ -220,12 +220,12 @@ const translations: Translations = {
     en: "we are here to defend them"
   },
   "cta.description": {
-    it: "Prioritizziamo le esigenze dei nostri clienti, comprendendo che ogni caso è unico. Il nostro team di avvocati esperti è impegnato a fornire soluzioni personalizzate.",
-    en: "We prioritise our clients' needs, understanding that every case is unique. Our team of expert lawyers is committed to providing tailored solutions."
+    it: "Contattaci per sottoporci il tuo caso o richiedere consulenza.",
+    en: "Contact us to submit your case or request a consultation."
   },
   "cta.button": {
-    it: "Richiedi Consulenza Gratuita",
-    en: "Request a Free Consultation"
+    it: "Contattaci",
+    en: "Contact Us"
   },
   "cta.linkedin": {
     it: "Seguici su LinkedIn",

@@ -78,13 +78,6 @@ export default function Footer() {
     }
   };
   
-  const services = [
-    { key: "services.civilLaw", label: t("services.civilLaw") },
-    { key: "services.criminalLaw", label: t("services.criminalLaw") },
-    { key: "services.laborLaw", label: t("services.laborLaw") },
-    { key: "services.adminLaw", label: t("services.adminLaw") },
-  ];
-
   const toggleLanguage = () => {
     setLanguage(language === "it" ? "en" : "it");
   };
@@ -92,7 +85,7 @@ export default function Footer() {
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="w-full px-5 md:px-12 lg:px-16 py-8 md:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
           <div>
             <Link href="/" className="flex items-center mb-6" data-testid="link-footer-logo">
               <img src={legalitLogo} alt="Legalit - Società tra Avvocati" className="h-14 w-auto brightness-0 invert" loading="lazy" decoding="async" />
@@ -114,20 +107,6 @@ export default function Footer() {
                 </a>
               </Button>
             </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-lg mb-6">{t("footer.services")}</h4>
-            <ul className="space-y-3">
-              {services.map((service) => (
-                <li key={service.key}>
-                  <Link href="/attivita" className="text-white/70 hover:text-white transition-colors flex items-center gap-2">
-                    <ArrowRight className="h-3 w-3" />
-                    {service.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
           </div>
 
           <div>

@@ -64,11 +64,11 @@ const getImagePosition = (imageUrl: string | null | undefined, imagePosition?: s
   const crop = parseCropPosition(imagePosition);
   if (crop) return crop.objectPosition;
   if (imagePosition && imagePosition !== "center") return `center ${imagePosition}`;
-  if (!imageUrl) return "center";
+  if (!imageUrl) return "center top";
   if (imageUrl.includes('b1de960e-f2c8-4506')) {
     return "center top";
   }
-  return "center";
+  return "center top";
 };
 
 const getTransformOrigin = (imagePosition?: string | null): string | undefined => {
@@ -209,7 +209,7 @@ export default function ProfessionalModal({ professional, isOpen, onClose, relat
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1, duration: 0.4 }}
-                className={`w-24 h-32 md:w-40 md:h-52 rounded-lg overflow-hidden flex-shrink-0 shadow-lg ${isLogoPlaceholder(professional.imageUrl) ? 'bg-white' : 'bg-white/10'}`}
+                className={`w-28 h-36 md:w-40 md:h-52 rounded-lg overflow-hidden flex-shrink-0 shadow-lg ${isLogoPlaceholder(professional.imageUrl) ? 'bg-white' : 'bg-white/10'}`}
               >
                 <ProfessionalImage imageUrl={professional.imageUrl} name={professional.name} imagePosition={professional.imagePosition} imageZoom={professional.imageZoom} />
               </motion.div>

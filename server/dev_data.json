@@ -57,7 +57,7 @@
       "image_url": "/attached_assets/avv-fabiana-liberati.jpg",
       "image_position": "top",
       "image_zoom": 100,
-      "order_index": 1,
+      "order_index": 2,
       "created_at": "2025-12-11T23:56:10.918Z",
       "updated_at": "2026-02-11T16:20:32.229Z",
       "specializations": [
@@ -86,7 +86,7 @@
       "image_url": "/attached_assets/avv-luigi-passalacqua.jpg",
       "image_position": "65,0",
       "image_zoom": 100,
-      "order_index": 2,
+      "order_index": 4,
       "created_at": "2025-12-11T23:56:10.932Z",
       "updated_at": "2026-02-11T23:01:57.137Z",
       "specializations": [
@@ -114,7 +114,7 @@
       "image_url": "/attached_assets/avv-francesco-vaccaro.jpg",
       "image_position": "top",
       "image_zoom": 100,
-      "order_index": 3,
+      "order_index": 1,
       "created_at": "2025-12-11T23:56:10.937Z",
       "updated_at": "2025-12-11T23:56:10.937Z",
       "specializations": [
@@ -148,7 +148,7 @@
       "image_url": "/attached_assets/prof-avv-pasquale-passalacqua.jpg",
       "image_position": "60,0",
       "image_zoom": 100,
-      "order_index": 4,
+      "order_index": 3,
       "created_at": "2025-12-11T23:56:10.941Z",
       "updated_at": "2026-02-19T23:21:59.017Z",
       "specializations": [
@@ -208,7 +208,7 @@
       "image_url": "/attached_assets/avv-alessandro-santomauro.jpg",
       "image_position": "50,50",
       "image_zoom": 100,
-      "order_index": 6,
+      "order_index": 8,
       "created_at": "2025-12-11T23:56:10.946Z",
       "updated_at": "2026-02-11T23:06:35.051Z",
       "specializations": [
@@ -236,7 +236,7 @@
       "image_url": "/attached_assets/avv-francesco-pastorello.jpg",
       "image_position": "top",
       "image_zoom": 100,
-      "order_index": 7,
+      "order_index": 9,
       "created_at": "2025-12-11T23:56:10.960Z",
       "updated_at": "2025-12-11T23:56:10.960Z",
       "specializations": [
@@ -266,7 +266,7 @@
       "image_url": "/attached_assets/avv-bernardo-fabbri.jpg",
       "image_position": "top",
       "image_zoom": 100,
-      "order_index": 8,
+      "order_index": 10,
       "created_at": "2025-12-11T23:56:10.964Z",
       "updated_at": "2025-12-11T23:56:10.964Z",
       "specializations": [
@@ -297,7 +297,7 @@
       "image_url": "/attached_assets/avv-carmine-andrea-silvestri.jpg",
       "image_position": "35,57",
       "image_zoom": 105,
-      "order_index": 9,
+      "order_index": 11,
       "created_at": "2025-12-11T23:56:10.967Z",
       "updated_at": "2026-02-11T23:03:51.792Z",
       "specializations": [
@@ -328,7 +328,7 @@
       "image_url": "/attached_assets/avv-claudio-iafrate.jpg",
       "image_position": "51,8",
       "image_zoom": 100,
-      "order_index": 10,
+      "order_index": 17,
       "created_at": "2025-12-11T23:56:10.972Z",
       "updated_at": "2026-02-11T23:04:02.005Z",
       "specializations": [
@@ -360,7 +360,7 @@
       "image_url": "/attached_assets/avv-lorenzo-ferrara.jpg",
       "image_position": "top",
       "image_zoom": 100,
-      "order_index": 11,
+      "order_index": 18,
       "created_at": "2025-12-11T23:56:10.977Z",
       "updated_at": "2025-12-11T23:56:10.977Z",
       "specializations": [
@@ -387,7 +387,7 @@
       "image_url": "/attached_assets/avv-stefano-cherti.jpg",
       "image_position": "30,47",
       "image_zoom": 135,
-      "order_index": 12,
+      "order_index": 15,
       "created_at": "2026-01-25T21:42:08.794Z",
       "updated_at": "2026-02-18T21:20:56.318Z",
       "specializations": [
@@ -420,7 +420,7 @@
       "image_url": "/attached_assets/logo_legalit_cropped_(1)_1771133031977_1771461171783.png",
       "image_position": "top",
       "image_zoom": 100,
-      "order_index": 13,
+      "order_index": 16,
       "created_at": "2025-12-11T23:56:10.980Z",
       "updated_at": "2025-12-11T23:56:10.980Z",
       "specializations": [
@@ -448,7 +448,7 @@
       "image_url": "/attached_assets/upload_d5e5f8cb-5267-4845-bfe9-f7b0512e0aa9.png",
       "image_position": "55,33",
       "image_zoom": 115,
-      "order_index": 14,
+      "order_index": 6,
       "created_at": "2026-01-25T21:42:08.794Z",
       "updated_at": "2026-02-20T00:16:31.021Z",
       "specializations": [
@@ -473,7 +473,7 @@
       "image_url": "/attached_assets/avv-giovanni-puntarello.jpg",
       "image_position": "55,19",
       "image_zoom": 130,
-      "order_index": 15,
+      "order_index": 7,
       "created_at": "2026-01-25T21:42:25.222Z",
       "updated_at": "2026-02-19T00:43:39.964Z",
       "specializations": [
@@ -504,7 +504,7 @@
       "image_url": "/attached_assets/logo_legalit_cropped_(1)_1771133031977_1771461171783.png",
       "image_position": "top",
       "image_zoom": 100,
-      "order_index": 16,
+      "order_index": 12,
       "created_at": "2025-12-11T23:56:10.987Z",
       "updated_at": "2025-12-11T23:56:10.987Z",
       "specializations": [
@@ -532,7 +532,7 @@
       "image_url": "/attached_assets/upload_81f2881b-e0c2-42a7-9324-1828dd9e0924.png",
       "image_position": "89,40",
       "image_zoom": 120,
-      "order_index": 17,
+      "order_index": 14,
       "created_at": "2025-12-11T23:56:10.990Z",
       "updated_at": "2026-02-19T23:20:56.338Z",
       "specializations": [
@@ -555,7 +555,7 @@
       "image_url": "/attached_assets/upload_a19fa7e9-cace-47c1-abce-4bbec5c478be.png",
       "image_position": "58,96",
       "image_zoom": 120,
-      "order_index": 18,
+      "order_index": 13,
       "created_at": "2026-01-25T21:42:25.222Z",
       "updated_at": "2026-02-19T23:20:42.432Z",
       "specializations": [

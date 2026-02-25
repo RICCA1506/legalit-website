@@ -298,7 +298,6 @@ export const offices = [
 ];
 
 export const professionals = [
-  // 1. Francesco Vaccaro - Managing Partner
   {
     id: "1",
     name: "Avv. Francesco Vaccaro",
@@ -312,38 +311,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano", "Inglese"],
     imageUrl: "/attached_assets/avv-francesco-vaccaro.jpg",
+    orderIndex: 1,
   },
-  // 2. Renato Piero Biasci - Partner
-  {
-    id: "2",
-    name: "Avv. Renato Piero Biasci",
-    title: "Partner",
-    role: "Partner",
-    specializations: ["diritto-civile-commerciale", "recupero-crediti", "diritto-assicurazioni", "crisi-impresa", "real-estate", "tutela-patrimoni"],
-    office: "Roma",
-    email: "r.biasci@legalit.it",
-    pec: "renatopierobiasci@ordineavvocatiroma.org",
-    phone: "+39 06 3213911",
-    education: [],
-    languages: ["Italiano", "Inglese"],
-    imageUrl: "/attached_assets/avv-renato-piero-biasci.jpg",
-  },
-  // 3. Pasquale Passalacqua - Partner
-  {
-    id: "3",
-    name: "Prof. Avv. Pasquale Passalacqua",
-    title: "Partner",
-    role: "Partner",
-    specializations: ["diritto-lavoro"],
-    office: "Roma",
-    email: "p.passalacqua@legalit.it",
-    pec: "pasqualepassalacqua@ordineavvocatiroma.org",
-    phone: "+39 06 3213911",
-    education: [],
-    languages: ["Italiano", "Inglese"],
-    imageUrl: "/attached_assets/prof-avv-pasquale-passalacqua.jpg",
-  },
-  // 4. Fabiana Liberati - Partner
   {
     id: "4",
     name: "Avv. Fabiana Liberati",
@@ -358,8 +327,23 @@ export const professionals = [
     languages: ["Italiano", "Inglese"],
     imageUrl: "/attached_assets/avv-fabiana-liberati.jpg",
     linkedin: "https://www.linkedin.com/in/fabiana-liberati-392a558a/",
+    orderIndex: 2,
   },
-  // 5. Luigi Passalacqua - Partner
+  {
+    id: "3",
+    name: "Prof. Avv. Pasquale Passalacqua",
+    title: "Partner",
+    role: "Partner",
+    specializations: ["diritto-lavoro"],
+    office: "Roma",
+    email: "p.passalacqua@legalit.it",
+    pec: "pasqualepassalacqua@ordineavvocatiroma.org",
+    phone: "+39 06 3213911",
+    education: [],
+    languages: ["Italiano", "Inglese"],
+    imageUrl: "/attached_assets/prof-avv-pasquale-passalacqua.jpg",
+    orderIndex: 3,
+  },
   {
     id: "5",
     name: "Avv. Luigi Passalacqua",
@@ -373,8 +357,23 @@ export const professionals = [
     education: [],
     languages: ["Italiano", "Inglese", "Spagnolo"],
     imageUrl: "/attached_assets/avv-luigi-passalacqua.jpg",
+    orderIndex: 4,
   },
-  // 6. Giorgio Ialongo - Partner
+  {
+    id: "2",
+    name: "Avv. Renato Piero Biasci",
+    title: "Partner",
+    role: "Partner",
+    specializations: ["diritto-civile-commerciale", "recupero-crediti", "diritto-assicurazioni", "crisi-impresa", "real-estate", "tutela-patrimoni"],
+    office: "Roma",
+    email: "r.biasci@legalit.it",
+    pec: "renatopierobiasci@ordineavvocatiroma.org",
+    phone: "+39 06 3213911",
+    education: [],
+    languages: ["Italiano", "Inglese"],
+    imageUrl: "/attached_assets/avv-renato-piero-biasci.jpg",
+    orderIndex: 5,
+  },
   {
     id: "6",
     name: "Avv. Giorgio Ialongo",
@@ -388,83 +387,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "/attached_assets/a26569b4-aaef-4298-84cd-714dc18648bf_1771450876374.png",
+    orderIndex: 6,
   },
-  // 7. Alessandro Santomauro - Partner
-  {
-    id: "7",
-    name: "Avv. Alessandro Santomauro",
-    title: "Partner",
-    role: "Partner",
-    specializations: ["diritto-civile-commerciale", "diritto-societario-ma"],
-    office: "Roma",
-    email: "a.santomauro@legalit.it",
-    pec: "alessandrosantomauro@ordineavvocatiroma.org",
-    phone: "+39 06 3213911",
-    education: [],
-    languages: ["Italiano", "Inglese"],
-    imageUrl: "/attached_assets/avv-alessandro-santomauro.jpg",
-  },
-  // 8. Francesco Pastorello - Partner
-  {
-    id: "8",
-    name: "Avv. Francesco Pastorello",
-    title: "Partner",
-    role: "Partner",
-    specializations: ["diritto-penale", "corporate-compliance", "diritto-sanitario"],
-    office: "Roma",
-    email: "f.pastorello@legalit.it",
-    pec: "francescopastorello@ordineavvocatiroma.org",
-    phone: "+39 06 3213911",
-    education: [],
-    languages: ["Italiano", "Inglese"],
-    imageUrl: "",
-  },
-  // 9. Bernardo Fabbri - Partner
-  {
-    id: "9",
-    name: "Avv. Bernardo Fabbri",
-    title: "Partner",
-    role: "Partner",
-    specializations: ["diritto-penale", "corporate-compliance", "privacy-cybersecurity", "tutela-patrimoni"],
-    office: "Roma",
-    email: "b.fabbri@legalit.it",
-    pec: "bernardofabbri@ordineavvocatiroma.org",
-    phone: "+39 06 3213911",
-    education: [],
-    languages: ["Italiano", "Inglese"],
-    imageUrl: "",
-  },
-  // 10. Carmine Andrea Silvestri - Partner
-  {
-    id: "10",
-    name: "Avv. Carmine Andrea Silvestri",
-    title: "Partner",
-    role: "Partner",
-    specializations: ["diritto-societario-ma", "diritto-civile-commerciale", "recupero-crediti", "crisi-impresa", "diritto-penale"],
-    office: "Roma",
-    email: "a.silvestri@legalit.it",
-    pec: "a_silvestri@legalmail.it",
-    phone: "+39 06 3213911",
-    education: [],
-    languages: ["Italiano", "Inglese"],
-    imageUrl: "",
-  },
-  // 11. Sonja Puglionisi - Partner
-  {
-    id: "11",
-    name: "Avv. Sonja Puglionisi",
-    title: "Partner",
-    role: "Partner",
-    specializations: ["diritto-lavoro"],
-    office: "Roma",
-    email: "s.puglionisi@legalit.it",
-    pec: "sonjapuglionisi@ordineavvocatiroma.org",
-    phone: "+39 06 3213911",
-    education: [],
-    languages: ["Italiano", "Inglese"],
-    imageUrl: "",
-  },
-  // 12. Giovanni Puntarello - Partner (Palermo)
   {
     id: "12",
     name: "Avv. Giovanni Puntarello",
@@ -478,8 +402,68 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "/attached_assets/avv-giovanni-puntarello.jpg",
+    orderIndex: 7,
   },
-  // 15. Carmelina Adamo - Partner (Milano)
+  {
+    id: "7",
+    name: "Avv. Alessandro Santomauro",
+    title: "Partner",
+    role: "Partner",
+    specializations: ["diritto-civile-commerciale", "diritto-societario-ma"],
+    office: "Roma",
+    email: "a.santomauro@legalit.it",
+    pec: "alessandrosantomauro@ordineavvocatiroma.org",
+    phone: "+39 06 3213911",
+    education: [],
+    languages: ["Italiano", "Inglese"],
+    imageUrl: "/attached_assets/avv-alessandro-santomauro.jpg",
+    orderIndex: 8,
+  },
+  {
+    id: "8",
+    name: "Avv. Francesco Pastorello",
+    title: "Partner",
+    role: "Partner",
+    specializations: ["diritto-penale", "corporate-compliance", "diritto-sanitario"],
+    office: "Roma",
+    email: "f.pastorello@legalit.it",
+    pec: "francescopastorello@ordineavvocatiroma.org",
+    phone: "+39 06 3213911",
+    education: [],
+    languages: ["Italiano", "Inglese"],
+    imageUrl: "",
+    orderIndex: 9,
+  },
+  {
+    id: "9",
+    name: "Avv. Bernardo Fabbri",
+    title: "Partner",
+    role: "Partner",
+    specializations: ["diritto-penale", "corporate-compliance", "privacy-cybersecurity", "tutela-patrimoni"],
+    office: "Roma",
+    email: "b.fabbri@legalit.it",
+    pec: "bernardofabbri@ordineavvocatiroma.org",
+    phone: "+39 06 3213911",
+    education: [],
+    languages: ["Italiano", "Inglese"],
+    imageUrl: "",
+    orderIndex: 10,
+  },
+  {
+    id: "10",
+    name: "Avv. Carmine Andrea Silvestri",
+    title: "Partner",
+    role: "Partner",
+    specializations: ["diritto-societario-ma", "diritto-civile-commerciale", "recupero-crediti", "crisi-impresa", "diritto-penale"],
+    office: "Roma",
+    email: "a.silvestri@legalit.it",
+    pec: "a_silvestri@legalmail.it",
+    phone: "+39 06 3213911",
+    education: [],
+    languages: ["Italiano", "Inglese"],
+    imageUrl: "",
+    orderIndex: 11,
+  },
   {
     id: "15",
     name: "Avv. Carmelina Adamo",
@@ -493,8 +477,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "",
+    orderIndex: 12,
   },
-  // 16. Elena Preite - Partner (Milano)
   {
     id: "16",
     name: "Avv. Elena Preite",
@@ -508,8 +492,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "",
+    orderIndex: 13,
   },
-  // 17. Tommaso Giannini - Partner (Milano)
   {
     id: "17",
     name: "Avv. Tommaso Giannini",
@@ -523,8 +507,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "",
+    orderIndex: 14,
   },
-  // 18. Stefano Cherti - Of Counsel
   {
     id: "18",
     name: "Prof. Avv. Stefano Cherti",
@@ -538,8 +522,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano", "Inglese"],
     imageUrl: "",
+    orderIndex: 15,
   },
-  // 19. Laura Stefanelli - Of Counsel
   {
     id: "19",
     name: "Avv. Laura Stefanelli",
@@ -553,8 +537,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "",
+    orderIndex: 16,
   },
-  // 20. Claudio Iafrate - Senior Associate
   {
     id: "20",
     name: "Avv. Claudio Iafrate",
@@ -568,23 +552,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "",
+    orderIndex: 17,
   },
-  // 21. Flavia Cracchiolo - Senior Associate
-  {
-    id: "21",
-    name: "Avv. Flavia Cracchiolo",
-    title: "Senior Associate",
-    role: "Senior Associate",
-    specializations: ["diritto-lavoro"],
-    office: "Roma",
-    email: "f.cracchiolo@legalit.it",
-    pec: "f.cracchiolo@ordineavvocatiroma.org",
-    phone: "+39 06 3213911",
-    education: [],
-    languages: ["Italiano"],
-    imageUrl: "",
-  },
-  // 22. Lorenzo Ferrara - Senior Associate
   {
     id: "22",
     name: "Avv. Lorenzo Ferrara",
@@ -598,8 +567,23 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "",
+    orderIndex: 18,
   },
-  // 23. Sabrina Causa - Senior Associate (Palermo)
+  {
+    id: "21",
+    name: "Avv. Flavia Cracchiolo",
+    title: "Senior Associate",
+    role: "Senior Associate",
+    specializations: ["diritto-lavoro"],
+    office: "Roma",
+    email: "f.cracchiolo@legalit.it",
+    pec: "f.cracchiolo@ordineavvocatiroma.org",
+    phone: "+39 06 3213911",
+    education: [],
+    languages: ["Italiano"],
+    imageUrl: "",
+    orderIndex: 19,
+  },
   {
     id: "23",
     name: "Avv. Sabrina Causa",
@@ -613,8 +597,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "/attached_assets/avv-sabrina-causa.jpg",
+    orderIndex: 20,
   },
-  // 24. Paola Saladino - Senior Associate (Palermo)
   {
     id: "24",
     name: "Avv. Paola Saladino",
@@ -628,8 +612,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "/attached_assets/avv-paola-saladino.jpg",
+    orderIndex: 21,
   },
-  // 25. Luciana Maria Russo - Senior Associate (Palermo)
   {
     id: "25",
     name: "Avv. Luciana Maria Russo",
@@ -643,8 +627,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "/attached_assets/avv-luciana-maria-russo.jpg",
+    orderIndex: 22,
   },
-  // 26. Calogero Gianluca Rizzuto - Senior Associate (Palermo)
   {
     id: "26",
     name: "Avv. Calogero Gianluca Rizzuto",
@@ -658,8 +642,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "",
+    orderIndex: 23,
   },
-  // 27. Riccardo Costa - Associate (Palermo)
   {
     id: "27",
     name: "Avv. Riccardo Costa",
@@ -673,8 +657,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "/attached_assets/avv-riccardo-costa.jpg",
+    orderIndex: 24,
   },
-  // 28. Alessandro Maria Miliziano - Associate (Palermo)
   {
     id: "28",
     name: "Avv. Alessandro Maria Miliziano",
@@ -688,8 +672,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "/attached_assets/avv-alessandro-miliziano.jpg",
+    orderIndex: 25,
   },
-  // 29. Marco Pauletti - Trainee
   {
     id: "29",
     name: "Dott. Marco Pauletti",
@@ -703,8 +687,8 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "",
+    orderIndex: 26,
   },
-  // 30. Angela Martina Tortorici - Trainee (Palermo)
   {
     id: "30",
     name: "Dott. Angela Martina Tortorici",
@@ -718,6 +702,7 @@ export const professionals = [
     education: [],
     languages: ["Italiano"],
     imageUrl: "/attached_assets/avv-angela-martina-tortorici.jpg",
+    orderIndex: 27,
   },
 ];
 

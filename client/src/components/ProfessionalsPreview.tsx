@@ -39,7 +39,7 @@ const getCropStyle = (position?: string | null, zoom?: number | null): React.CSS
     if (!isNaN(y)) oy = y;
   } else if (position === "top") { oy = 15; }
   else if (position === "bottom") { oy = 85; }
-  if (z === 100 && ox === 50 && oy === 50) return { objectPosition: "center" };
+  if (z === 100 && ox === 50 && oy === 50) return { objectPosition: "center top" };
   return { objectPosition: `${ox}% ${oy}%`, transform: `scale(${z / 100})`, transformOrigin: `${ox}% ${oy}%` };
 };
 

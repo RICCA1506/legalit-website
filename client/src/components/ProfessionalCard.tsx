@@ -67,11 +67,11 @@ const getImagePosition = (imageUrl: string | null | undefined, imagePosition?: s
   const crop = parseCropPosition(imagePosition);
   if (crop) return crop.objectPosition;
   if (imagePosition && imagePosition !== "center") return `center ${imagePosition}`;
-  if (!imageUrl) return "center";
+  if (!imageUrl) return "center top";
   if (imageUrl.includes('b1de960e-f2c8-4506')) {
     return "center top";
   }
-  return "center";
+  return "center top";
 };
 
 const getTransformOrigin = (imagePosition?: string | null): string | undefined => {
