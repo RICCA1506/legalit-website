@@ -176,22 +176,6 @@ export default function Professionisti() {
       
       <section className="py-10 md:py-16 relative z-10">
         <div className="w-full px-5 md:px-12 lg:px-16 relative z-10">
-          <AnimatedElement className="max-w-4xl mb-8 md:mb-12">
-            <LandoReveal
-              text={language === "it" 
-                ? "Il nostro team di esperti" 
-                : "Our team of experts"}
-              as="h2"
-              className="text-xl md:text-2xl lg:text-3xl text-foreground mb-3 md:mb-4 text-brutalist"
-              delay={100}
-            />
-            <p className="text-muted-foreground text-[15px] md:text-lg">
-              {language === "it" 
-                ? "Professionisti altamente qualificati, pronti ad affiancarti con competenza e passione in ogni ambito del diritto."
-                : "Highly qualified professionals, ready to support you with competence and passion in every area of law."}
-            </p>
-          </AnimatedElement>
-
           <AnimatedElement delay={100} className="mb-6 md:mb-10">
             <div className="bg-muted/30 rounded-xl p-4 md:p-6 border border-border">
               <div className="flex items-center gap-2 text-sm font-medium text-foreground mb-4">
