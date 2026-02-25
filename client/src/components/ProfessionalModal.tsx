@@ -191,7 +191,7 @@ export default function ProfessionalModal({ professional, isOpen, onClose, relat
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
-      <DialogContent aria-describedby={undefined} className="max-w-[92vw] md:max-w-5xl lg:max-w-6xl max-h-[90vh] p-0 gap-0 overflow-hidden border-0 [&>button]:text-white [&>button]:z-[10]" onOpenAutoFocus={(e) => e.preventDefault()} data-testid="modal-professional">
+      <DialogContent aria-describedby={undefined} className="max-w-[92vw] md:max-w-5xl lg:max-w-6xl max-h-[90dvh] p-0 gap-0 overflow-hidden border-0 [&>button]:text-white [&>button]:z-[10]" onOpenAutoFocus={(e) => e.preventDefault()} data-testid="modal-professional">
         <VisuallyHidden>
           <DialogTitle>{professional.name}</DialogTitle>
         </VisuallyHidden>
@@ -200,7 +200,7 @@ export default function ProfessionalModal({ professional, isOpen, onClose, relat
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.3, ease: [0.215, 0.61, 0.355, 1] }}
-          className="flex flex-col h-full max-h-[90vh] overflow-y-auto"
+          className="flex flex-col h-full max-h-[90dvh] overflow-y-auto"
           data-lenis-prevent
         >
           <div className="p-4 md:p-8 border-b bg-primary flex-shrink-0">
@@ -209,7 +209,7 @@ export default function ProfessionalModal({ professional, isOpen, onClose, relat
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1, duration: 0.4 }}
-                className={`w-28 h-36 md:w-40 md:h-52 rounded-lg overflow-hidden flex-shrink-0 shadow-lg ${isLogoPlaceholder(professional.imageUrl) ? 'bg-white' : 'bg-white/10'}`}
+                className={`w-32 h-44 md:w-40 md:h-52 rounded-lg overflow-hidden flex-shrink-0 shadow-lg ${isLogoPlaceholder(professional.imageUrl) ? 'bg-white' : 'bg-white/10'}`}
               >
                 <ProfessionalImage imageUrl={professional.imageUrl} name={professional.name} imagePosition={professional.imagePosition} imageZoom={professional.imageZoom} />
               </motion.div>
