@@ -581,7 +581,7 @@ export const professionals = [
     phone: "+39 06 3213911",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "",
+    imageUrl: "/attached_assets/upload_2305f8af-89af-490e-af96-2275eff3bdda.png",
     orderIndex: 19,
   },
   {
