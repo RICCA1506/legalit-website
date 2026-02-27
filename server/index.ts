@@ -9,6 +9,12 @@ import { createServer } from "http";
 import path from "path";
 import fs from "fs";
 
+declare module "express-session" {
+  interface SessionData {
+    siteAccessGranted?: boolean;
+  }
+}
+
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -134,6 +140,37 @@ app.use((req, res, next) => {
   await seedAdminUser();
   await registerRoutes(httpServer, app);
 
+  const sitePassword = process.env.SITE_PASSWORD;
+  if (sitePassword) {
+    const gateHtmlPath = path.resolve(process.cwd(), "server/site-gate.html");
+    const gateHtml = fs.readFileSync(gateHtmlPath, "utf-8");
+
+    app.post("/api/site-access", (req: Request, res: Response) => {
+      const { password } = req.body || {};
+      if (password === sitePassword) {
+        req.session.siteAccessGranted = true;
+        req.session.save(() => {
+          res.json({ success: true });
+        });
+      } else {
+        res.status(401).json({ message: "Password non corretta" });
+      }
+    });
+
+    app.use((req: Request, res: Response, next: NextFunction) => {
+      if (
+        req.path === "/api/site-access" ||
+        req.path.startsWith("/api/auth/") ||
+        req.session?.siteAccessGranted
+      ) {
+        return next();
+      }
+      res.status(200).type("html").send(gateHtml);
+    });
+
+    log("Site password gate enabled");
+  }
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -142,9 +179,6 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   } else {

@@ -32,6 +32,8 @@ The project is organized into `client/` (UI components, pages, utilities, hooks)
 
 The application incorporates rate limiting for login, registration, and invite verification. Invite tokens are securely hashed and have a 48-hour expiration. Password policies enforce strong requirements with bcrypt hashing. Session security includes httpOnly, sameSite, and secure cookies, server-side inactivity timeouts, client-side auto-logout, Helmet middleware with CSP, HSTS, and referrer policies. Audit logging tracks security-sensitive actions, and an obscured admin path (`/area-riservata`) enhances security through obscurity.
 
+A site-wide password gate (`SITE_PASSWORD` env var) protects the entire site from public access. When set, all visitors see a password prompt page (`server/site-gate.html`) and must enter the correct password to access the site. The gate uses session-based access tracking. To disable the gate and make the site public, remove the `SITE_PASSWORD` environment variable.
+
 ## External Dependencies
 
 **Core Runtime:** Node.js, TypeScript.

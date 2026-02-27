@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legalit — Accesso Riservato</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a1628;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      text-align: center;
+      max-width: 380px;
+      width: 100%;
+      padding: 0 24px;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .logo span { color: #4a90d9; }
+    .subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 40px;
+      letter-spacing: 1px;
+    }
+    form { display: flex; flex-direction: column; gap: 12px; }
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      background: #0f1d32;
+      color: #e2e8f0;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="password"]:focus { border-color: #4a90d9; }
+    input[type="password"]::placeholder { color: #475569; }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #1a3a5c;
+      color: #e2e8f0;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #234b73; }
+    .error {
+      color: #ef4444;
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+    .error.visible { display: block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">Legal<span>it</span></div>
+    <p class="subtitle">Accesso Riservato</p>
+    <form id="gate-form">
+      <input
+        type="password"
+        id="gate-password"
+        placeholder="Password di accesso"
+        autocomplete="off"
+        autofocus
+      />
+      <button type="submit">Accedi</button>
+      <p class="error" id="gate-error">Password non corretta.</p>
+    </form>
+  </div>
+  <script>
+    document.getElementById('gate-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pw = document.getElementById('gate-password').value;
+      const errEl = document.getElementById('gate-error');
+      errEl.classList.remove('visible');
+      try {
+        const res = await fetch('/api/site-access', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pw }),
+        });
+        if (res.ok) {
+          window.location.reload();
+        } else {
+          errEl.classList.add('visible');
+        }
+      } catch {
+        errEl.classList.add('visible');
+      }
+    });
+  </script>
+</body>
+</html>
