@@ -11,7 +11,7 @@ export default function Privacy() {
     sections: [
       {
         title: "1. Titolare del Trattamento",
-        content: "Il Titolare del trattamento è Legalit Società tra Avvocati, con sede legale in Roma. Per qualsiasi richiesta relativa al trattamento dei dati personali è possibile contattare il Titolare all'indirizzo email: privacy@legalit.it"
+        content: "Il Titolare del trattamento è LEGALIT SOCIETA' TRA AVVOCATI S.R.L., con sede legale in Via Filippo Corridoni, 19 — 00195 Roma.\nC.F. / P. IVA: 18365621004\n\nPer qualsiasi richiesta relativa al trattamento dei dati personali è possibile contattare il Titolare all'indirizzo email: privacy@legalit.it"
       },
       {
         title: "2. Dati Raccolti",
@@ -50,7 +50,7 @@ export default function Privacy() {
     sections: [
       {
         title: "1. Data Controller",
-        content: "The Data Controller is Legalit Società tra Avvocati, with registered office in Rome. For any request regarding the processing of personal data, you can contact the Controller at: privacy@legalit.it"
+        content: "The Data Controller is LEGALIT SOCIETA' TRA AVVOCATI S.R.L., with registered office at Via Filippo Corridoni, 19 — 00195 Rome, Italy.\nTax Code / VAT No.: 18365621004\n\nFor any request regarding the processing of personal data, you can contact the Controller at: privacy@legalit.it"
       },
       {
         title: "2. Data Collected",

@@ -39,7 +39,7 @@ export default function Cookies() {
       },
       {
         title: "8. Contatti",
-        content: "Per qualsiasi domanda relativa all'utilizzo dei cookie sul nostro sito, puoi contattarci all'indirizzo: privacy@legalit.it"
+        content: "LEGALIT SOCIETA' TRA AVVOCATI S.R.L.\nVia Filippo Corridoni, 19 — 00195 Roma\nC.F. / P. IVA: 18365621004\n\nPer qualsiasi domanda relativa all'utilizzo dei cookie sul nostro sito, puoi contattarci all'indirizzo: privacy@legalit.it"
       }
     ],
     lastUpdate: "Ultimo aggiornamento: Gennaio 2026"
@@ -78,7 +78,7 @@ export default function Cookies() {
       },
       {
         title: "8. Contact",
-        content: "For any questions regarding the use of cookies on our site, you can contact us at: privacy@legalit.it"
+        content: "LEGALIT SOCIETA' TRA AVVOCATI S.R.L.\nVia Filippo Corridoni, 19 — 00195 Rome, Italy\nTax Code / VAT No.: 18365621004\n\nFor any questions regarding the use of cookies on our site, you can contact us at: privacy@legalit.it"
       }
     ],
     lastUpdate: "Last updated: January 2026"

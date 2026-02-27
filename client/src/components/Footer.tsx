@@ -230,6 +230,11 @@ export default function Footer() {
               </Link>
             </div>
           </div>
+          <div className="mt-3 pt-3 border-t border-white/10 text-center">
+            <p className="text-white/35 text-[10px] leading-relaxed" data-testid="text-company-info">
+              LEGALIT SOCIETA' TRA AVVOCATI S.R.L. — Via Filippo Corridoni, 19 — 00195 Roma — C.F. / P. IVA: 18365621004
+            </p>
+          </div>
         </div>
       </div>
     </footer>

@@ -11,7 +11,7 @@ export default function Terms() {
     sections: [
       {
         title: "1. Informazioni Generali",
-        content: "Il presente sito web è di proprietà di Legalit Società tra Avvocati, studio legale con sedi in Roma, Milano, Palermo e Latina. Il sito ha finalità informative e di presentazione dei servizi offerti dallo studio."
+        content: "Il presente sito web è di proprietà di LEGALIT SOCIETA' TRA AVVOCATI S.R.L., con sede legale in Via Filippo Corridoni, 19 — 00195 Roma.\nC.F. / P. IVA: 18365621004\n\nLo studio legale ha sedi in Roma, Milano, Palermo e Latina. Il sito ha finalità informative e di presentazione dei servizi offerti dallo studio."
       },
       {
         title: "2. Utilizzo del Sito",
@@ -54,7 +54,7 @@ export default function Terms() {
     sections: [
       {
         title: "1. General Information",
-        content: "This website is owned by Legalit Società tra Avvocati, a law firm with offices in Rome, Milan, Palermo, Naples and Venice. The site has informational purposes and presents the services offered by the firm."
+        content: "This website is owned by LEGALIT SOCIETA' TRA AVVOCATI S.R.L., with registered office at Via Filippo Corridoni, 19 — 00195 Rome, Italy.\nTax Code / VAT No.: 18365621004\n\nThe law firm has offices in Rome, Milan, Palermo and Latina. The site has informational purposes and presents the services offered by the firm."
       },
       {
         title: "2. Use of the Site",
