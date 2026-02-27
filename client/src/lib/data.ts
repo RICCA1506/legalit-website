@@ -536,7 +536,7 @@ export const professionals = [
     phone: "+39 06 3213911",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "",
+    imageUrl: "/attached_assets/designarena_image_hfxnry2n_1772151271966.png",
     orderIndex: 16,
   },
   {
