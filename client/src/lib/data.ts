@@ -537,7 +537,7 @@ export const professionals = [
     phone: "+39 06 3213911",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "/attached_assets/designarena_image_hfxnry2n_1772151271966.png",
+    imageUrl: "/attached_assets/avv-laura-stefanelli.jpg",
     orderIndex: 16,
   },
   {
@@ -584,7 +584,7 @@ export const professionals = [
     phone: "+39 06 3213911",
     education: [],
     languages: ["Italiano"],
-    imageUrl: "/attached_assets/upload_2305f8af-89af-490e-af96-2275eff3bdda.png",
+    imageUrl: "/attached_assets/avv-flavia-cracchiolo.jpg",
     orderIndex: 19,
   },
   {
