@@ -124,9 +124,10 @@
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8"
-  
-    },
+  },
   "overrides": {
-    "esbuild": ">=0.25.0"
+    "esbuild": ">=0.25.0",
+    "multer": ">=2.1.1",
+    "@tootallnate/once": ">=3.0.1"
   }
 }
