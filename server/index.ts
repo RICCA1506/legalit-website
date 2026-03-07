@@ -140,7 +140,7 @@ app.use((req, res, next) => {
   await seedAdminUser();
   await registerRoutes(httpServer, app);
 
-  const sitePassword = process.env.SITE_PASSWORD;
+  const sitePassword = isProduction ? process.env.SITE_PASSWORD : undefined;
   if (sitePassword) {
     const gateHtmlPath = path.resolve(process.cwd(), "server/site-gate.html");
     const gateHtml = fs.readFileSync(gateHtmlPath, "utf-8");
