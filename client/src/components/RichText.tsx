@@ -28,7 +28,7 @@ export default function RichText({ text, className = "" }: RichTextProps) {
       {paragraphs.map((para, i) => (
         <p
           key={i}
-          className="text-[15px] md:text-lg text-muted-foreground leading-relaxed mb-4 last:mb-0"
+          className="text-[15px] md:text-lg text-muted-foreground leading-relaxed mb-4 last:mb-0 text-center"
         >
           {renderInline(para.trim())}
         </p>
