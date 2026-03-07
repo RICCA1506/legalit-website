@@ -55,13 +55,20 @@ function CardContent({
             alt=""
             loading="lazy"
             className={`w-full h-full ${isLogo ? "object-contain p-4" : "object-cover"}`}
-            style={{
-              objectPosition: isLogo
-                ? "center"
-                : pro.imagePosition?.includes(",")
-                  ? `${pro.imagePosition.split(",")[0]}% ${pro.imagePosition.split(",")[1]}%`
-                  : "center top",
-            }}
+            style={isLogo ? {} : (() => {
+              const zoom = pro.imageZoom || 100;
+              let ox = 50, oy = 50;
+              if (pro.imagePosition?.includes(",")) {
+                const parts = pro.imagePosition.split(",").map(Number);
+                if (!isNaN(parts[0])) ox = parts[0];
+                if (!isNaN(parts[1])) oy = parts[1];
+              }
+              return {
+                objectPosition: `${ox}% ${oy}%`,
+                transform: zoom !== 100 ? `scale(${zoom / 100})` : undefined,
+                transformOrigin: `${ox}% ${oy}%`,
+              };
+            })()}
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = "none";
             }}

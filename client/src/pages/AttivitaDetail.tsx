@@ -9,6 +9,9 @@ import { professionals as localProfessionals } from "@/lib/data";
 import { useLanguage } from "@/lib/i18n";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import ProfessionalCard from "@/components/ProfessionalCard";
+import RichText from "@/components/RichText";
 import type { NewsArticle, Professional as DbProfessional } from "@shared/schema";
 import { 
   Building2, 
@@ -38,11 +41,15 @@ export default function AttivitaDetail() {
   const practiceArea = practiceAreasEnhanced.find(area => area.id === id);
   const Icon = practiceArea ? iconMap[practiceArea.icon] || Building2 : Building2;
   
-  const { data: dbProfessionals = [] } = useQuery<DbProfessional[]>({
+  const { data: dbProfessionals = [], isLoading: professionalsLoading } = useQuery<DbProfessional[]>({
     queryKey: ["/api/professionals"],
   });
 
-  const professionals = dbProfessionals.length > 0 ? dbProfessionals : localProfessionals;
+  const professionals = professionalsLoading
+    ? []
+    : dbProfessionals.length > 0
+      ? dbProfessionals
+      : localProfessionals;
   
   // Use the mapping function to find professionals that match this practice area
   // This handles cases where specialization IDs differ from area page IDs
@@ -150,14 +157,14 @@ export default function AttivitaDetail() {
       <section className="py-10 md:py-20 px-5 md:px-12 lg:px-20">
         <div className="max-w-6xl mx-auto">
           <AnimatedElement>
-            <p className="text-[15px] md:text-lg text-muted-foreground leading-relaxed" data-testid="text-detail-description">
-              {language === "it" ? practiceArea.fullDescriptionIT : practiceArea.fullDescriptionEN}
-            </p>
+            <div data-testid="text-detail-description">
+              <RichText text={language === "it" ? practiceArea.fullDescriptionIT : practiceArea.fullDescriptionEN} />
+            </div>
           </AnimatedElement>
         </div>
       </section>
       
-      {specializedProfessionals.length > 0 && (
+      {(professionalsLoading || specializedProfessionals.length > 0) && (
         <section className="py-10 md:py-20 px-5 md:px-12 lg:px-20 bg-muted/30">
           <div className="max-w-6xl mx-auto">
             <AnimatedElement>
@@ -173,59 +180,50 @@ export default function AttivitaDetail() {
               </h2>
             </AnimatedElement>
             
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-              <AnimatePresence>
-                {(showAllProfessionals ? specializedProfessionals : specializedProfessionals.slice(0, 4)).map((professional, index) => (
-                  <motion.div
-                    key={professional.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <Link href={`/professionisti?id=${professional.id}`} data-testid={`link-professional-${professional.id}`}>
-                      <Card 
-                        className="group overflow-hidden border-0 shadow-md hover-elevate cursor-pointer h-full"
-                        data-testid={`card-professional-${professional.id}`}
-                      >
-                        <div className="relative aspect-[4/5] bg-gradient-to-br from-primary/10 to-accent/10 overflow-hidden">
-                          <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
-                          {professional.imageUrl ? (
-                            <picture>
-                              {professional.imageUrl.endsWith('.webp') && (
-                                <source srcSet={professional.imageUrl.replace('.webp', '.avif')} type="image/avif" />
-                              )}
-                              <img 
-                                src={professional.imageUrl}
-                                alt={professional.name}
-                                loading="eager"
-                                decoding="async"
-                                className="w-full h-full object-cover object-top"
-                                data-testid={`img-professional-${professional.id}`}
-                              />
-                            </picture>
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <User className="h-20 w-20 text-primary/30" />
-                            </div>
-                          )}
-                        </div>
-                        <CardContent className="p-2 md:p-5">
-                          <h3 className="font-bold text-[8px] md:text-base text-foreground group-hover:text-primary transition-colors truncate">
-                            {professional.name}
-                          </h3>
-                          <p className="text-[7px] md:text-sm text-muted-foreground mt-0.5 md:mt-1 truncate">{professional.title}</p>
-                          <div className="flex items-center gap-1 text-primary text-[7px] md:text-sm mt-1 md:mt-3 group-hover:gap-2 transition-all">
-                            <span>{language === "it" ? "Guarda il profilo" : "View profile"}</span>
-                            <ArrowRight className="h-3 w-3 md:h-4 md:w-4" />
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </motion.div>
+            {professionalsLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i}>
+                    <Skeleton className="aspect-[3/4] w-full rounded-t-lg" />
+                    <Skeleton className="h-4 w-3/4 mt-2 rounded" />
+                    <Skeleton className="h-3 w-1/2 mt-1.5 rounded" />
+                  </div>
                 ))}
-              </AnimatePresence>
-            </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+                <AnimatePresence>
+                  {(showAllProfessionals ? specializedProfessionals : specializedProfessionals.slice(0, 4)).map((professional, index) => (
+                    <motion.div
+                      key={professional.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="cursor-pointer min-w-0"
+                    >
+                      <button
+                        onClick={() => window.location.href = `/professionisti?id=${professional.id}`}
+                        className="w-full min-w-0 text-left"
+                        data-testid={`button-professional-${professional.id}`}
+                      >
+                        <ProfessionalCard
+                          name={professional.name}
+                          title={professional.title}
+                          imageUrl={professional.imageUrl}
+                          imagePosition={(professional as any).imagePosition}
+                          imageZoom={(professional as any).imageZoom}
+                          email={professional.email}
+                          office={professional.office}
+                          specializations={professional.specializations}
+                          fullBio={professional.fullBio}
+                        />
+                      </button>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
             
             {specializedProfessionals.length > 4 && (
               <AnimatedElement delay={300} className="text-center mt-8">

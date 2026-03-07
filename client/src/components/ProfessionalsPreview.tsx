@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight, User, Mail } from "lucide-react";
 import { professionals as staticProfessionals } from "@/lib/data";
 import type { Professional as DbProfessional } from "@shared/schema";
@@ -92,11 +93,15 @@ export default function ProfessionalsPreview() {
   const [selectedProfessional, setSelectedProfessional] = useState<ProfessionalData | null>(null);
   const { t, language } = useLanguage();
 
-  const { data: dbProfessionals = [] } = useQuery<DbProfessional[]>({
+  const { data: dbProfessionals = [], isLoading: professionalsLoading } = useQuery<DbProfessional[]>({
     queryKey: ["/api/professionals"],
   });
 
-  const professionals: ProfessionalData[] = dbProfessionals.length > 0 ? dbProfessionals : staticProfessionals;
+  const professionals: ProfessionalData[] = professionalsLoading
+    ? []
+    : dbProfessionals.length > 0
+      ? dbProfessionals
+      : staticProfessionals;
   const featuredLawyers = professionals.slice(0, 4);
 
   return (
@@ -128,15 +133,27 @@ export default function ProfessionalsPreview() {
           </Link>
         </AnimatedElement>
 
-        <StaggerContainer staggerDelay={0.12} className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-          {featuredLawyers.map((lawyer) => (
-            <LawyerCard 
-              key={lawyer.id} 
-              lawyer={lawyer} 
-              onClick={() => setSelectedProfessional(lawyer)}
-            />
-          ))}
-        </StaggerContainer>
+        {professionalsLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i}>
+                <Skeleton className="aspect-[3/4] w-full rounded-lg" />
+                <Skeleton className="h-4 w-3/4 mt-3 rounded" />
+                <Skeleton className="h-3 w-1/2 mt-1.5 rounded" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <StaggerContainer staggerDelay={0.12} className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+            {featuredLawyers.map((lawyer) => (
+              <LawyerCard 
+                key={lawyer.id} 
+                lawyer={lawyer} 
+                onClick={() => setSelectedProfessional(lawyer)}
+              />
+            ))}
+          </StaggerContainer>
+        )}
       </div>
       <ProfessionalModal
         professional={selectedProfessional}

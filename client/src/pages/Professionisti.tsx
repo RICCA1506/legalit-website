@@ -11,6 +11,7 @@ import LandoReveal from "@/components/LandoReveal";
 import StaggerContainer, { staggerItemVariants } from "@/components/StaggerContainer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Select,
   SelectContent,
@@ -72,7 +73,7 @@ export default function Professionisti() {
   const [selectedProfessional, setSelectedProfessional] = useState<ProfessionalData | null>(null);
   const search = useSearch();
 
-  const { data: dbProfessionals = [] } = useQuery<DbProfessional[]>({
+  const { data: dbProfessionals = [], isLoading: professionalsLoading } = useQuery<DbProfessional[]>({
     queryKey: ["/api/professionals"],
   });
 
@@ -80,7 +81,11 @@ export default function Professionisti() {
     queryKey: ["/api/news"],
   });
 
-  const professionals: ProfessionalData[] = dbProfessionals.length > 0 ? dbProfessionals : staticProfessionals;
+  const professionals: ProfessionalData[] = professionalsLoading
+    ? []
+    : dbProfessionals.length > 0
+      ? dbProfessionals
+      : staticProfessionals;
 
   useEffect(() => {
     const params = new URLSearchParams(search);
@@ -284,35 +289,49 @@ export default function Professionisti() {
             </div>
           </AnimatedElement>
 
-          <StaggerContainer staggerDelay={0.08} className="flex flex-wrap justify-center gap-2 md:gap-6">
-            {filteredProfessionals.map((professional) => (
-              <motion.div
-                key={professional.id}
-                variants={staggerItemVariants(40, 0.5)}
-                className="cursor-pointer min-w-0 w-[calc(33.333%-0.375rem)] md:w-[calc(33.333%-1.25rem)] lg:w-[calc(25%-1.125rem)]"
-              >
-                <button
-                  onClick={() => setSelectedProfessional(professional)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setSelectedProfessional(professional);
-                    }
-                  }}
-                  className="w-full min-w-0 text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
-                  data-testid={`button-professional-${professional.id}`}
-                  aria-label={`${t("professionisti.viewProfile")} ${professional.name}`}
-                >
-                  <ProfessionalCard {...professional} />
-                </button>
-              </motion.div>
-            ))}
-          </StaggerContainer>
+          {professionalsLoading ? (
+            <div className="flex flex-wrap justify-center gap-2 md:gap-6">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="min-w-0 w-[calc(33.333%-0.375rem)] md:w-[calc(33.333%-1.25rem)] lg:w-[calc(25%-1.125rem)]">
+                  <Skeleton className="aspect-[3/4] w-full rounded-t-lg" />
+                  <Skeleton className="h-4 w-3/4 mt-2 mx-auto rounded" />
+                  <Skeleton className="h-3 w-1/2 mt-1.5 mx-auto rounded" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <StaggerContainer staggerDelay={0.08} className="flex flex-wrap justify-center gap-2 md:gap-6">
+                {filteredProfessionals.map((professional) => (
+                  <motion.div
+                    key={professional.id}
+                    variants={staggerItemVariants(40, 0.5)}
+                    className="cursor-pointer min-w-0 w-[calc(33.333%-0.375rem)] md:w-[calc(33.333%-1.25rem)] lg:w-[calc(25%-1.125rem)]"
+                  >
+                    <button
+                      onClick={() => setSelectedProfessional(professional)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setSelectedProfessional(professional);
+                        }
+                      }}
+                      className="w-full min-w-0 text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
+                      data-testid={`button-professional-${professional.id}`}
+                      aria-label={`${t("professionisti.viewProfile")} ${professional.name}`}
+                    >
+                      <ProfessionalCard {...professional} />
+                    </button>
+                  </motion.div>
+                ))}
+              </StaggerContainer>
 
-          {filteredProfessionals.length === 0 && (
-            <AnimatedElement variant="fade" className="text-center text-muted-foreground py-16">
-              {t("professionisti.noResults")}
-            </AnimatedElement>
+              {filteredProfessionals.length === 0 && (
+                <AnimatedElement variant="fade" className="text-center text-muted-foreground py-16">
+                  {t("professionisti.noResults")}
+                </AnimatedElement>
+              )}
+            </>
           )}
         </div>
       </section>
