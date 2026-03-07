@@ -126,7 +126,6 @@
     "bufferutil": "^4.0.8"
   },
   "overrides": {
-    "esbuild": ">=0.25.0",
-    "@tootallnate/once": ">=3.0.1"
+    "esbuild": ">=0.25.0"
   }
 }
