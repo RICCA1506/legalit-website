@@ -145,13 +145,27 @@ app.use((req, res, next) => {
     const gateHtmlPath = path.resolve(process.cwd(), "server/site-gate.html");
     const gateHtml = fs.readFileSync(gateHtmlPath, "utf-8");
 
+    const isReplit = !!process.env.REPLIT_DOMAINS;
+    const gateMaxAge = 24 * 60 * 60;
+    const gateCookieOptions = [
+      "site-access=granted",
+      "HttpOnly",
+      "Path=/",
+      `Max-Age=${gateMaxAge}`,
+      isReplit || isProduction ? "Secure" : "",
+      isReplit || isProduction ? "SameSite=None" : "SameSite=Lax",
+    ].filter(Boolean).join("; ");
+
+    function hasSiteAccess(req: Request): boolean {
+      const cookie = req.headers.cookie || "";
+      return cookie.split(";").some(c => c.trim() === "site-access=granted");
+    }
+
     app.post("/api/site-access", (req: Request, res: Response) => {
       const { password } = req.body || {};
       if (password === sitePassword) {
-        req.session.siteAccessGranted = true;
-        req.session.save(() => {
-          res.json({ success: true });
-        });
+        res.setHeader("Set-Cookie", gateCookieOptions);
+        res.json({ success: true });
       } else {
         res.status(401).json({ message: "Password non corretta" });
       }
@@ -161,7 +175,7 @@ app.use((req, res, next) => {
       if (
         req.path === "/api/site-access" ||
         req.path.startsWith("/api/auth/") ||
-        req.session?.siteAccessGranted
+        hasSiteAccess(req)
       ) {
         return next();
       }
