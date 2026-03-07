@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { db } from "./db";
 import { users, professionals } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, count } from "drizzle-orm";
 import { syncDevDataToCurrentDb } from "./syncData";
 
 const BCRYPT_ROUNDS = 12;
@@ -44,6 +44,21 @@ export async function seedAdminUser() {
     } catch (error) {
       console.error("[Seed] Error during production data sync, falling back to basic seed:", error);
     }
+  }
+
+  // Auto-import data from dev_data.json if database is empty (first run)
+  try {
+    const [{ value: profCount }] = await db.select({ value: count() }).from(professionals);
+    if (profCount === 0) {
+      console.log("[Seed] Database is empty. Auto-importing data from dev_data.json...");
+      const syncResult = await syncDevDataToCurrentDb();
+      console.log("[Seed] Auto-import result:", JSON.stringify(syncResult));
+      return;
+    } else {
+      console.log(`[Seed] Database has ${profCount} professionals, skipping auto-import.`);
+    }
+  } catch (error) {
+    console.error("[Seed] Error during auto-import check:", error);
   }
 
   for (const seedUser of SEED_USERS) {

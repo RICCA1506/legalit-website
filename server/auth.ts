@@ -56,7 +56,10 @@ export function getSession() {
     },
   });
   const isProduction = process.env.NODE_ENV === "production";
-  console.log(`[Session] Configuring session: production=${isProduction}, proxy=true, secure=${isProduction}, sameSite=lax, path=/`);
+  const isReplit = !!process.env.REPLIT_DOMAINS;
+  const useSecure = isProduction || isReplit;
+  const useSameSite = useSecure ? "none" : "lax";
+  console.log(`[Session] Configuring session: production=${isProduction}, replit=${isReplit}, proxy=true, secure=${useSecure}, sameSite=${useSameSite}, path=/`);
   return session({
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
@@ -66,9 +69,9 @@ export function getSession() {
     proxy: true,
     cookie: {
       httpOnly: true,
-      secure: isProduction,
+      secure: useSecure,
       maxAge: sessionTtl,
-      sameSite: "lax",
+      sameSite: useSameSite,
       path: "/",
       domain: undefined,
     },
