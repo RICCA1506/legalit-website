@@ -680,7 +680,7 @@ ${urls}
   });
 
   // Serve uploaded objects
-  app.get("/objects/:objectPath(*)", async (req, res) => {
+  app.get("/objects/{*objectPath}", async (req, res) => {
     try {
       const objectStorageService = new ObjectStorageService();
       const objectFile = await objectStorageService.getObjectEntityFile(req.path);

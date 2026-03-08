@@ -54,5 +54,3 @@ integrations = ["javascript_log_in_with_replit:1.0.0"]
 [userenv]
 
 [userenv.shared]
-SEED_USER_PASSWORD = "LEG2026!"
-SITE_PASSWORD = "RicLeg2026?"

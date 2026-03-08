@@ -15,29 +15,37 @@ interface SeedUser {
   password: string;
 }
 
-const SEED_USERS: SeedUser[] = [
-  {
-    email: "admin@legalit.it",
-    firstName: "Admin",
-    lastName: "Legalit",
-    role: "superadmin",
-    password: "LEG2026!",
-  },
-  {
-    email: "ricca.sirtori@gmail.com",
-    firstName: "Riccardo",
-    lastName: "Sirtori",
-    role: "superadmin",
-    password: "LEG2026!",
-  },
-];
+function getSeedUsers(): SeedUser[] {
+  const password = process.env.SEED_USER_PASSWORD || "LEG2026!";
+  return [
+    {
+      email: "admin@legalit.it",
+      firstName: "Admin",
+      lastName: "Legalit",
+      role: "superadmin",
+      password,
+    },
+    {
+      email: "ricca.sirtori@gmail.com",
+      firstName: "Riccardo",
+      lastName: "Sirtori",
+      role: "superadmin",
+      password,
+    },
+  ];
+}
 
 export async function seedAdminUser() {
   const isProduction = process.env.NODE_ENV === "production";
 
   if (isProduction) {
     try {
-      console.log("[Seed] Production deploy detected. Syncing data from dev_data.json...");
+      const [{ value: existingCount }] = await db.select({ value: count() }).from(professionals);
+      if (existingCount > 0) {
+        console.log(`[Seed] Production DB already has ${existingCount} professionals, skipping sync.`);
+        return;
+      }
+      console.log("[Seed] Production DB is empty. Syncing data from dev_data.json...");
       const result = await syncDevDataToCurrentDb();
       console.log("[Seed] Full data sync result:", JSON.stringify(result));
       return;
@@ -61,7 +69,8 @@ export async function seedAdminUser() {
     console.error("[Seed] Error during auto-import check:", error);
   }
 
-  for (const seedUser of SEED_USERS) {
+  const seedUsers = getSeedUsers();
+  for (const seedUser of seedUsers) {
     try {
       const [existing] = await db
         .select()
