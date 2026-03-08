@@ -16,7 +16,14 @@ interface SeedUser {
 }
 
 function getSeedUsers(): SeedUser[] {
-  const password = process.env.SEED_USER_PASSWORD || "LEG2026!";
+  const password = process.env.SEED_USER_PASSWORD;
+  if (!password) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn("[Seed] WARNING: SEED_USER_PASSWORD not set in production — skipping user seed.");
+      return [];
+    }
+    throw new Error("[Seed] SEED_USER_PASSWORD environment variable is required");
+  }
   return [
     {
       email: "admin@legalit.it",
