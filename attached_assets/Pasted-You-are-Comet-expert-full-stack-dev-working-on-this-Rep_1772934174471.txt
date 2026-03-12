@@ -1,0 +1,57 @@
+You are Comet, expert full‑stack dev, working on this Replit project "Legalit".
+
+Current situation:
+- Admin access is done via a token link sent by email.
+- I want to control exactly WHO can get that token and WHAT role they have.
+- Only one superadmin:
+  - email: "ricca.sirtori@gmail.com"
+  - role: "superadmin"
+- Other privileged users can only be "admin", never "superadmin".
+
+Goal:
+- Keep the “magic link by email” login, but:
+  - Only users with role "admin" or "superadmin" can get an admin token.
+  - Normal users ("user") must NEVER be able to log into the admin area.
+  - All access decisions must be based on roles, not on hardcoded email checks.
+
+Tasks:
+1. Inspect the code that:
+   - Receives the email from the “accedi” form.
+   - Generates and stores the token.
+   - Sends the email with the login link.
+   - Consumes the token and creates the session/JWT.
+2. Ensure there is a user model/store with a `role` field:
+   - Allowed values: "user" | "admin" | "superadmin".
+3. In the “request login link” flow:
+   - Look up the user by email.
+   - If role is "admin" or "superadmin" → generate/store token and send email.
+   - If role is "user" or user does not exist → DO NOT generate token; just respond with a generic success message.
+4. In the “use login link” flow:
+   - Validate the token (expiry, one‑time use, linked to user/email).
+   - After successful validation, create a session/JWT that includes:
+     - user id
+     - email
+     - role
+5. Create/adjust middleware:
+   - `requireAdmin` → allow only if role is "admin" or "superadmin".
+   - `requireSuperAdmin` → allow only if role is "superadmin".
+   Apply:
+   - All admin pages → `requireAdmin`.
+   - Future “manage admins” features → `requireSuperAdmin`.
+6. Remove any remaining hardcoded checks like `if (email === "ricca.sirtori@gmail.com")` from routes. Role checks must be the only source of truth.
+7. Make sure tokens are:
+   - Random, securely stored, with short expiry.
+   - Marked as used after first login.
+
+Deliverables:
+- Updated token request and verification logic using roles.
+- Middleware for `requireAdmin` and `requireSuperAdmin` applied to admin routes.
+- Short explanation (comment or SECURITY.md) of:
+  - How the magic link flow works.
+  - How roles are checked for admin access.
+  - How to safely change token expiry or behavior in the future.
+
+Process:
+- First, summarize the current token‑based login flow you find.
+- Then propose a short numbered plan.
+- After I confirm, apply all changes directly in this Repl and show me the key snippets.

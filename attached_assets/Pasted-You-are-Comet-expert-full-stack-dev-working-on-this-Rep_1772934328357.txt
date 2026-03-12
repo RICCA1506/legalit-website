@@ -1,0 +1,44 @@
+You are Comet, expert full‑stack dev, working on this Replit project "Legalit".
+
+Requirements:
+- There must be exactly ONE "superadmin" user:
+  - email: "ricca.sirtori@gmail.com"
+  - role: "superadmin"
+- Other privileged users can only be "admin".
+- Normal visitors are "user" and must never reach the admin area.
+
+Goal:
+- Implement a safe way to:
+  - Guarantee that the superadmin user exists.
+  - Promote/demote users between "user" and "admin".
+  - Never allow anyone to become "superadmin" from the normal UI.
+
+Tasks:
+1. Ensure the user model/store has:
+   - `email` (unique)
+   - `role` in "user" | "admin" | "superadmin".
+2. Create a seed/init mechanism that:
+   - On first run, checks if a user with email "ricca.sirtori@gmail.com" exists.
+   - If not, creates it with:
+     - role: "superadmin"
+     - a secure initial password or login mechanism (coming from env vars or config).
+   - Does NOT recreate or downgrade anything on subsequent runs.
+3. Make sure there is NO route or UI that:
+   - Can set any user’s role to "superadmin".
+   - Can change the superadmin’s email from the browser.
+   Superadmin can only be changed via code/seed in the repository.
+4. (Optional but helpful) Add an admin‑only endpoint or small panel (protected by `requireSuperAdmin`) that can:
+   - List users and their roles.
+   - Promote/demote between "user" and "admin" only.
+5. Add clear comments or a SECURITY.md section explaining:
+   - How the superadmin account is created and maintained.
+   - How to add/remove admins (role changes).
+   - That "superadmin" is reserved to "ricca.sirtori@gmail.com" and must only be changed via code/seed.
+
+Important:
+- Do NOT leave any `if (email === "ricca.sirtori@gmail.com")` in route handlers.
+- Do NOT hardcode passwords or secrets in the code; use environment variables or securely stored data.
+
+Now:
+- Implement the seed/init logic and any necessary helper functions.
+- Show me the key code snippets (seed/init, role change helpers, any admin‑only management endpoint) and how to run or trigger the seed safely.
