@@ -327,41 +327,46 @@ export default function News() {
         onClick={() => setSelectedArticle(article)}
         data-testid={`card-press-${article.id}`}
       >
-        {/* Outlet masthead */}
+        {/* Outlet masthead — pure typography, no external images */}
         <div
-          className="relative flex flex-col items-center justify-center gap-3 px-6 py-7"
-          style={{ background: `linear-gradient(160deg, ${outlet.accentColor}ee 0%, ${outlet.accentColor}cc 100%)` }}
+          className="relative flex flex-col items-center justify-center gap-2 px-5 py-6"
+          style={{
+            background: `linear-gradient(150deg, ${outlet.accentColor} 0%, ${outlet.accentColorLight} 100%)`,
+            minHeight: "130px",
+          }}
         >
-          {/* small rassegna stampa badge top-left */}
-          <div className="absolute top-3 left-3 flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-2.5 py-1">
-            <Newspaper className="h-3 w-3 text-white" />
-            <span className="text-white text-[10px] font-semibold uppercase tracking-wide">
+          {/* Decorative background text */}
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 flex items-center justify-center text-white/5 font-black select-none overflow-hidden"
+            style={{ fontSize: "clamp(56px, 10vw, 80px)", letterSpacing: "-0.02em" }}
+          >
+            {outlet.abbr}
+          </span>
+
+          {/* Badge top-left */}
+          <div className="absolute top-3 left-3 flex items-center gap-1 bg-white/15 rounded-full px-2.5 py-1">
+            <Newspaper className="h-3 w-3 text-white/90" />
+            <span className="text-white/90 text-[9px] font-semibold uppercase tracking-widest">
               {language === "it" ? "Rassegna Stampa" : "Press"}
             </span>
           </div>
-          {/* Outlet logo */}
-          {outlet.logoUrl ? (
-            <div className="h-12 flex items-center justify-center">
-              <img
-                src={outlet.logoUrl}
-                alt={outlet.displayName}
-                className="h-full max-w-[120px] object-contain"
-                style={{ filter: "brightness(0) invert(1)" }}
-                onError={(e) => {
-                  const parent = (e.target as HTMLImageElement).parentElement;
-                  if (parent) {
-                    parent.innerHTML = `<span class="text-white text-xl font-bold tracking-tight">${outlet.displayName}</span>`;
-                  }
-                }}
-              />
-            </div>
-          ) : (
-            <span className="text-white text-xl font-bold tracking-tight">{outlet.displayName}</span>
-          )}
-          {/* Date pill */}
-          <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-2.5 py-1">
-            <Calendar className="h-3 w-3 text-white/90" />
-            <span className="text-white/90 text-[11px] font-medium">
+
+          {/* Outlet name — typographic logo */}
+          <p
+            className="relative z-10 text-white font-bold text-center leading-tight"
+            style={{ fontSize: "clamp(16px, 3vw, 20px)", textShadow: "0 1px 6px rgba(0,0,0,0.3)", letterSpacing: "-0.01em" }}
+          >
+            {outlet.displayName}
+          </p>
+
+          {/* Thin separator */}
+          <div className="relative z-10 w-10 h-px bg-white/40" />
+
+          {/* Date */}
+          <div className="relative z-10 flex items-center gap-1.5">
+            <Calendar className="h-3 w-3 text-white/80" />
+            <span className="text-white/80 text-[11px] font-medium">
               {article.createdAt && new Date(article.createdAt).toLocaleDateString("it-IT", {
                 day: "2-digit",
                 month: "long",
@@ -373,7 +378,7 @@ export default function News() {
 
         {/* Card body */}
         <CardContent className="p-4 md:p-5 flex flex-col flex-1">
-          <h3 className="font-semibold text-base md:text-[15px] leading-snug mb-2 group-hover:text-primary transition-colors line-clamp-3">
+          <h3 className="font-semibold text-[14px] md:text-[15px] leading-snug mb-2 group-hover:text-primary transition-colors line-clamp-3">
             {autoT(article.title)}
           </h3>
           {article.excerpt && (
@@ -404,18 +409,8 @@ export default function News() {
             data-testid={`link-press-source-${article.id}`}
             aria-label={`${language === "it" ? "Leggi l'articolo su" : "Read article on"} ${outlet.displayName}`}
           >
-            {outlet.logoUrl && (
-              <img
-                src={outlet.logoUrl}
-                alt=""
-                aria-hidden="true"
-                className="h-4 w-4 object-contain flex-shrink-0"
-                style={{ filter: "brightness(0) invert(1)" }}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-              />
-            )}
-            <span>{language === "it" ? `Leggi su ${outlet.displayName}` : `Read on ${outlet.displayName}`}</span>
             <ExternalLink className="h-3.5 w-3.5 flex-shrink-0 opacity-80" />
+            <span>{language === "it" ? `Leggi su ${outlet.displayName}` : `Read on ${outlet.displayName}`}</span>
           </a>
         </CardContent>
       </Card>

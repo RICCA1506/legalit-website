@@ -2,57 +2,62 @@ export interface PressOutlet {
   displayName: string;
   domain: string;
   accentColor: string;
-  logoUrl: string;
+  accentColorLight: string;
   textColor: string;
+  abbr: string;
 }
 
 const OUTLETS: Record<string, PressOutlet> = {
   "toplegal.it": {
     displayName: "TopLegal",
+    abbr: "TL",
     domain: "toplegal.it",
-    accentColor: "#1a3a5c",
+    accentColor: "#0d2e52",
+    accentColorLight: "#1a4a82",
     textColor: "#ffffff",
-    logoUrl: "https://logo.clearbit.com/toplegal.it",
   },
   "legalcommunity.it": {
-    displayName: "LegalCommunity",
+    displayName: "Legal Community",
+    abbr: "LC",
     domain: "legalcommunity.it",
-    accentColor: "#0056a0",
+    accentColor: "#004f8b",
+    accentColorLight: "#0066b3",
     textColor: "#ffffff",
-    logoUrl: "https://logo.clearbit.com/legalcommunity.it",
   },
   "lamiafinanza.it": {
-    displayName: "LaMiaFinanza",
+    displayName: "La Mia Finanza",
+    abbr: "LF",
     domain: "lamiafinanza.it",
-    accentColor: "#1b4f8a",
+    accentColor: "#1a4070",
+    accentColorLight: "#255294",
     textColor: "#ffffff",
-    logoUrl: "https://logo.clearbit.com/lamiafinanza.it",
   },
   "imille.com": {
     displayName: "iMille",
+    abbr: "iM",
     domain: "imille.com",
-    accentColor: "#1a1a2e",
+    accentColor: "#1c1c2e",
+    accentColorLight: "#2d2d4e",
     textColor: "#ffffff",
-    logoUrl: "https://logo.clearbit.com/imille.com",
   },
 };
 
-const FALLBACK: Omit<PressOutlet, "domain"> = {
-  displayName: "Articolo di stampa",
-  accentColor: "#2d4a6e",
+const FALLBACK: PressOutlet = {
+  displayName: "Rassegna Stampa",
+  abbr: "RS",
+  domain: "",
+  accentColor: "#2c3e50",
+  accentColorLight: "#34495e",
   textColor: "#ffffff",
-  logoUrl: "",
 };
 
-export function getOutletFromUrl(url: string | null | undefined): PressOutlet & { domain: string } {
-  if (!url) return { ...FALLBACK, domain: "" };
+export function getOutletFromUrl(url: string | null | undefined): PressOutlet {
+  if (!url) return FALLBACK;
   try {
     const hostname = new URL(url).hostname.replace(/^www\./, "");
-    const found = OUTLETS[hostname];
-    if (found) return found;
-    return { ...FALLBACK, domain: hostname, displayName: hostname };
+    return OUTLETS[hostname] ?? { ...FALLBACK, domain: hostname, displayName: hostname };
   } catch {
-    return { ...FALLBACK, domain: "" };
+    return FALLBACK;
   }
 }
 

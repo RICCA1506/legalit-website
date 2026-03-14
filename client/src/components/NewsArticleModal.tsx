@@ -198,45 +198,43 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
           {/* Hero - branded masthead for press articles, photo for studio articles */}
           {isPressArticle && outlet ? (
             <div
-              className="sticky top-0 z-0 overflow-hidden flex flex-col items-center justify-center gap-4 px-8"
+              className="sticky top-0 z-0 overflow-hidden relative flex flex-col items-center justify-center gap-3 px-8"
               style={{
                 height: `${heroH}px`,
-                background: `linear-gradient(160deg, ${outlet.accentColor}f0 0%, ${outlet.accentColor}cc 100%)`,
+                background: `linear-gradient(150deg, ${outlet.accentColor} 0%, ${outlet.accentColorLight} 100%)`,
               }}
               data-testid="modal-hero-container"
             >
-              {/* badge */}
-              <div className="flex items-center gap-1.5 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1">
-                <Newspaper className="h-3.5 w-3.5 text-white" />
-                <span className="text-white text-xs font-semibold uppercase tracking-wider">
+              {/* Decorative background monogram */}
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 flex items-center justify-center text-white/5 font-black select-none"
+                style={{ fontSize: "120px", letterSpacing: "-0.02em" }}
+              >
+                {outlet.abbr}
+              </span>
+              {/* Badge */}
+              <div className="relative z-10 flex items-center gap-1.5 bg-white/15 rounded-full px-3 py-1">
+                <Newspaper className="h-3.5 w-3.5 text-white/90" />
+                <span className="text-white/90 text-[10px] font-semibold uppercase tracking-widest">
                   {language === "it" ? "Rassegna Stampa" : "Press Coverage"}
                 </span>
               </div>
-              {/* outlet logo */}
-              {outlet.logoUrl ? (
-                <img
-                  src={outlet.logoUrl}
-                  alt={outlet.displayName}
-                  className="h-14 max-w-[180px] object-contain"
-                  style={{ filter: "brightness(0) invert(1)" }}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).replaceWith(
-                      Object.assign(document.createElement("span"), {
-                        className: "text-white text-2xl font-bold tracking-tight",
-                        textContent: outlet.displayName,
-                      })
-                    );
-                  }}
-                />
-              ) : (
-                <span className="text-white text-2xl font-bold tracking-tight">{outlet.displayName}</span>
-              )}
-              {/* read original CTA */}
+              {/* Outlet name — typographic logo */}
+              <p
+                className="relative z-10 text-white font-bold text-center leading-tight"
+                style={{ fontSize: "clamp(22px, 4vw, 30px)", textShadow: "0 2px 10px rgba(0,0,0,0.3)", letterSpacing: "-0.01em" }}
+              >
+                {outlet.displayName}
+              </p>
+              {/* Separator */}
+              <div className="relative z-10 w-12 h-px bg-white/40" />
+              {/* Read original CTA */}
               <a
                 href={article.linkedinUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white text-sm font-medium rounded-full px-4 py-2 transition-colors"
+                className="relative z-10 flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/25 text-white text-sm font-medium rounded-full px-5 py-2 transition-colors"
                 data-testid={`link-modal-press-source-${article.id}`}
               >
                 <ExternalLink className="h-4 w-4" />
