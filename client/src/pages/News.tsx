@@ -69,6 +69,7 @@ export default function News() {
   const [selectedPracticeArea, setSelectedPracticeArea] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [studioPage, setStudioPage] = useState(1);
+  const [newsTypeFilter, setNewsTypeFilter] = useState<"all" | "studio" | "rassegna-stampa">("all");
   const { isAuthenticated } = useAuth();
 
   const { data: newsArticles = [], isLoading } = useQuery<NewsArticle[]>({
@@ -93,7 +94,11 @@ export default function News() {
     }
   }, [newsArticles]);
 
-  const studioNews = newsArticles.filter(a => a.newsType === "studio" || a.newsType === "rassegna-stampa" || !a.newsType);
+  const studioNews = newsArticles.filter(a => {
+    const type = a.newsType || "studio";
+    if (newsTypeFilter === "all") return type === "studio" || type === "rassegna-stampa";
+    return type === newsTypeFilter;
+  });
 
   const sortedPracticeAreas = [...practiceAreasEnhanced].sort((a, b) => {
     const nameA = language === "en" ? a.titleEN : a.titleIT;
@@ -223,6 +228,12 @@ export default function News() {
               {article.readTime}
             </div>
           )}
+          {article.newsType === "rassegna-stampa" && (
+            <div className="absolute top-3 left-3 z-20 bg-black/60 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5">
+              <ExternalLink className="h-3 w-3" />
+              {language === "it" ? "Rassegna Stampa" : "Press"}
+            </div>
+          )}
         </div>
         <CardContent className="p-4 md:p-6 flex flex-col flex-1">
           <h3 className="font-semibold text-base md:text-lg mb-2 group-hover:text-primary transition-colors">
@@ -292,60 +303,88 @@ export default function News() {
   };
 
   const renderFilters = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-nowrap gap-3 md:gap-4 mb-6 md:mb-8">
-      <div className="relative flex items-center sm:col-span-2 lg:col-span-1">
-        <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder={t("news.searchPlaceholder")}
-          value={searchQuery}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-9 w-full lg:w-[250px]"
-          data-testid="input-search-news"
-        />
-      </div>
-      
-      <div className="flex items-center gap-2">
-        <ArrowUpDown className="h-4 w-4 text-muted-foreground flex-shrink-0 hidden md:block" />
-        <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "newest" | "oldest")}>
-          <SelectTrigger className="w-full lg:w-[180px]" data-testid="select-sort-order">
-            <SelectValue placeholder={t("news.filterByDate")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="newest">{t("news.newestFirst")}</SelectItem>
-            <SelectItem value="oldest">{t("news.oldestFirst")}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="flex items-center gap-2">
-        <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0 hidden md:block" />
-        <Select value={selectedPracticeArea} onValueChange={(v) => { setSelectedPracticeArea(v); setStudioPage(1); }}>
-          <SelectTrigger className="w-full lg:w-[320px]" data-testid="select-practice-area">
-            <SelectValue placeholder={t("news.filterByPracticeArea")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("news.allPracticeAreas")}</SelectItem>
-            {sortedPracticeAreas.map((area) => (
-              <SelectItem key={area.id} value={area.id}>
-                {language === "en" ? area.titleEN : area.titleIT}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {(searchQuery || sortOrder !== "newest" || selectedPracticeArea !== "all") && (
+    <div className="space-y-4 mb-6 md:mb-8">
+      <div className="flex flex-wrap gap-2">
         <Button
-          variant="ghost"
+          variant={newsTypeFilter === "all" ? "default" : "outline"}
           size="sm"
-          onClick={() => { setSearchQuery(""); setSortOrder("newest"); setSelectedPracticeArea("all"); setStudioPage(1); }}
-          className="flex items-center gap-1 text-muted-foreground"
-          data-testid="button-reset-filters"
+          onClick={() => { setNewsTypeFilter("all"); setStudioPage(1); }}
+          data-testid="button-filter-all"
         >
-          <X className="h-4 w-4" />
-          {language === "it" ? "Rimuovi filtri" : "Clear filters"}
+          {language === "it" ? "Tutte" : "All"}
         </Button>
-      )}
+        <Button
+          variant={newsTypeFilter === "studio" ? "default" : "outline"}
+          size="sm"
+          onClick={() => { setNewsTypeFilter("studio"); setStudioPage(1); }}
+          data-testid="button-filter-studio"
+        >
+          {language === "it" ? "News dello Studio" : "Firm News"}
+        </Button>
+        <Button
+          variant={newsTypeFilter === "rassegna-stampa" ? "default" : "outline"}
+          size="sm"
+          onClick={() => { setNewsTypeFilter("rassegna-stampa"); setStudioPage(1); }}
+          data-testid="button-filter-rassegna"
+        >
+          {language === "it" ? "Rassegna Stampa" : "Press Coverage"}
+        </Button>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-nowrap gap-3 md:gap-4">
+        <div className="relative flex items-center sm:col-span-2 lg:col-span-1">
+          <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={t("news.searchPlaceholder")}
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-9 w-full lg:w-[250px]"
+            data-testid="input-search-news"
+          />
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <ArrowUpDown className="h-4 w-4 text-muted-foreground flex-shrink-0 hidden md:block" />
+          <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as "newest" | "oldest")}>
+            <SelectTrigger className="w-full lg:w-[180px]" data-testid="select-sort-order">
+              <SelectValue placeholder={t("news.filterByDate")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">{t("news.newestFirst")}</SelectItem>
+              <SelectItem value="oldest">{t("news.oldestFirst")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0 hidden md:block" />
+          <Select value={selectedPracticeArea} onValueChange={(v) => { setSelectedPracticeArea(v); setStudioPage(1); }}>
+            <SelectTrigger className="w-full lg:w-[320px]" data-testid="select-practice-area">
+              <SelectValue placeholder={t("news.filterByPracticeArea")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("news.allPracticeAreas")}</SelectItem>
+              {sortedPracticeAreas.map((area) => (
+                <SelectItem key={area.id} value={area.id}>
+                  {language === "en" ? area.titleEN : area.titleIT}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {(searchQuery || sortOrder !== "newest" || selectedPracticeArea !== "all" || newsTypeFilter !== "all") && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => { setSearchQuery(""); setSortOrder("newest"); setSelectedPracticeArea("all"); setNewsTypeFilter("all"); setStudioPage(1); }}
+            className="flex items-center gap-1 text-muted-foreground"
+            data-testid="button-reset-filters"
+          >
+            <X className="h-4 w-4" />
+            {language === "it" ? "Rimuovi filtri" : "Clear filters"}
+          </Button>
+        )}
+      </div>
     </div>
   );
 

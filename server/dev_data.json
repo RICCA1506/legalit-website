@@ -1085,8 +1085,8 @@
       "read_time": "4 min",
       "author_id": null,
       "author_name": "LEGALIT",
-      "created_at": "2026-03-09T10:00:00",
-      "updated_at": "2026-03-09T10:00:00",
+      "created_at": "2026-03-12T10:00:00",
+      "updated_at": "2026-03-12T10:00:00",
       "document_url": null,
       "document_name": null,
       "news_type": "studio",
@@ -1186,8 +1186,7 @@
       "linkedin_url": "https://www.lamiafinanza.it/2026/03/legalit-diventa-s-t-a-s-r-l-per-offrire-alle-pmi-una-consulenza-legale-sempre-piu-integrata/",
       "linked_professional_id": "3",
       "linked_professional_ids": [
-        "3",
-        "22"
+        "3"
       ],
       "linked_practice_area": "corporate-compliance",
       "tags": [
