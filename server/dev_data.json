@@ -1095,7 +1095,14 @@
       "linkedin_url": "https://www.linkedin.com/posts/legalit---avvocati-associati_difesapenale-corporategovernance-compliance-activity-7436676458564980736-nJiV?utm_source=share&utm_medium=member_ios",
       "linked_professional_id": "3",
       "linked_professional_ids": [
-        "3"
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "22",
+        "23"
       ],
       "linked_practice_area": "corporate-compliance",
       "tags": [
@@ -1128,8 +1135,8 @@
       "linked_professional_ids": [
         "1",
         "2",
-        "3",
         "4",
+        "3",
         "5",
         "6",
         "22",
@@ -1163,13 +1170,13 @@
       "linkedin_url": "https://legalcommunity.it/legalit-diventa-societa-tra-avvocati/",
       "linked_professional_id": "3",
       "linked_professional_ids": [
-        "1",
-        "2",
         "3",
+        "1",
         "4",
+        "2",
         "5",
-        "6",
         "22",
+        "6",
         "23"
       ],
       "linked_practice_area": "corporate-compliance",
@@ -1200,13 +1207,13 @@
       "linkedin_url": "https://www.lamiafinanza.it/2026/03/legalit-diventa-s-t-a-s-r-l-per-offrire-alle-pmi-una-consulenza-legale-sempre-piu-integrata/",
       "linked_professional_id": "3",
       "linked_professional_ids": [
+        "3",
+        "22",
         "1",
         "2",
-        "3",
         "4",
         "5",
         "6",
-        "22",
         "23"
       ],
       "linked_practice_area": "corporate-compliance",
@@ -1238,14 +1245,14 @@
       "linkedin_url": "https://www.imille.com/2026/03/09/legalit-diventa-societa-tra-avvocati-e-nomina-francesco-vaccaro-managing-partner/",
       "linked_professional_id": "3",
       "linked_professional_ids": [
+        "3",
+        "23",
         "1",
         "2",
-        "3",
         "4",
         "5",
         "6",
-        "22",
-        "23"
+        "22"
       ],
       "linked_practice_area": "corporate-compliance",
       "tags": [
