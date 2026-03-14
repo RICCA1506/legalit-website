@@ -43,6 +43,7 @@ import { SiLinkedin } from "react-icons/si";
 
 const newsTypes = [
   { key: "studio", it: "News dello Studio", en: "Firm News" },
+  { key: "rassegna-stampa", it: "Rassegna Stampa", en: "Press Coverage" },
 ];
 
 interface ArticleForm {

@@ -93,7 +93,7 @@ export default function News() {
     }
   }, [newsArticles]);
 
-  const studioNews = newsArticles.filter(a => a.newsType === "studio" || !a.newsType);
+  const studioNews = newsArticles.filter(a => a.newsType === "studio" || a.newsType === "rassegna-stampa" || !a.newsType);
 
   const sortedPracticeAreas = [...practiceAreasEnhanced].sort((a, b) => {
     const nameA = language === "en" ? a.titleEN : a.titleIT;
