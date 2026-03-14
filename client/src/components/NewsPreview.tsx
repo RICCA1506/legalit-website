@@ -12,6 +12,7 @@ import OptimizedPicture from "./OptimizedPicture";
 import LandoReveal from "./LandoReveal";
 import StaggerContainer, { staggerItemVariants } from "./StaggerContainer";
 import { useLanguage } from "@/lib/i18n";
+import { renderInlineMd } from "@/lib/markdownUtils";
 import type { NewsArticle } from "@shared/schema";
 
 function CurtainNewsCard({ article, onClick, autoT, t }: {
@@ -79,7 +80,7 @@ function CurtainNewsCard({ article, onClick, autoT, t }: {
           {autoT(article.title)}
         </h3>
         <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-          {article.excerpt ? autoT(article.excerpt) : ""}
+          {article.excerpt ? renderInlineMd(autoT(article.excerpt)) : ""}
         </p>
         <div className="flex items-center justify-between mt-auto flex-wrap gap-2">
           <span className="text-xs text-muted-foreground flex items-center gap-1">

@@ -10,6 +10,7 @@ import { Link, useLocation } from "wouter";
 import { professionals as staticProfessionals } from "@/lib/data";
 import { practiceAreasEnhanced } from "@/lib/practiceAreasData";
 import { getOutletFromUrl } from "@/lib/pressOutlets";
+import { renderInlineMd } from "@/lib/markdownUtils";
 import {
   Select,
   SelectContent,
@@ -255,7 +256,7 @@ export default function News() {
           )}
           {article.excerpt && (
             <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-              {autoT(article.excerpt)}
+              {renderInlineMd(autoT(article.excerpt))}
             </p>
           )}
           <div className="flex flex-col gap-2 mt-auto">
@@ -422,7 +423,7 @@ export default function News() {
           </h3>
           {article.excerpt && (
             <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
-              {autoT(article.excerpt)}
+              {renderInlineMd(autoT(article.excerpt))}
             </p>
           )}
           {article.linkedPracticeArea && (

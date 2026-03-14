@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProfessionalCard from "@/components/ProfessionalCard";
 import RichText from "@/components/RichText";
+import { renderInlineMd } from "@/lib/markdownUtils";
 import type { NewsArticle, Professional as DbProfessional } from "@shared/schema";
 import { 
   Building2, 
@@ -302,7 +303,7 @@ export default function AttivitaDetail() {
                         {article.title}
                       </h3>
                       <p className="text-muted-foreground text-sm line-clamp-3 mb-4">
-                        {article.excerpt}
+                        {renderInlineMd(article.excerpt || "")}
                       </p>
                       <div className="flex items-center gap-1 text-primary text-sm group-hover:gap-2 transition-all">
                         <span>{language === "it" ? "Approfondisci" : "Read more"}</span>

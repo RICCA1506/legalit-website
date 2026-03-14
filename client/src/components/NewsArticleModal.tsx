@@ -15,6 +15,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useLanguage } from "@/lib/i18n";
 import OptimizedPicture from "@/components/OptimizedPicture";
 import { getOutletFromUrl } from "@/lib/pressOutlets";
+import { renderInlineMd } from "@/lib/markdownUtils";
 
 interface NewsArticleModalProps {
   article: NewsArticle | null;
@@ -75,24 +76,6 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
   const imageUrl = article.imageUrl || "/attached_assets/unsplash-law-default.jpg";
   const heroH = 260;
 
-  const renderInline = (text: string): React.ReactNode => {
-    const parts = text.split(/(\*\*[^*\n]+\*\*|\*[^*\n]+\*)/g);
-    if (parts.length === 1) return text;
-    return (
-      <>
-        {parts.map((part, i) => {
-          if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
-            return <strong key={i} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
-          }
-          if (part.startsWith('*') && part.endsWith('*') && part.length > 2 && !part.startsWith('**')) {
-            return <em key={i}>{part.slice(1, -1)}</em>;
-          }
-          return part;
-        })}
-      </>
-    );
-  };
-
   const formatContent = (content: string) => {
     const lines = content.split('\n');
     const elements: JSX.Element[] = [];
@@ -120,7 +103,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
           } else {
             elements.push(
               <p key={elementIndex++} className="text-muted-foreground leading-relaxed my-4">
-                {renderInline(text)}
+                {renderInlineMd(text)}
               </p>
             );
           }
@@ -135,7 +118,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
           elements.push(
             <ul key={elementIndex++} className="list-disc pl-6 space-y-2 my-4">
               {currentList.items.map((item, i) => (
-                <li key={i} className="text-muted-foreground">{renderInline(item)}</li>
+                <li key={i} className="text-muted-foreground">{renderInlineMd(item)}</li>
               ))}
             </ul>
           );
@@ -143,7 +126,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
           elements.push(
             <ol key={elementIndex++} className="list-decimal pl-6 space-y-2 my-4">
               {currentList.items.map((item, i) => (
-                <li key={i} className="text-muted-foreground">{renderInline(item)}</li>
+                <li key={i} className="text-muted-foreground">{renderInlineMd(item)}</li>
               ))}
             </ol>
           );
