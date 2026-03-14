@@ -24,11 +24,11 @@ const OUTLETS: Record<string, PressOutlet> = {
     displayName: "Legal Community",
     abbr: "LC",
     domain: "legalcommunity.it",
-    accentColor: "#1a2e4a",
+    accentColor: "#233746",
     accentColorLight: "#2c4a72",
     textColor: "#ffffff",
     logoPath: "/images/press-logos/legalcommunity.png",
-    headerBg: "#1a2e4a",
+    headerBg: "#233746",
   },
   "lamiafinanza.it": {
     displayName: "La Mia Finanza",
