@@ -284,17 +284,31 @@ export default function News() {
                   year: "numeric",
                 })}
               </span>
-              <a
-                href={article.linkedinUrl || "https://www.linkedin.com/company/legalit---avvocati-associati/"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-medium text-[#0A66C2] flex items-center gap-1 hover:underline transition-colors btn-bounce shrink-0"
-                onClick={(e) => e.stopPropagation()}
-                data-testid={`link-linkedin-${article.id}`}
-              >
-                <SiLinkedin className="h-3.5 w-3.5" />
-                {t("news.viewOnLinkedIn")}
-              </a>
+              {article.newsType === "rassegna-stampa" && article.linkedinUrl ? (
+                <a
+                  href={article.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-medium text-primary flex items-center gap-1 hover:underline transition-colors btn-bounce shrink-0"
+                  onClick={(e) => e.stopPropagation()}
+                  data-testid={`link-source-${article.id}`}
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  {language === "it" ? "Leggi l'articolo" : "Read article"}
+                </a>
+              ) : (
+                <a
+                  href={article.linkedinUrl || "https://www.linkedin.com/company/legalit---avvocati-associati/"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-medium text-[#0A66C2] flex items-center gap-1 hover:underline transition-colors btn-bounce shrink-0"
+                  onClick={(e) => e.stopPropagation()}
+                  data-testid={`link-linkedin-${article.id}`}
+                >
+                  <SiLinkedin className="h-3.5 w-3.5" />
+                  {t("news.viewOnLinkedIn")}
+                </a>
+              )}
             </div>
           </div>
         </CardContent>
