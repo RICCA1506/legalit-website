@@ -75,6 +75,24 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
   const imageUrl = article.imageUrl || "/attached_assets/unsplash-law-default.jpg";
   const heroH = 260;
 
+  const renderInline = (text: string): React.ReactNode => {
+    const parts = text.split(/(\*\*[^*\n]+\*\*|\*[^*\n]+\*)/g);
+    if (parts.length === 1) return text;
+    return (
+      <>
+        {parts.map((part, i) => {
+          if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+            return <strong key={i} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+          }
+          if (part.startsWith('*') && part.endsWith('*') && part.length > 2 && !part.startsWith('**')) {
+            return <em key={i}>{part.slice(1, -1)}</em>;
+          }
+          return part;
+        })}
+      </>
+    );
+  };
+
   const formatContent = (content: string) => {
     const lines = content.split('\n');
     const elements: JSX.Element[] = [];
@@ -86,22 +104,23 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
       if (currentParagraph.length > 0) {
         const text = currentParagraph.join(' ').trim();
         if (text) {
-          if (text.startsWith('**') && text.endsWith('**')) {
+          const stripped = text.replace(/\*\*/g, '').replace(/\*/g, '');
+          if (text.startsWith('**') && text.endsWith('**') && !text.slice(2, -2).includes('**')) {
             elements.push(
               <h3 key={elementIndex++} className="text-xl font-bold mt-8 mb-4 text-foreground">
-                {text.replace(/\*\*/g, '')}
+                {stripped}
               </h3>
             );
           } else if (text.startsWith('*') && text.endsWith('*') && !text.startsWith('**')) {
             elements.push(
               <h4 key={elementIndex++} className="text-lg font-semibold mt-6 mb-3 text-foreground/90">
-                {text.replace(/\*/g, '')}
+                {stripped}
               </h4>
             );
           } else {
             elements.push(
               <p key={elementIndex++} className="text-muted-foreground leading-relaxed my-4">
-                {text}
+                {renderInline(text)}
               </p>
             );
           }
@@ -116,7 +135,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
           elements.push(
             <ul key={elementIndex++} className="list-disc pl-6 space-y-2 my-4">
               {currentList.items.map((item, i) => (
-                <li key={i} className="text-muted-foreground">{item}</li>
+                <li key={i} className="text-muted-foreground">{renderInline(item)}</li>
               ))}
             </ul>
           );
@@ -124,7 +143,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
           elements.push(
             <ol key={elementIndex++} className="list-decimal pl-6 space-y-2 my-4">
               {currentList.items.map((item, i) => (
-                <li key={i} className="text-muted-foreground">{item}</li>
+                <li key={i} className="text-muted-foreground">{renderInline(item)}</li>
               ))}
             </ol>
           );
@@ -443,22 +462,68 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
                 if (article.tags) article.tags.forEach(t => { if (!allAreaIds.includes(t)) allAreaIds.push(t); });
                 if (linkedIds.length === 0 && allAreaIds.length === 0) return null;
 
+                const linkedPros = linkedIds.length > 0
+                  ? linkedIds.map(id => dbProfessionals.find((p: any) => String(p.id) === String(id))).filter(Boolean) as any[]
+                  : [];
+
                 return (
                   <div className="mt-8 pt-6 border-t">
-                    <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                       <Users className="h-5 w-5 text-primary" />
                       {language === "it" ? "I Nostri Professionisti" : "Our Professionals"}
                     </h3>
-                    <ProfessionalsReel
-                      columns={Math.min(linkedIds.length || 3, 3)}
-                      filterByIds={linkedIds.length > 0 ? linkedIds : undefined}
-                      filterByAreas={linkedIds.length === 0 ? allAreaIds : undefined}
-                      highlightAuthor={article.authorName}
-                      onProfessionalClick={(id) => {
-                        onClose();
-                        navigate(`/professionisti?id=${id}`);
-                      }}
-                    />
+
+                    {linkedPros.length > 0 ? (
+                      /* Griglia statica: mostra TUTTI i professionisti collegati */
+                      <div className={`grid gap-3 ${linkedPros.length === 1 ? 'grid-cols-1 max-w-xs' : linkedPros.length === 2 ? 'grid-cols-2' : linkedPros.length <= 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3 sm:grid-cols-4'}`}>
+                        {linkedPros.map((pro: any) => {
+                          const isAuthor = article.authorName && pro.name?.toLowerCase().includes(article.authorName.toLowerCase().replace(/^(avv\.|prof\.|dott\.|dott\.ssa)\s*/i, ''));
+                          const imgUrl = pro.imageUrl?.startsWith('/') || pro.imageUrl?.startsWith('http') ? pro.imageUrl : pro.imageUrl ? `/attached_assets/${pro.imageUrl}` : null;
+                          return (
+                            <div
+                              key={pro.id}
+                              className={`relative rounded-lg overflow-hidden cursor-pointer aspect-[3/4] bg-muted ${isAuthor ? 'ring-2 ring-primary ring-offset-2' : ''}`}
+                              onClick={() => { onClose(); navigate(`/professionisti?id=${pro.id}`); }}
+                              data-testid={`card-linked-pro-${pro.id}`}
+                            >
+                              {imgUrl && (
+                                <img
+                                  src={imgUrl}
+                                  alt={pro.name}
+                                  className="absolute inset-0 w-full h-full object-cover"
+                                  style={(() => {
+                                    const zoom = pro.imageZoom || 100;
+                                    let ox = 50, oy = 50;
+                                    if (pro.imagePosition?.includes(',')) {
+                                      const [x, y] = pro.imagePosition.split(',').map(Number);
+                                      if (!isNaN(x)) ox = x;
+                                      if (!isNaN(y)) oy = y;
+                                    }
+                                    return { objectFit: 'cover' as const, objectPosition: `${ox}% ${oy}%`, transform: `scale(${zoom / 100})`, transformOrigin: `${ox}% ${oy}%` };
+                                  })()}
+                                />
+                              )}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                              <div className="absolute bottom-0 left-0 right-0 p-2">
+                                <p className="text-white text-[11px] font-semibold leading-tight line-clamp-2 drop-shadow">{pro.name}</p>
+                                <p className="text-white/70 text-[10px] leading-tight mt-0.5 line-clamp-1">{pro.title}</p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      /* Reel rotante per aree (nessun ID specifico) */
+                      <ProfessionalsReel
+                        columns={3}
+                        filterByAreas={allAreaIds}
+                        highlightAuthor={article.authorName}
+                        onProfessionalClick={(id) => {
+                          onClose();
+                          navigate(`/professionisti?id=${id}`);
+                        }}
+                      />
+                    )}
                   </div>
                 );
               })()}
