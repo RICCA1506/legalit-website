@@ -327,55 +327,93 @@ export default function News() {
         onClick={() => setSelectedArticle(article)}
         data-testid={`card-press-${article.id}`}
       >
-        {/* Outlet masthead — logo su sfondo neutro, bordo accent in cima */}
-        <div
-          className="relative flex flex-col items-center justify-center gap-3 px-5 py-5"
-          style={{
-            background: "#ffffff",
-            borderTop: `4px solid ${outlet.accentColor}`,
-            minHeight: "130px",
-          }}
-        >
-          {/* Logo immagine oppure fallback tipografico */}
-          {outlet.logoPath ? (
-            <img
-              src={outlet.logoPath}
-              alt={outlet.displayName}
-              className="h-11 max-w-[150px] object-contain"
-              draggable={false}
-            />
-          ) : (
-            <p
-              className="font-bold text-center leading-tight"
-              style={{ fontSize: "20px", color: outlet.accentColor, letterSpacing: "-0.01em" }}
+        {/* Outlet masthead */}
+        {outlet.headerBg ? (
+          /* Sfondo colorato (es. LC): logo grande centrato, badge/data in bianco in basso */
+          <div
+            className="relative flex flex-col items-center justify-center"
+            style={{ background: outlet.headerBg, minHeight: "130px" }}
+          >
+            {outlet.logoPath && (
+              <img
+                src={outlet.logoPath}
+                alt={outlet.displayName}
+                className="w-full h-full object-contain"
+                style={{ maxHeight: "130px", padding: "18px 32px 10px" }}
+                draggable={false}
+              />
+            )}
+            {/* Badge + data sovrapposti in basso */}
+            <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-3 py-1.5"
+              style={{ background: "rgba(0,0,0,0.25)" }}
             >
-              {outlet.displayName}
-            </p>
-          )}
-
-          {/* Riga meta: badge + data */}
-          <div className="flex items-center justify-between w-full px-1">
-            <div
-              className="flex items-center gap-1 rounded-full px-2 py-0.5"
-              style={{ background: outlet.accentColor }}
-            >
-              <Newspaper className="h-3 w-3 text-white" />
-              <span className="text-white text-[9px] font-semibold uppercase tracking-widest">
-                {language === "it" ? "Rassegna Stampa" : "Press"}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Calendar className="h-3 w-3 text-muted-foreground" />
-              <span className="text-muted-foreground text-[11px]">
-                {article.createdAt && new Date(article.createdAt).toLocaleDateString("it-IT", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </span>
+              <div className="flex items-center gap-1">
+                <Newspaper className="h-3 w-3 text-white/90" />
+                <span className="text-white/90 text-[9px] font-semibold uppercase tracking-widest">
+                  {language === "it" ? "Rassegna Stampa" : "Press"}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Calendar className="h-3 w-3 text-white/70" />
+                <span className="text-white/70 text-[11px]">
+                  {article.createdAt && new Date(article.createdAt).toLocaleDateString("it-IT", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          /* Sfondo bianco: logo medio centrato, bordo accent in cima */
+          <div
+            className="relative flex flex-col items-center justify-center gap-3 px-5 py-5"
+            style={{
+              background: "#ffffff",
+              borderTop: `4px solid ${outlet.accentColor}`,
+              minHeight: "130px",
+            }}
+          >
+            {outlet.logoPath ? (
+              <img
+                src={outlet.logoPath}
+                alt={outlet.displayName}
+                className="h-11 max-w-[150px] object-contain"
+                draggable={false}
+              />
+            ) : (
+              <p
+                className="font-bold text-center leading-tight"
+                style={{ fontSize: "20px", color: outlet.accentColor, letterSpacing: "-0.01em" }}
+              >
+                {outlet.displayName}
+              </p>
+            )}
+            {/* Riga meta: badge + data */}
+            <div className="flex items-center justify-between w-full px-1">
+              <div
+                className="flex items-center gap-1 rounded-full px-2 py-0.5"
+                style={{ background: outlet.accentColor }}
+              >
+                <Newspaper className="h-3 w-3 text-white" />
+                <span className="text-white text-[9px] font-semibold uppercase tracking-widest">
+                  {language === "it" ? "Rassegna Stampa" : "Press"}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Calendar className="h-3 w-3 text-muted-foreground" />
+                <span className="text-muted-foreground text-[11px]">
+                  {article.createdAt && new Date(article.createdAt).toLocaleDateString("it-IT", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Card body */}
         <CardContent className="p-4 md:p-5 flex flex-col flex-1">

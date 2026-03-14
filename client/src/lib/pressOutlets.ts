@@ -6,6 +6,7 @@ export interface PressOutlet {
   textColor: string;
   abbr: string;
   logoPath: string | null;
+  headerBg: string | null;
 }
 
 const OUTLETS: Record<string, PressOutlet> = {
@@ -17,6 +18,7 @@ const OUTLETS: Record<string, PressOutlet> = {
     accentColorLight: "#e74c3c",
     textColor: "#ffffff",
     logoPath: "/images/press-logos/toplegal.png",
+    headerBg: null,
   },
   "legalcommunity.it": {
     displayName: "Legal Community",
@@ -26,6 +28,7 @@ const OUTLETS: Record<string, PressOutlet> = {
     accentColorLight: "#2c4a72",
     textColor: "#ffffff",
     logoPath: "/images/press-logos/legalcommunity.png",
+    headerBg: "#1a2e4a",
   },
   "lamiafinanza.it": {
     displayName: "La Mia Finanza",
@@ -35,6 +38,7 @@ const OUTLETS: Record<string, PressOutlet> = {
     accentColorLight: "#244f91",
     textColor: "#ffffff",
     logoPath: "/images/press-logos/lamiafinanza.png",
+    headerBg: null,
   },
   "imille.com": {
     displayName: "iMille",
@@ -44,6 +48,7 @@ const OUTLETS: Record<string, PressOutlet> = {
     accentColorLight: "#2952c4",
     textColor: "#ffffff",
     logoPath: "/images/press-logos/imille.png",
+    headerBg: null,
   },
 };
 
@@ -55,6 +60,7 @@ const FALLBACK: PressOutlet = {
   accentColorLight: "#34495e",
   textColor: "#ffffff",
   logoPath: null,
+  headerBg: null,
 };
 
 export function getOutletFromUrl(url: string | null | undefined): PressOutlet {

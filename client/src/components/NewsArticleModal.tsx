@@ -201,8 +201,8 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
               className="sticky top-0 z-0 overflow-hidden relative flex flex-col items-center justify-center gap-4 px-8"
               style={{
                 height: `${heroH}px`,
-                background: "#ffffff",
-                borderTop: `5px solid ${outlet.accentColor}`,
+                background: outlet.headerBg ?? "#ffffff",
+                ...(outlet.headerBg ? {} : { borderTop: `5px solid ${outlet.accentColor}` }),
               }}
               data-testid="modal-hero-container"
             >
@@ -211,13 +211,17 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
                 <img
                   src={outlet.logoPath}
                   alt={outlet.displayName}
-                  className="h-14 max-w-[200px] object-contain"
+                  className="object-contain"
+                  style={outlet.headerBg
+                    ? { maxHeight: `${heroH - 56}px`, maxWidth: "240px", padding: "0 8px" }
+                    : { height: "56px", maxWidth: "200px" }
+                  }
                   draggable={false}
                 />
               ) : (
                 <p
                   className="font-bold text-center leading-tight"
-                  style={{ fontSize: "28px", color: outlet.accentColor, letterSpacing: "-0.01em" }}
+                  style={{ fontSize: "28px", color: outlet.headerBg ? "#ffffff" : outlet.accentColor, letterSpacing: "-0.01em" }}
                 >
                   {outlet.displayName}
                 </p>
@@ -225,7 +229,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
               {/* Badge */}
               <div
                 className="flex items-center gap-1.5 rounded-full px-3 py-1"
-                style={{ background: outlet.accentColor }}
+                style={{ background: outlet.headerBg ? "rgba(255,255,255,0.15)" : outlet.accentColor }}
               >
                 <Newspaper className="h-3.5 w-3.5 text-white" />
                 <span className="text-white text-[10px] font-semibold uppercase tracking-widest">
@@ -238,7 +242,10 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm font-semibold rounded-full px-5 py-2 transition-opacity hover:opacity-85"
-                style={{ background: outlet.accentColor, color: "#ffffff" }}
+                style={outlet.headerBg
+                  ? { background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.3)", color: "#ffffff" }
+                  : { background: outlet.accentColor, color: "#ffffff" }
+                }
                 data-testid={`link-modal-press-source-${article.id}`}
               >
                 <ExternalLink className="h-4 w-4" />
