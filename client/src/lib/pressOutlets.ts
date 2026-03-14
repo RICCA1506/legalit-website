@@ -5,6 +5,7 @@ export interface PressOutlet {
   accentColorLight: string;
   textColor: string;
   abbr: string;
+  logoPath: string | null;
 }
 
 const OUTLETS: Record<string, PressOutlet> = {
@@ -12,33 +13,37 @@ const OUTLETS: Record<string, PressOutlet> = {
     displayName: "TopLegal",
     abbr: "TL",
     domain: "toplegal.it",
-    accentColor: "#0d2e52",
-    accentColorLight: "#1a4a82",
+    accentColor: "#c0392b",
+    accentColorLight: "#e74c3c",
     textColor: "#ffffff",
+    logoPath: "/images/press-logos/toplegal.png",
   },
   "legalcommunity.it": {
     displayName: "Legal Community",
     abbr: "LC",
     domain: "legalcommunity.it",
-    accentColor: "#004f8b",
-    accentColorLight: "#0066b3",
+    accentColor: "#1a2e4a",
+    accentColorLight: "#2c4a72",
     textColor: "#ffffff",
+    logoPath: "/images/press-logos/legalcommunity.png",
   },
   "lamiafinanza.it": {
     displayName: "La Mia Finanza",
     abbr: "LF",
     domain: "lamiafinanza.it",
-    accentColor: "#1a4070",
-    accentColorLight: "#255294",
+    accentColor: "#1a3a6b",
+    accentColorLight: "#244f91",
     textColor: "#ffffff",
+    logoPath: "/images/press-logos/lamiafinanza.png",
   },
   "imille.com": {
     displayName: "iMille",
     abbr: "iM",
     domain: "imille.com",
-    accentColor: "#1c1c2e",
-    accentColorLight: "#2d2d4e",
+    accentColor: "#1a3a8f",
+    accentColorLight: "#2952c4",
     textColor: "#ffffff",
+    logoPath: "/images/press-logos/imille.png",
   },
 };
 
@@ -49,6 +54,7 @@ const FALLBACK: PressOutlet = {
   accentColor: "#2c3e50",
   accentColorLight: "#34495e",
   textColor: "#ffffff",
+  logoPath: null,
 };
 
 export function getOutletFromUrl(url: string | null | undefined): PressOutlet {

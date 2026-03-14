@@ -327,52 +327,53 @@ export default function News() {
         onClick={() => setSelectedArticle(article)}
         data-testid={`card-press-${article.id}`}
       >
-        {/* Outlet masthead — pure typography, no external images */}
+        {/* Outlet masthead — logo su sfondo neutro, bordo accent in cima */}
         <div
-          className="relative flex flex-col items-center justify-center gap-2 px-5 py-6"
+          className="relative flex flex-col items-center justify-center gap-3 px-5 py-5"
           style={{
-            background: `linear-gradient(150deg, ${outlet.accentColor} 0%, ${outlet.accentColorLight} 100%)`,
+            background: "#ffffff",
+            borderTop: `4px solid ${outlet.accentColor}`,
             minHeight: "130px",
           }}
         >
-          {/* Decorative background text */}
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 flex items-center justify-center text-white/5 font-black select-none overflow-hidden"
-            style={{ fontSize: "clamp(56px, 10vw, 80px)", letterSpacing: "-0.02em" }}
-          >
-            {outlet.abbr}
-          </span>
+          {/* Logo immagine oppure fallback tipografico */}
+          {outlet.logoPath ? (
+            <img
+              src={outlet.logoPath}
+              alt={outlet.displayName}
+              className="h-11 max-w-[150px] object-contain"
+              draggable={false}
+            />
+          ) : (
+            <p
+              className="font-bold text-center leading-tight"
+              style={{ fontSize: "20px", color: outlet.accentColor, letterSpacing: "-0.01em" }}
+            >
+              {outlet.displayName}
+            </p>
+          )}
 
-          {/* Badge top-left */}
-          <div className="absolute top-3 left-3 flex items-center gap-1 bg-white/15 rounded-full px-2.5 py-1">
-            <Newspaper className="h-3 w-3 text-white/90" />
-            <span className="text-white/90 text-[9px] font-semibold uppercase tracking-widest">
-              {language === "it" ? "Rassegna Stampa" : "Press"}
-            </span>
-          </div>
-
-          {/* Outlet name — typographic logo */}
-          <p
-            className="relative z-10 text-white font-bold text-center leading-tight"
-            style={{ fontSize: "clamp(16px, 3vw, 20px)", textShadow: "0 1px 6px rgba(0,0,0,0.3)", letterSpacing: "-0.01em" }}
-          >
-            {outlet.displayName}
-          </p>
-
-          {/* Thin separator */}
-          <div className="relative z-10 w-10 h-px bg-white/40" />
-
-          {/* Date */}
-          <div className="relative z-10 flex items-center gap-1.5">
-            <Calendar className="h-3 w-3 text-white/80" />
-            <span className="text-white/80 text-[11px] font-medium">
-              {article.createdAt && new Date(article.createdAt).toLocaleDateString("it-IT", {
-                day: "2-digit",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
+          {/* Riga meta: badge + data */}
+          <div className="flex items-center justify-between w-full px-1">
+            <div
+              className="flex items-center gap-1 rounded-full px-2 py-0.5"
+              style={{ background: outlet.accentColor }}
+            >
+              <Newspaper className="h-3 w-3 text-white" />
+              <span className="text-white text-[9px] font-semibold uppercase tracking-widest">
+                {language === "it" ? "Rassegna Stampa" : "Press"}
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Calendar className="h-3 w-3 text-muted-foreground" />
+              <span className="text-muted-foreground text-[11px]">
+                {article.createdAt && new Date(article.createdAt).toLocaleDateString("it-IT", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </span>
+            </div>
           </div>
         </div>
 

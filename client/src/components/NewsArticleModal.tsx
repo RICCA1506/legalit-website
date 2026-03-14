@@ -198,47 +198,51 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
           {/* Hero - branded masthead for press articles, photo for studio articles */}
           {isPressArticle && outlet ? (
             <div
-              className="sticky top-0 z-0 overflow-hidden relative flex flex-col items-center justify-center gap-3 px-8"
+              className="sticky top-0 z-0 overflow-hidden relative flex flex-col items-center justify-center gap-4 px-8"
               style={{
                 height: `${heroH}px`,
-                background: `linear-gradient(150deg, ${outlet.accentColor} 0%, ${outlet.accentColorLight} 100%)`,
+                background: "#ffffff",
+                borderTop: `5px solid ${outlet.accentColor}`,
               }}
               data-testid="modal-hero-container"
             >
-              {/* Decorative background monogram */}
-              <span
-                aria-hidden="true"
-                className="absolute inset-0 flex items-center justify-center text-white/5 font-black select-none"
-                style={{ fontSize: "120px", letterSpacing: "-0.02em" }}
-              >
-                {outlet.abbr}
-              </span>
+              {/* Logo immagine oppure fallback tipografico */}
+              {outlet.logoPath ? (
+                <img
+                  src={outlet.logoPath}
+                  alt={outlet.displayName}
+                  className="h-14 max-w-[200px] object-contain"
+                  draggable={false}
+                />
+              ) : (
+                <p
+                  className="font-bold text-center leading-tight"
+                  style={{ fontSize: "28px", color: outlet.accentColor, letterSpacing: "-0.01em" }}
+                >
+                  {outlet.displayName}
+                </p>
+              )}
               {/* Badge */}
-              <div className="relative z-10 flex items-center gap-1.5 bg-white/15 rounded-full px-3 py-1">
-                <Newspaper className="h-3.5 w-3.5 text-white/90" />
-                <span className="text-white/90 text-[10px] font-semibold uppercase tracking-widest">
+              <div
+                className="flex items-center gap-1.5 rounded-full px-3 py-1"
+                style={{ background: outlet.accentColor }}
+              >
+                <Newspaper className="h-3.5 w-3.5 text-white" />
+                <span className="text-white text-[10px] font-semibold uppercase tracking-widest">
                   {language === "it" ? "Rassegna Stampa" : "Press Coverage"}
                 </span>
               </div>
-              {/* Outlet name — typographic logo */}
-              <p
-                className="relative z-10 text-white font-bold text-center leading-tight"
-                style={{ fontSize: "clamp(22px, 4vw, 30px)", textShadow: "0 2px 10px rgba(0,0,0,0.3)", letterSpacing: "-0.01em" }}
-              >
-                {outlet.displayName}
-              </p>
-              {/* Separator */}
-              <div className="relative z-10 w-12 h-px bg-white/40" />
               {/* Read original CTA */}
               <a
                 href={article.linkedinUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative z-10 flex items-center gap-2 bg-white/15 hover:bg-white/25 border border-white/25 text-white text-sm font-medium rounded-full px-5 py-2 transition-colors"
+                className="flex items-center gap-2 text-sm font-semibold rounded-full px-5 py-2 transition-opacity hover:opacity-85"
+                style={{ background: outlet.accentColor, color: "#ffffff" }}
                 data-testid={`link-modal-press-source-${article.id}`}
               >
                 <ExternalLink className="h-4 w-4" />
-                {language === "it" ? `Leggi l'articolo originale su ${outlet.displayName}` : `Read original on ${outlet.displayName}`}
+                {language === "it" ? `Leggi l'articolo su ${outlet.displayName}` : `Read on ${outlet.displayName}`}
               </a>
             </div>
           ) : (
