@@ -9,6 +9,7 @@ import { SiLinkedin } from "react-icons/si";
 import { Link, useLocation } from "wouter";
 import { professionals as staticProfessionals } from "@/lib/data";
 import { practiceAreasEnhanced } from "@/lib/practiceAreasData";
+import { getOutletFromUrl } from "@/lib/pressOutlets";
 import {
   Select,
   SelectContent,
@@ -316,6 +317,111 @@ export default function News() {
     );
   };
 
+  const PressCard = ({ article }: { article: NewsArticle }) => {
+    const outlet = getOutletFromUrl(article.linkedinUrl);
+    const sourceUrl = article.linkedinUrl || "#";
+
+    return (
+      <Card
+        className="group overflow-hidden hover-elevate active-elevate-2 cursor-pointer border-0 bg-card h-full flex flex-col"
+        onClick={() => setSelectedArticle(article)}
+        data-testid={`card-press-${article.id}`}
+      >
+        {/* Outlet masthead */}
+        <div
+          className="relative flex flex-col items-center justify-center gap-3 px-6 py-7"
+          style={{ background: `linear-gradient(160deg, ${outlet.accentColor}ee 0%, ${outlet.accentColor}cc 100%)` }}
+        >
+          {/* small rassegna stampa badge top-left */}
+          <div className="absolute top-3 left-3 flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-2.5 py-1">
+            <Newspaper className="h-3 w-3 text-white" />
+            <span className="text-white text-[10px] font-semibold uppercase tracking-wide">
+              {language === "it" ? "Rassegna Stampa" : "Press"}
+            </span>
+          </div>
+          {/* Outlet logo */}
+          {outlet.logoUrl ? (
+            <div className="h-12 flex items-center justify-center">
+              <img
+                src={outlet.logoUrl}
+                alt={outlet.displayName}
+                className="h-full max-w-[120px] object-contain"
+                style={{ filter: "brightness(0) invert(1)" }}
+                onError={(e) => {
+                  const parent = (e.target as HTMLImageElement).parentElement;
+                  if (parent) {
+                    parent.innerHTML = `<span class="text-white text-xl font-bold tracking-tight">${outlet.displayName}</span>`;
+                  }
+                }}
+              />
+            </div>
+          ) : (
+            <span className="text-white text-xl font-bold tracking-tight">{outlet.displayName}</span>
+          )}
+          {/* Date pill */}
+          <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-2.5 py-1">
+            <Calendar className="h-3 w-3 text-white/90" />
+            <span className="text-white/90 text-[11px] font-medium">
+              {article.createdAt && new Date(article.createdAt).toLocaleDateString("it-IT", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+          </div>
+        </div>
+
+        {/* Card body */}
+        <CardContent className="p-4 md:p-5 flex flex-col flex-1">
+          <h3 className="font-semibold text-base md:text-[15px] leading-snug mb-2 group-hover:text-primary transition-colors line-clamp-3">
+            {autoT(article.title)}
+          </h3>
+          {article.excerpt && (
+            <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
+              {autoT(article.excerpt)}
+            </p>
+          )}
+          {article.linkedPracticeArea && (
+            <div className="flex flex-wrap gap-1 mb-3">
+              <Badge
+                variant="outline"
+                className="cursor-pointer max-w-full w-fit truncate text-xs"
+                onClick={(e) => { e.stopPropagation(); handlePracticeAreaClick(article.linkedPracticeArea!, e as any); }}
+                data-testid={`button-press-practice-area-${article.linkedPracticeArea}`}
+              >
+                <span className="truncate">{getPracticeAreaLabel(article.linkedPracticeArea)}</span>
+              </Badge>
+            </div>
+          )}
+          {/* CTA branded button */}
+          <a
+            href={sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-auto flex items-center justify-center gap-2 w-full rounded-md px-4 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90 active:opacity-80"
+            style={{ background: outlet.accentColor, color: outlet.textColor }}
+            onClick={(e) => e.stopPropagation()}
+            data-testid={`link-press-source-${article.id}`}
+            aria-label={`${language === "it" ? "Leggi l'articolo su" : "Read article on"} ${outlet.displayName}`}
+          >
+            {outlet.logoUrl && (
+              <img
+                src={outlet.logoUrl}
+                alt=""
+                aria-hidden="true"
+                className="h-4 w-4 object-contain flex-shrink-0"
+                style={{ filter: "brightness(0) invert(1)" }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+              />
+            )}
+            <span>{language === "it" ? `Leggi su ${outlet.displayName}` : `Read on ${outlet.displayName}`}</span>
+            <ExternalLink className="h-3.5 w-3.5 flex-shrink-0 opacity-80" />
+          </a>
+        </CardContent>
+      </Card>
+    );
+  };
+
   const renderFilters = () => (
     <div className="space-y-4 mb-6 md:mb-8">
       <div className="flex flex-wrap gap-2">
@@ -483,7 +589,10 @@ export default function News() {
               <StaggerContainer staggerDelay={0.1} className="flex flex-wrap justify-center gap-3 md:gap-6 lg:gap-8">
                 {paginatedStudioNews.map((article) => (
                   <motion.div key={article.id} variants={staggerItemVariants(30, 0.5)} className="w-[calc(50%-0.375rem)] lg:w-[calc(33.333%-1.375rem)]">
-                    <NewsCard article={article} />
+                    {article.newsType === "rassegna-stampa"
+                      ? <PressCard article={article} />
+                      : <NewsCard article={article} />
+                    }
                   </motion.div>
                 ))}
               </StaggerContainer>

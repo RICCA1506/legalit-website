@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, User, Users, X, ArrowLeft, FileText, ExternalLink, Layers, HardHat, Gavel, Scale, Building2 } from "lucide-react";
+import { Calendar, Clock, User, Users, X, ArrowLeft, FileText, ExternalLink, Layers, HardHat, Gavel, Scale, Building2, Newspaper } from "lucide-react";
 import ProfessionalsReel from "@/components/ProfessionalsReel";
 import { SiLinkedin } from "react-icons/si";
 import { useQuery } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ import { practiceAreasEnhanced } from "@/lib/practiceAreasData";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useLanguage } from "@/lib/i18n";
 import OptimizedPicture from "@/components/OptimizedPicture";
+import { getOutletFromUrl } from "@/lib/pressOutlets";
 
 interface NewsArticleModalProps {
   article: NewsArticle | null;
@@ -69,6 +70,8 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
   };
   if (!article) return null;
 
+  const isPressArticle = article.newsType === "rassegna-stampa";
+  const outlet = isPressArticle ? getOutletFromUrl(article.linkedinUrl) : null;
   const imageUrl = article.imageUrl || "/attached_assets/unsplash-law-default.jpg";
   const heroH = 260;
 
@@ -192,35 +195,84 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
               <X className="h-5 w-5" />
             </Button>
           </div>
-          {/* Hero image - sticky behind content */}
-          <div
-            className="sticky top-0 z-0 overflow-hidden"
-            style={{ height: `${heroH}px` }}
-            data-testid="modal-hero-container"
-          >
-            <OptimizedPicture
-              src={imageUrl}
-              alt={article.title}
-              className="absolute inset-0 w-full h-full object-cover"
-              style={(() => {
-                const pos = article.imagePosition;
-                const zoom = article.imageZoom || 100;
-                let ox = 50, oy = 50;
-                if (pos && pos.includes(",")) {
-                  const [x, y] = pos.split(",").map(Number);
-                  if (!isNaN(x)) ox = x;
-                  if (!isNaN(y)) oy = y;
-                }
-                if (zoom === 100 && ox === 50 && oy === 50) return { objectPosition: "center" };
-                return {
-                  objectPosition: `${ox}% ${oy}%`,
-                  transform: `scale(${zoom / 100})`,
-                  transformOrigin: `${ox}% ${oy}%`,
-                };
-              })()}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-          </div>
+          {/* Hero - branded masthead for press articles, photo for studio articles */}
+          {isPressArticle && outlet ? (
+            <div
+              className="sticky top-0 z-0 overflow-hidden flex flex-col items-center justify-center gap-4 px-8"
+              style={{
+                height: `${heroH}px`,
+                background: `linear-gradient(160deg, ${outlet.accentColor}f0 0%, ${outlet.accentColor}cc 100%)`,
+              }}
+              data-testid="modal-hero-container"
+            >
+              {/* badge */}
+              <div className="flex items-center gap-1.5 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1">
+                <Newspaper className="h-3.5 w-3.5 text-white" />
+                <span className="text-white text-xs font-semibold uppercase tracking-wider">
+                  {language === "it" ? "Rassegna Stampa" : "Press Coverage"}
+                </span>
+              </div>
+              {/* outlet logo */}
+              {outlet.logoUrl ? (
+                <img
+                  src={outlet.logoUrl}
+                  alt={outlet.displayName}
+                  className="h-14 max-w-[180px] object-contain"
+                  style={{ filter: "brightness(0) invert(1)" }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).replaceWith(
+                      Object.assign(document.createElement("span"), {
+                        className: "text-white text-2xl font-bold tracking-tight",
+                        textContent: outlet.displayName,
+                      })
+                    );
+                  }}
+                />
+              ) : (
+                <span className="text-white text-2xl font-bold tracking-tight">{outlet.displayName}</span>
+              )}
+              {/* read original CTA */}
+              <a
+                href={article.linkedinUrl || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white text-sm font-medium rounded-full px-4 py-2 transition-colors"
+                data-testid={`link-modal-press-source-${article.id}`}
+              >
+                <ExternalLink className="h-4 w-4" />
+                {language === "it" ? `Leggi l'articolo originale su ${outlet.displayName}` : `Read original on ${outlet.displayName}`}
+              </a>
+            </div>
+          ) : (
+            <div
+              className="sticky top-0 z-0 overflow-hidden"
+              style={{ height: `${heroH}px` }}
+              data-testid="modal-hero-container"
+            >
+              <OptimizedPicture
+                src={imageUrl}
+                alt={article.title}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={(() => {
+                  const pos = article.imagePosition;
+                  const zoom = article.imageZoom || 100;
+                  let ox = 50, oy = 50;
+                  if (pos && pos.includes(",")) {
+                    const [x, y] = pos.split(",").map(Number);
+                    if (!isNaN(x)) ox = x;
+                    if (!isNaN(y)) oy = y;
+                  }
+                  if (zoom === 100 && ox === 50 && oy === 50) return { objectPosition: "center" };
+                  return {
+                    objectPosition: `${ox}% ${oy}%`,
+                    transform: `scale(${zoom / 100})`,
+                    transformOrigin: `${ox}% ${oy}%`,
+                  };
+                })()}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+            </div>
+          )}
 
           {/* Content slides up over the hero */}
           <div
