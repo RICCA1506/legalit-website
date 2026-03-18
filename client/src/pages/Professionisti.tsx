@@ -90,11 +90,15 @@ export default function Professionisti() {
   useEffect(() => {
     const params = new URLSearchParams(search);
     const professionalId = params.get('id');
+    const areaParam = params.get('area');
     if (professionalId) {
       const prof = professionals.find(p => String(p.id) === professionalId);
       if (prof) {
         setSelectedProfessional(prof);
       }
+    }
+    if (areaParam) {
+      setSelectedArea(areaParam);
     }
   }, [search, professionals]);
 

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback, type ReactNode } from "react"
 import { X, Send, ArrowDown, Building2, User, Phone, Mail, ExternalLink, CheckCircle2, Users } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
+import { practiceAreasEnhanced } from "@/lib/practiceAreasData";
 import logoSymbol from "@assets/logo_legalit_cropped_(1)_1771133031977.png";
 import corteCassazione from "@assets/optimized/hero-cassazione.webp";
 import * as THREE from "three";
@@ -90,15 +91,16 @@ function parseLawyerKey(raw: string): { name: string; id: string; area: string }
 }
 
 interface ParsedSegment {
-  type: "text" | "confirm_triage" | "direct_link" | "view_all_professionals";
+  type: "text" | "confirm_triage" | "direct_link" | "view_all_professionals" | "view_area_professionals";
   content: string;
   lawyerData?: { name: string; id: string; area: string };
+  areaId?: string;
 }
 
 function parseUITags(text: string): ParsedSegment[] {
   const segments: ParsedSegment[] = [];
   const cleaned = text.replace(/\[SHOW_LOG\]/g, "");
-  const tagRegex = /\[SHOW_CARD:\s*CONFIRM_TRIAGE\]|\[DIRECT_LINK:\s*([^\]]+)\]|\[VIEW_ALL_PROFESSIONALS\]/g;
+  const tagRegex = /\[SHOW_CARD:\s*CONFIRM_TRIAGE\]|\[DIRECT_LINK:\s*([^\]]+)\]|\[VIEW_ALL_PROFESSIONALS\]|\[VIEW_AREA_PROFESSIONALS:\s*([^\]]+)\]/g;
   let match: RegExpExecArray | null;
   let lastIndex = 0;
 
@@ -111,6 +113,9 @@ function parseUITags(text: string): ParsedSegment[] {
       segments.push({ type: "confirm_triage", content: "" });
     } else if (match[0] === "[VIEW_ALL_PROFESSIONALS]") {
       segments.push({ type: "view_all_professionals", content: "" });
+    } else if (match[0].startsWith("[VIEW_AREA_PROFESSIONALS:")) {
+      const areaId = (match[2] || "").trim();
+      segments.push({ type: "view_area_professionals", content: areaId, areaId });
     } else if (match[0].startsWith("[DIRECT_LINK:")) {
       const rawName = match[1] || "";
       const lawyer = parseLawyerKey(rawName);
@@ -224,6 +229,31 @@ function ViewAllProfessionalsCard({ onNavigate }: { onNavigate: (path: string) =
       <div className="flex-1 min-w-0">
         <p className="text-[13px] font-semibold text-white">Tutti i professionisti</p>
         <p className="text-[10px]" style={{ color: "rgba(126, 184, 229, 0.7)" }}>Consulta la sezione dedicata</p>
+      </div>
+      <ExternalLink className="w-4 h-4 shrink-0" style={{ color: "rgba(126, 184, 229, 0.6)" }} />
+    </button>
+  );
+}
+
+function AreaProfessionalsCard({ areaId, onNavigate }: { areaId: string; onNavigate: (path: string) => void }) {
+  const area = practiceAreasEnhanced.find(a => a.id === areaId);
+  const areaName = area?.titleIT ?? "quest'area";
+  return (
+    <button
+      onClick={() => onNavigate(`/professionisti?area=${encodeURIComponent(areaId)}`)}
+      className="flex items-center gap-3 w-full my-2 px-3.5 py-3 rounded-xl text-left transition-all duration-200"
+      style={{
+        background: "linear-gradient(135deg, rgba(8, 57, 107, 0.4), rgba(126, 184, 229, 0.2))",
+        border: "1px solid rgba(126, 184, 229, 0.3)",
+      }}
+      data-testid={`button-view-area-professionals-${areaId}`}
+    >
+      <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: "rgba(126, 184, 229, 0.2)" }}>
+        <Users className="w-4.5 h-4.5" style={{ color: "#7eb8e5" }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[13px] font-semibold text-white">Tutti i professionisti del settore</p>
+        <p className="text-[10px] line-clamp-1" style={{ color: "rgba(126, 184, 229, 0.7)" }}>{areaName}</p>
       </div>
       <ExternalLink className="w-4 h-4 shrink-0" style={{ color: "rgba(126, 184, 229, 0.6)" }} />
     </button>
@@ -520,6 +550,9 @@ export default function ChatWidget() {
           }
           if (seg.type === "view_all_professionals") {
             return <ViewAllProfessionalsCard key={`${msgIndex}-viewall-${i}`} onNavigate={handleNavigate} />;
+          }
+          if (seg.type === "view_area_professionals" && seg.areaId) {
+            return <AreaProfessionalsCard key={`${msgIndex}-areaprof-${i}`} areaId={seg.areaId} onNavigate={handleNavigate} />;
           }
           if (seg.type === "direct_link" && seg.lawyerData) {
             return <DirectLinkCard key={`${msgIndex}-link-${i}`} lawyerData={seg.lawyerData} onNavigate={handleNavigate} />;
