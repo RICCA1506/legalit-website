@@ -4,7 +4,8 @@
  * Safe to use in any component — no dangerouslySetInnerHTML.
  */
 
-export function renderInlineMd(text: string): React.ReactNode {
+export function renderInlineMd(text: string | null | undefined): React.ReactNode {
+  if (!text) return null;
   const parts = text.split(/(\*\*[^*\n]+\*\*|\*[^*\n]+\*)/g);
   if (parts.length === 1) return text;
   return (
@@ -26,6 +27,7 @@ export function renderInlineMd(text: string): React.ReactNode {
  * Strip markdown from a string, returning plain text.
  * Useful for aria-labels, meta descriptions, etc.
  */
-export function stripMd(text: string): string {
+export function stripMd(text: string | null | undefined): string {
+  if (!text) return '';
   return text.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1');
 }

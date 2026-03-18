@@ -155,9 +155,9 @@ function ReelSlot({
       <AnimatePresence mode="popLayout">
         <motion.div
           key={`${pro.id}-${tick}`}
-          initial={{ y: enterY, scale: 0.85, opacity: 0, filter: "blur(8px)", zIndex: 1 }}
-          animate={{ y: 0, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 10 }}
-          exit={{ y: exitY, scale: 1, opacity: 1, zIndex: 20 }}
+          initial={{ y: enterY, scale: 0.88, opacity: 0, zIndex: 1 }}
+          animate={{ y: 0, scale: 1, opacity: 1, zIndex: 10 }}
+          exit={{ y: exitY, scale: 1, opacity: 0, zIndex: 20 }}
           transition={{
             type: "spring",
             stiffness: 90,
@@ -166,7 +166,7 @@ function ReelSlot({
             delay: index * 0.2,
           }}
           className="absolute inset-0 w-full h-full"
-          style={{ willChange: "transform, opacity, filter" }}
+          style={{ willChange: "transform, opacity" }}
         >
           {decorative ? (
             <CardContent pro={pro} isAuthorCard={false} autoT={autoT} />
