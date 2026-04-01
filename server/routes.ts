@@ -1454,6 +1454,7 @@ Per questi professionisti non fornire [DIRECT_LINK] – indirizza sempre verso i
   });
 
   app.post("/api/chat", rateLimitChat, async (req, res) => {
+    const ip = req.ip || req.socket?.remoteAddress || "unknown";
     try {
       const apiKey = process.env.GOOGLE_API_KEY_LEGALIT;
       if (!apiKey) {
