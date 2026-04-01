@@ -75,6 +75,17 @@ export async function registerRoutes(
 ): Promise<Server> {
   function createRateLimiter(maxRequests: number, windowMs: number) {
     const store = new Map<string, { count: number; resetAt: number }>();
+    // Periodically sweep expired entries to prevent unbounded memory growth.
+    const CLEANUP_INTERVAL_MS = Math.max(windowMs * 5, 5 * 60_000);
+    const cleanupTimer = setInterval(() => {
+      const now = Date.now();
+      for (const [ip, entry] of store) {
+        if (now >= entry.resetAt) store.delete(ip);
+      }
+    }, CLEANUP_INTERVAL_MS);
+    // Allow Node.js to exit even if the interval is still pending.
+    if (cleanupTimer.unref) cleanupTimer.unref();
+
     return (req: any, res: any, next: any) => {
       const ip = req.ip || req.socket?.remoteAddress || "unknown";
       const now = Date.now();
@@ -90,6 +101,8 @@ export async function registerRoutes(
       next();
     };
   }
+
+  const MAX_CHAT_HISTORY_TURNS = 20;
 
   const rateLimitTranslate = createRateLimiter(10, 60_000);
   const rateLimitNewsletter = createRateLimiter(5, 60_000);
@@ -1466,7 +1479,15 @@ Per questi professionisti non fornire [DIRECT_LINK] – indirizza sempre verso i
         return res.status(400).json({ message: "Messaggio non valido" });
       }
 
-      const { message, history, sessionId } = parsed.data;
+      let { message, history, sessionId } = parsed.data;
+
+      // Truncate history server-side to prevent excessive token usage.
+      // Each "turn" = 1 user message + 1 model message = 2 entries.
+      const maxHistoryMessages = MAX_CHAT_HISTORY_TURNS * 2;
+      if (history.length > maxHistoryMessages) {
+        console.warn(`[Chat] history truncated from ${history.length} to ${maxHistoryMessages} messages (ip: ${ip})`);
+        history = history.slice(-maxHistoryMessages);
+      }
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
