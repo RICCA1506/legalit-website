@@ -1,0 +1,110 @@
+1. Gestione API Keys e Segreti su Replit
+Su Replit, non devi creare un file .env manuale che rischia di essere esposto o committato accidentalmente.
+
+Implementazione: Usa lo strumento integrato Secrets (l'icona del lucchetto nel pannello laterale di Replit) per memorizzare tutte le variabili d'ambiente.
+
+Nel codice: Accedi ai segreti in modo sicuro solo lato server.
+
+javascript
+// Esempio di accesso sicuro lato server
+const dbPassword = process.env.DB_PASSWORD;
+const apiKey = process.env.OPENAI_API_KEY;
+
+if (!apiKey) {
+  console.error("ERRORE: API Key mancante nelle variabili d'ambiente di Replit");
+  process.exit(1);
+}
+2. Sanitizzazione Input e Protezione (XSS & SQLi)
+Mai fidarsi dei dati inviati dall'utente. Usa librerie standard per pulire gli input e ORM/Query builder per il database.
+
+Protezione XSS: Se devi renderizzare HTML lato client generato dagli utenti, usa DOMPurify nel frontend. Nel backend, usa express-validator.
+
+Protezione SQLi: Usa sempre query parametrizzate o un ORM come Prisma o Sequelize.
+
+javascript
+const { body, validationResult } = require('express-validator');
+
+// Middleware per validare e sanitizzare l'input
+app.post('/api/user', [
+  body('email').isEmail().normalizeEmail(),
+  body('username').trim().escape().isLength({ min: 3 })
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  
+  // Query parametrizzata sicura (esempio con pg/Postgres)
+  // pool.query('INSERT INTO users(username, email) VALUES($1, $2)', [req.body.username, req.body.email]);
+});
+3. Rate Limiting
+Per evitare che il tuo progetto Replit esaurisca le risorse o venga "floodato", limita le richieste.
+
+Implementazione: Usa express-rate-limit per proteggere gli endpoint pubblici.
+
+javascript
+const rateLimit = require('express-rate-limit');
+
+// Limite globale per le API normali
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minuto
+  max: 60, // 60 richieste al minuto per IP
+  message: { error: 'Troppe richieste, riprova più tardi.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Limite più stringente per il login
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5, // 5 tentativi di login al minuto
+});
+
+app.use('/api/', apiLimiter);
+app.use('/api/login', authLimiter);
+4. CORS e Security Headers
+Proteggi l'app da attacchi cross-site e clickjacking impostando correttamente gli header HTTP.
+
+Implementazione: Usa la libreria helmet per gestire automaticamente i security headers e cors per restringere i domini.
+
+javascript
+const helmet = require('helmet');
+const cors = require('cors');
+
+// Abilita gli header di sicurezza standard (X-Frame-Options, HSTS, ecc.)
+app.use(helmet());
+
+// Configura CORS per accettare richieste solo dal tuo frontend
+const corsOptions = {
+  origin: ['https://tuo-frontend-su.replit.app', 'http://localhost:3000'],
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+5. Autenticazione e Row Level Security (RLS)
+Se utilizzi un database come Supabase o Postgres puro, la sicurezza deve essere applicata a livello di database, non solo nel backend.
+
+Implementazione Backend: Verifica sempre il token di sessione (JWT) in ogni rotta protetta.
+
+Implementazione Database (RLS su Supabase/Postgres):
+
+sql
+-- Abilita RLS sulla tabella
+ALTER TABLE public.user_data ENABLE ROW LEVEL SECURITY;
+
+-- Crea una policy affinché l'utente veda e modifichi solo i propri dati
+CREATE POLICY "Users can only access their own data" ON public.user_data
+  FOR ALL USING (auth.uid() = user_id);
+6. Gestione Dipendenze e Deployment
+Prima di mandare il progetto in produzione, assicurati che il codice e le librerie siano sicure.
+
+Esegui regolarmente npm audit nella console di Replit (o pip audit se usi Python) per scovare vulnerabilità nei pacchetti.
+
+Rimuovi o commenta eventuali route di test (es. /api/test-db) e assicurati che non ci siano console.log che stampino dati sensibili.
+
+7. Quick Smoke Test Pre-Deploy
+Prima di condividere il link del tuo Replit, fai questo test rapido:
+
+Verifica Segreti: Esegui il comando git log --all --full-history -- '*.env' nella shell di Replit per assicurarti di non aver mai committato chiavi in chiaro.
+
+Test XSS: Inserisci <script>alert('xss')</script> nei tuoi form di input e verifica che venga salvato/renderizzato come testo innocuo e non eseguito.
+
+Stress Test: Ricarica la pagina ripetutamente o usa uno script veloce per fare 100 richieste in 10 secondi e verifica che il Rate Limiting risponda con 429 Too Many Requests.
+
