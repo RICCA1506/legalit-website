@@ -95,6 +95,7 @@ export async function registerRoutes(
   const rateLimitNewsletter = createRateLimiter(5, 60_000);
   const rateLimitContact = createRateLimiter(5, 60_000);
   const rateLimitJobApp = createRateLimiter(5, 60_000);
+  const rateLimitChat = createRateLimiter(20, 60_000);
 
   app.get(/^\/scheda_professionista/, (_req, res) => {
     res.redirect(301, "/professionisti");
@@ -1452,23 +1453,7 @@ Per questi professionisti non fornire [DIRECT_LINK] – indirizza sempre verso i
     sessionId: z.string().optional(),
   });
 
-  const chatRateLimit = new Map<string, { count: number; resetAt: number }>();
-  const CHAT_RATE_LIMIT = 20;
-  const CHAT_RATE_WINDOW = 60 * 1000;
-
-  app.post("/api/chat", async (req, res) => {
-    const ip = req.ip || req.socket.remoteAddress || "unknown";
-    const now = Date.now();
-    const entry = chatRateLimit.get(ip);
-    if (entry && now < entry.resetAt) {
-      if (entry.count >= CHAT_RATE_LIMIT) {
-        return res.status(429).json({ message: "Troppi messaggi. Attendi un momento." });
-      }
-      entry.count++;
-    } else {
-      chatRateLimit.set(ip, { count: 1, resetAt: now + CHAT_RATE_WINDOW });
-    }
-
+  app.post("/api/chat", rateLimitChat, async (req, res) => {
     try {
       const apiKey = process.env.GOOGLE_API_KEY_LEGALIT;
       if (!apiKey) {
