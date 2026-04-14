@@ -1,0 +1,154 @@
+Voglio che tu faccia un audit tecnico completo del mio sito legalit.it, con focus SEO e indicizzazione Google, e che trovi TUTTO quello che non va a livello di codice, rendering e struttura.
+
+CONTESTO
+- Dominio: https://legalit.it
+- Search Console segnala problemi di indicizzazione.
+- In questo momento una URL problematica è:
+  https://legalit.it/professionisti?id=23
+- Stato attuale in Google Search Console per questa URL:
+  "Rilevata, ma attualmente non indicizzata"
+- La pagina risulta nella sitemap:
+  https://legalit.it/sitemap.xml
+- Google non mostra scansione effettuata, canonical utente N/D, canonical Google N/D.
+
+OBIETTIVO
+Voglio che tu analizzi il progetto e mi restituisca:
+1. tutti i problemi SEO tecnici reali
+2. tutti i bug che possono impedire l’indicizzazione
+3. tutte le pagine con meta/canonical/sitemap/robots errati
+4. fix precisi file per file
+5. se possibile, codice già corretto pronto da incollare
+
+COSA DEVI CONTROLLARE
+
+1) STATUS CODE E RENDERING
+- Verifica che ogni pagina importante risponda con HTTP 200 reale.
+- Controlla se alcune pagine con query param tipo /professionisti?id=23 vengono renderizzate lato client troppo tardi o in modo che Google riceva HTML quasi vuoto.
+- Verifica se il server restituisce sempre la stessa shell HTML senza contenuto utile server-side.
+- Controlla se Googlebot vede contenuto testuale unico nella response iniziale.
+- Verifica se ci sono redirect inutili, redirect chain, soft 404 o pagine quasi vuote.
+
+2) META TAG SEO
+Per tutte le pagine principali e per le pagine dinamiche professionisti:
+- <title>
+- meta description
+- canonical
+- robots meta tag
+- hreflang se presente
+- Open Graph/Twitter non è prioritario ma segnalalo se rotto
+- verifica che title e description siano unici e coerenti col contenuto
+
+3) CANONICAL
+- Verifica se le pagine /professionisti?id=X stanno impostando canonical verso homepage o verso URL sbagliate.
+- Dimmi per ogni pagina se:
+  - canonical manca
+  - canonical è assoluto o relativo
+  - canonical punta a sé stessa o a un’altra pagina
+  - canonical è in conflitto con sitemap/internal linking
+- Se il canonical attuale è sbagliato, proponi la regola corretta.
+
+4) SITEMAP
+- Analizza https://legalit.it/sitemap.xml
+- Verifica se contiene URL non indicizzabili, duplicate, redirectate, con noindex, 404 o canonical verso altre URL.
+- Verifica se le URL dinamiche con query string dovrebbero stare in sitemap oppure no.
+- Dimmi se la sitemap sta inviando pagine deboli, sottili, duplicate o con contenuto insufficiente.
+- Proponi una sitemap corretta.
+
+5) ROBOTS.TXT
+- Controlla robots.txt
+- Verifica se blocca risorse importanti (JS, CSS, API, immagini, route dinamiche)
+- Verifica se blocca per errore pagine che dovrebbero essere indicizzate
+- Proponi la versione corretta se serve
+
+6) CONTENUTO E THIN CONTENT
+- Controlla se le pagine professionisti hanno contenuto unico sufficiente per essere indicizzate
+- Verifica se cambiano davvero da id a id oppure se Google vede pagine molto simili
+- Segnala pagine con poco testo, dati caricati solo via JS, placeholder, contenuto duplicato o boilerplate
+- Per ogni problema, dimmi quanto può influire sull’indicizzazione
+
+7) INTERNAL LINKING
+- Verifica se le pagine /professionisti?id=X sono raggiungibili con link HTML normali dal sito
+- Controlla se esistono solo tramite JS, fetch o azioni utente
+- Verifica profondità di clic
+- Segnala se Google potrebbe scoprirle solo da sitemap ma non da linking interno
+
+8) JAVASCRIPT SEO
+Se il sito usa React, Next, Vite, SPA o rendering client-side:
+- dimmi se il setup attuale è dannoso per SEO
+- verifica se i meta tag vengono davvero renderizzati nel DOM iniziale o solo dopo hydration
+- verifica se ogni pagina dinamica ha HTML pre-renderizzato o SSR
+- dimmi se serve SSR, SSG o prerendering per queste pagine
+
+9) URL STRATEGY
+- Valuta se usare URL con query string tipo /professionisti?id=23 è una cattiva idea per SEO
+- Confronta con una struttura migliore tipo /professionisti/nome-cognome o /professionisti/23-slug
+- Dimmi se conviene migrare
+- Se sì, proponi piano tecnico con redirect 301
+
+10) ERRORI DA CERCARE NEL CODICE
+Cerca specificamente:
+- canonical fisso sulla homepage
+- meta robots noindex involontario
+- pagine generate ma non presenti nel router corretto
+- fetch dati che fallisce lato bot
+- contenuto dietro script o autenticazione
+- route che ritornano stesso template per tutti gli id
+- API rate limit / errori silenziosi
+- pagine che senza JS sono vuote
+- contenuto principale in iframe
+- dati caricati dopo user interaction
+- duplicate title/description
+- structured data errato o assente
+- heading H1 mancanti o duplicati
+- pagine orfane
+- parametri URL senza gestione canonical
+- link con rel=nofollow interno non voluto
+
+OUTPUT RICHIESTO
+Voglio un report strutturato in questo formato:
+
+A. Executive summary
+- Top 10 problemi trovati in ordine di gravità
+
+B. Tabella URL per URL
+Per ogni URL importante:
+- URL
+- status code
+- indexable / non indexable
+- title
+- meta description
+- canonical
+- robots
+- in sitemap sì/no
+- internal links sì/no
+- rendered content sufficiente sì/no
+- problema principale
+- fix consigliato
+
+C. Problemi tecnici con priorità
+- Critical
+- High
+- Medium
+- Low
+
+D. Fix pratici
+Per ogni problema:
+- perché blocca o riduce l’indicizzazione
+- dove sta nel codice
+- come correggerlo
+- patch di codice pronta se possibile
+
+E. Piano d’azione
+- cosa sistemare oggi
+- cosa sistemare questa settimana
+- cosa reinviare su Search Console dopo i fix
+
+ISTRUZIONI IMPORTANTI
+- Non limitarti a teoria SEO generica.
+- Voglio verifiche concrete sul codice e sul comportamento reale del sito.
+- Se puoi, usa fetch/curl/headless inspection per vedere HTML iniziale e DOM renderizzato.
+- Confronta homepage, pagine funzionanti e pagine non indicizzate.
+- Se trovi un problema, dammi prova tecnica del problema.
+- Se una pagina è debole per Google, spiegami esattamente perché.
+- Se sospetti che la causa principale sia rendering client-side, canonical sbagliato o thin content, dimmelo chiaramente.
+- Se servono modifiche architetturali, proponi la soluzione migliore e quella più veloce.
