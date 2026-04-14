@@ -152,7 +152,15 @@ Sitemap: https://legalit.it/sitemap.xml`
       changefreq: "monthly",
     }));
 
-    const allPages = [...staticPages, ...practiceAreaPages];
+    // Fetch professionals for individual profile URLs
+    const dbProfessionals = await storage.getAllProfessionals().catch(() => []);
+    const professionalPages = dbProfessionals.map(p => ({
+      loc: `/professionisti?id=${p.id}`,
+      priority: "0.7",
+      changefreq: "monthly",
+    }));
+
+    const allPages = [...staticPages, ...practiceAreaPages, ...professionalPages];
 
     const urls = allPages.map(p =>
       `  <url>
@@ -1255,6 +1263,73 @@ ${urls}
     } catch (error: any) {
       console.error("[Sync] Endpoint error:", error);
       res.status(500).json({ message: "Errore durante la sincronizzazione", error: error.message });
+    }
+  });
+
+  // Server-side crawler handler for /professionisti?id=X
+  // Returns OG meta + schema.org/Person JSON-LD for bots that don't render JS
+  app.get("/professionisti", async (req, res, next) => {
+    const professionalId = req.query.id;
+    if (!professionalId) return next();
+
+    const ua = (req.headers["user-agent"] || "").toLowerCase();
+    const isCrawler = /linkedinbot|facebookexternalhit|twitterbot|whatsapp|telegram|slackbot|discordbot|googlebot/i.test(ua);
+    if (!isCrawler) return next();
+
+    try {
+      const id = parseIntId(String(professionalId));
+      if (!id) return next();
+      const professional = await storage.getProfessional(id);
+      if (!professional) return next();
+
+      const profUrl = `${SITE_URL}/professionisti?id=${professional.id}`;
+      const escHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      const name = escHtml(professional.name);
+      const jobTitle = escHtml(professional.title || "");
+      const bio = escHtml((professional.bio || "").slice(0, 220));
+      const imageRaw = professional.imageUrl || "";
+      const image = imageRaw.startsWith("http") ? imageRaw : `${SITE_URL}${imageRaw}`;
+      const ogImage = image || `${SITE_URL}/favicon.png`;
+
+      const personSchema: Record<string, unknown> = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": professional.name,
+        "jobTitle": professional.title,
+        "url": profUrl,
+        "worksFor": {
+          "@type": "LegalService",
+          "name": "LEGALIT Società tra Avvocati S.r.l.",
+          "url": SITE_URL,
+        },
+      };
+      if (image) personSchema["image"] = image;
+      if (professional.email) personSchema["email"] = `mailto:${professional.email}`;
+
+      res.send(`<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta property="og:type" content="profile" />
+<meta property="og:title" content="${name} - LEGALIT" />
+<meta property="og:description" content="${bio || jobTitle + ' presso LEGALIT – Società tra Avvocati'}" />
+<meta property="og:image" content="${ogImage}" />
+<meta property="og:url" content="${profUrl}" />
+<meta property="og:site_name" content="LEGALIT - Società tra Avvocati" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="${name} - LEGALIT" />
+<meta name="twitter:description" content="${bio || jobTitle}" />
+<meta name="twitter:image" content="${ogImage}" />
+<title>${name} - LEGALIT</title>
+<meta name="description" content="${bio || jobTitle + ' presso LEGALIT – Società tra Avvocati'}" />
+<link rel="canonical" href="${profUrl}" />
+<script type="application/ld+json">${JSON.stringify(personSchema)}</script>
+<meta http-equiv="refresh" content="0;url=${profUrl}" />
+</head>
+<body><p>Redirecting to <a href="${profUrl}">${name}</a></p></body>
+</html>`);
+    } catch {
+      next();
     }
   });
 

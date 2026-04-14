@@ -64,6 +64,32 @@ const allLanguages = [
   { value: "arabo", label: "Arabo" },
 ];
 
+const SITE_URL = "https://legalit.it";
+
+const WORKS_FOR = {
+  "@type": "LegalService",
+  "name": "LEGALIT Società tra Avvocati S.r.l.",
+  "url": SITE_URL,
+};
+
+function buildPersonSchema(p: ProfessionalData) {
+  const imageUrl = p.imageUrl
+    ? (p.imageUrl.startsWith("http") ? p.imageUrl : `${SITE_URL}${p.imageUrl}`)
+    : undefined;
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": p.name,
+    "jobTitle": p.title,
+    "url": `${SITE_URL}/professionisti?id=${p.id}`,
+    "worksFor": WORKS_FOR,
+  };
+  if (imageUrl) schema["image"] = imageUrl;
+  if (p.email) schema["email"] = `mailto:${p.email}`;
+  if (p.linkedin) schema["sameAs"] = p.linkedin;
+  return schema;
+}
+
 export default function Professionisti() {
   const { t, language } = useLanguage();
   const [selectedRole, setSelectedRole] = useState<string>("all");
@@ -86,6 +112,42 @@ export default function Professionisti() {
     : dbProfessionals.length > 0
       ? dbProfessionals
       : staticProfessionals;
+
+  // Inject/update schema.org/Person JSON-LD for SEO (Googlebot renders JS)
+  useEffect(() => {
+    if (professionals.length === 0) return;
+    const TAG_ID = "professionals-jsonld";
+    let tag = document.getElementById(TAG_ID) as HTMLScriptElement | null;
+    if (!tag) {
+      tag = document.createElement("script");
+      tag.id = TAG_ID;
+      tag.type = "application/ld+json";
+      document.head.appendChild(tag);
+    }
+    if (selectedProfessional) {
+      // Single person focused view (modal open / ?id=X)
+      tag.textContent = JSON.stringify(buildPersonSchema(selectedProfessional));
+    } else {
+      // Full list view — emit all as ItemList of Person
+      const itemList = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Professionisti LEGALIT",
+        "url": `${SITE_URL}/professionisti`,
+        "itemListElement": professionals.map((p, i) => ({
+          "@type": "ListItem",
+          "position": i + 1,
+          "item": buildPersonSchema(p),
+        })),
+      };
+      tag.textContent = JSON.stringify(itemList);
+    }
+    return () => {
+      // Remove tag on unmount
+      const existing = document.getElementById(TAG_ID);
+      if (existing) existing.remove();
+    };
+  }, [professionals, selectedProfessional]);
 
   useEffect(() => {
     const params = new URLSearchParams(search);
