@@ -1325,9 +1325,8 @@ ${urls}
 <meta name="description" content="${bio || jobTitle + ' presso LEGALIT – Società tra Avvocati'}" />
 <link rel="canonical" href="${profUrl}" />
 <script type="application/ld+json">${JSON.stringify(personSchema)}</script>
-<meta http-equiv="refresh" content="0;url=${profUrl}" />
 </head>
-<body><p>Redirecting to <a href="${profUrl}">${name}</a></p></body>
+<body><p>Profilo di <a href="${profUrl}">${name}</a> - LEGALIT Società tra Avvocati</p></body>
 </html>`);
     } catch {
       next();

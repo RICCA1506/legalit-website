@@ -41,6 +41,25 @@ declare global {
   }
 }
 
+const SITE_ORIGIN = "https://legalit.it";
+
+function CanonicalUpdater() {
+  const [location] = useLocation();
+  useEffect(() => {
+    const tag = document.getElementById("canonical-tag") as HTMLLinkElement | null;
+    if (!tag) return;
+    // For /professionisti?id=X keep the id param in the canonical (it identifies
+    // the specific person). For all other routes, use pathname only (no filters/search).
+    let canonicalHref = `${SITE_ORIGIN}${location}`;
+    if (location === "/professionisti") {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (id) canonicalHref = `${SITE_ORIGIN}/professionisti?id=${id}`;
+    }
+    tag.setAttribute("href", canonicalHref);
+  }, [location]);
+  return null;
+}
+
 function AnalyticsTracker() {
   const [location] = useLocation();
   
@@ -103,6 +122,7 @@ function AppContentInner() {
   return (
     <LoadingContext.Provider value={{ loadingComplete: loadingComplete || !isHomePage }}>
       <SmoothScroll />
+      <CanonicalUpdater />
       <AnalyticsTracker />
       {shouldShowLoading && (
         <LoadingScreen
