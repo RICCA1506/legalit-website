@@ -133,21 +133,24 @@ Sitemap: https://legalit.it/sitemap.xml`
     res.setHeader("Cache-Control", "public, max-age=3600");
     const today = new Date().toISOString().split("T")[0];
 
+    // Fixed dates reflect last meaningful content change per page.
+    // Update these manually when the page content changes significantly.
     const staticPages = [
-      { loc: "/", priority: "1.0", changefreq: "weekly" },
-      { loc: "/attivita", priority: "0.9", changefreq: "monthly" },
-      { loc: "/professionisti", priority: "0.9", changefreq: "monthly" },
-      { loc: "/sedi", priority: "0.8", changefreq: "monthly" },
-      { loc: "/news", priority: "0.8", changefreq: "weekly" },
-      { loc: "/contatti", priority: "0.7", changefreq: "monthly" },
-      { loc: "/lavora-con-noi", priority: "0.6", changefreq: "monthly" },
-      { loc: "/privacy", priority: "0.3", changefreq: "yearly" },
-      { loc: "/cookies", priority: "0.3", changefreq: "yearly" },
-      { loc: "/termini", priority: "0.3", changefreq: "yearly" },
+      { loc: "/", lastmod: "2026-04-01", priority: "1.0", changefreq: "weekly" },
+      { loc: "/attivita", lastmod: "2026-01-15", priority: "0.9", changefreq: "monthly" },
+      { loc: "/professionisti", lastmod: "2026-03-08", priority: "0.9", changefreq: "monthly" },
+      { loc: "/sedi", lastmod: "2026-01-15", priority: "0.8", changefreq: "monthly" },
+      { loc: "/news", lastmod: today, priority: "0.8", changefreq: "weekly" },
+      { loc: "/contatti", lastmod: "2025-10-01", priority: "0.7", changefreq: "monthly" },
+      { loc: "/lavora-con-noi", lastmod: "2025-10-01", priority: "0.6", changefreq: "monthly" },
+      { loc: "/privacy", lastmod: "2025-01-01", priority: "0.3", changefreq: "yearly" },
+      { loc: "/cookies", lastmod: "2025-01-01", priority: "0.3", changefreq: "yearly" },
+      { loc: "/termini", lastmod: "2025-01-01", priority: "0.3", changefreq: "yearly" },
     ];
 
     const practiceAreaPages = PRACTICE_AREA_SLUGS.map(slug => ({
       loc: `/attivita/${slug}`,
+      lastmod: "2025-10-01",
       priority: "0.8",
       changefreq: "monthly",
     }));
@@ -158,7 +161,7 @@ Sitemap: https://legalit.it/sitemap.xml`
     const staticUrls = [...staticPages, ...practiceAreaPages].map(p =>
       `  <url>
     <loc>${SITE_URL}${p.loc}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${p.lastmod}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
   </url>`
