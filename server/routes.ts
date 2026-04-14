@@ -131,26 +131,31 @@ Sitemap: https://legalit.it/sitemap.xml`
 
   app.get("/sitemap.xml", async (_req, res) => {
     res.setHeader("Cache-Control", "public, max-age=3600");
-    const today = new Date().toISOString().split("T")[0];
+
+    // Fetch latest news article date for /news lastmod
+    const allNews = await storage.getAllNewsArticles().catch(() => []);
+    const latestNewsDate = allNews.length > 0 && allNews[0].createdAt
+      ? new Date(allNews[0].createdAt).toISOString().split("T")[0]
+      : "2026-01-15";
 
     // Fixed dates reflect last meaningful content change per page.
     // Update these manually when the page content changes significantly.
     const staticPages = [
-      { loc: "/", lastmod: "2026-04-01", priority: "1.0", changefreq: "weekly" },
+      { loc: "/", lastmod: "2026-01-15", priority: "1.0", changefreq: "weekly" },
       { loc: "/attivita", lastmod: "2026-01-15", priority: "0.9", changefreq: "monthly" },
       { loc: "/professionisti", lastmod: "2026-03-08", priority: "0.9", changefreq: "monthly" },
       { loc: "/sedi", lastmod: "2026-01-15", priority: "0.8", changefreq: "monthly" },
-      { loc: "/news", lastmod: today, priority: "0.8", changefreq: "weekly" },
-      { loc: "/contatti", lastmod: "2025-10-01", priority: "0.7", changefreq: "monthly" },
-      { loc: "/lavora-con-noi", lastmod: "2025-10-01", priority: "0.6", changefreq: "monthly" },
-      { loc: "/privacy", lastmod: "2025-01-01", priority: "0.3", changefreq: "yearly" },
-      { loc: "/cookies", lastmod: "2025-01-01", priority: "0.3", changefreq: "yearly" },
-      { loc: "/termini", lastmod: "2025-01-01", priority: "0.3", changefreq: "yearly" },
+      { loc: "/news", lastmod: latestNewsDate, priority: "0.8", changefreq: "weekly" },
+      { loc: "/contatti", lastmod: "2026-01-15", priority: "0.7", changefreq: "monthly" },
+      { loc: "/lavora-con-noi", lastmod: "2025-06-01", priority: "0.6", changefreq: "monthly" },
+      { loc: "/privacy", lastmod: "2024-01-01", priority: "0.3", changefreq: "yearly" },
+      { loc: "/cookies", lastmod: "2024-01-01", priority: "0.3", changefreq: "yearly" },
+      { loc: "/termini", lastmod: "2024-01-01", priority: "0.3", changefreq: "yearly" },
     ];
 
     const practiceAreaPages = PRACTICE_AREA_SLUGS.map(slug => ({
       loc: `/attivita/${slug}`,
-      lastmod: "2025-10-01",
+      lastmod: "2025-01-01",
       priority: "0.8",
       changefreq: "monthly",
     }));
@@ -168,9 +173,10 @@ Sitemap: https://legalit.it/sitemap.xml`
     );
 
     const professionalUrls = dbProfessionals.map(p => {
-      const lastmod = p.updatedAt
-        ? new Date(p.updatedAt).toISOString().split("T")[0]
-        : today;
+      const raw = p.updatedAt || p.createdAt;
+      const lastmod = raw
+        ? new Date(raw).toISOString().split("T")[0]
+        : "2026-01-15";
       return `  <url>
     <loc>${SITE_URL}/professionisti?id=${p.id}</loc>
     <lastmod>${lastmod}</lastmod>
@@ -1295,10 +1301,9 @@ ${urls}
     try {
       const profs = await storage.getAllProfessionals().catch(() => []);
       const listItems = profs
-        .map(p => {
-          const profUrl = `${SITE_URL}/professionisti?id=${p.id}`;
-          return `<li><a href="${profUrl}">${escHtml(p.name)}${p.title ? ` – ${escHtml(p.title)}` : ""}</a></li>`;
-        })
+        .map(p =>
+          `<li><a href="/professionisti?id=${p.id}">${escHtml(p.name)}${p.title ? ` – ${escHtml(p.title)}` : ""}</a></li>`
+        )
         .join("\n");
 
       res.send(`<!DOCTYPE html>
