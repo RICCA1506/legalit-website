@@ -1,0 +1,70 @@
+Apri il progetto Legalit e sistema ORA questi 3 punti SEO nel codice, poi testa tutto da shell e fammi un report finale con file modificati e output dei curl.
+
+1) FIX SITEMAP LASTMOD
+- Trova la route/funzione che genera /sitemap.xml
+- Elimina la logica che usa la data odierna per tutte le URL
+- Implementa questa logica:
+
+Pagine professionisti:
+- /professionisti?id=N => usa updated_at dal database
+- se updated_at non esiste/null => usa created_at
+- formatta in YYYY-MM-DD
+
+Pagine statiche hardcoded:
+- / => 2026-01-15
+- /professionisti => 2026-01-15
+- /attivita e /attivita/* => 2025-01-01
+- /sedi => 2026-01-15
+- /contatti => 2026-01-15
+- /lavora-con-noi => 2025-06-01
+- /privacy, /cookies, /termini => 2024-01-01
+- /news => usa la data dell’articolo più recente dal DB
+
+Requisiti:
+- nessun lastmod dei professionisti deve essere uguale per tutti per default
+- non usare “oggi” come fallback globale
+- la sitemap deve restare veloce e senza timeout
+
+2) FIX AFFIDABILITÀ SITEMAP / ROBOTS
+- Verifica che /sitemap.xml risponda con status 200
+- Verifica che il content-type sia application/xml o text/xml
+- Controlla robots.txt e assicurati che contenga esattamente:
+  Sitemap: https://legalit.it/sitemap.xml
+- Se manca, aggiungilo
+- Se la sitemap è dinamica, evita errori DB o crash: gestisci fallback sicuri e logga eventuali errori
+
+3) VERIFICA / FIX SSR GOOGLEBOT SU /professionisti
+- Trova il middleware o la route che controlla user-agent Googlebot
+- Verifica se /professionisti restituisce HTML statico reale nel body iniziale
+- Deve includere:
+  - <h1>I Professionisti di LEGALIT</h1>
+  - una breve descrizione
+  - una lista <ul> con link reali <a href="https://legalit.it/professionisti?id=N">
+- Se non c’è, inietta questo blocco server-side prima di <div id="root">
+
+- Verifica anche /professionisti?id=N
+- Deve includere nel body iniziale:
+  - <h1>Nome Professionista</h1>
+  - titolo
+  - immagine con alt
+  - biografia
+  - email cliccabile
+  - link di navigazione
+
+4) TEST OBBLIGATORI DA ESEGUIRE DOPO IL FIX
+Esegui e mostrami l’output di:
+- curl -I https://legalit.it/sitemap.xml
+- curl -s https://legalit.it/sitemap.xml | grep lastmod | head -20
+- curl -s https://legalit.it/robots.txt | grep -i sitemap
+- curl -s -H "User-Agent: Googlebot" https://legalit.it/professionisti | grep -i "I Professionisti di LEGALIT"
+- curl -s -H "User-Agent: Googlebot" https://legalit.it/professionisti | grep -o 'href="/professionisti?id=[0-9]*"' | head -10
+- curl -s -H "User-Agent: Googlebot" "https://legalit.it/professionisti?id=1" | grep -i "Fabiana Liberati"
+
+5) REPORT FINALE
+Dimmi:
+- quali file hai modificato
+- quale logica hai cambiato
+- se la sitemap ora ha lastmod realistici
+- se robots.txt punta alla sitemap
+- se Googlebot ora riceve HTML statico reale per lista e profili
+- se hai fatto deploy/pubblicazione finale
