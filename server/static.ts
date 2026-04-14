@@ -14,6 +14,22 @@ function getCanonicalUrl(req: Request): string {
   return `${SITE_URL}${pathname}`;
 }
 
+function injectCanonical(html: string, canonical: string): string {
+  const CANONICAL_ID = 'id="canonical-tag"';
+  const idPos = html.indexOf(CANONICAL_ID);
+  if (idPos === -1) return html;
+
+  const linkStart = html.lastIndexOf("<link", idPos);
+  if (linkStart === -1) return html;
+
+  const tagEnd = html.indexOf(">", idPos);
+  if (tagEnd === -1) return html;
+
+  const linkTag = html.slice(linkStart, tagEnd + 1);
+  const newLinkTag = linkTag.replace(/href="[^"]*"/, `href="${canonical}"`);
+  return html.slice(0, linkStart) + newLinkTag + html.slice(tagEnd + 1);
+}
+
 export function serveStatic(app: Express) {
   const distPath = path.resolve(__dirname, "public");
   if (!fs.existsSync(distPath)) {
@@ -43,10 +59,7 @@ export function serveStatic(app: Express) {
 
   app.use("/{*path}", (req: Request, res: Response) => {
     const canonical = getCanonicalUrl(req);
-    const html = indexHtml.replace(
-      /(<link\s[^>]*rel="canonical"[^>]*href=")[^"]*"/,
-      `$1${canonical}"`
-    );
+    const html = injectCanonical(indexHtml, canonical);
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");

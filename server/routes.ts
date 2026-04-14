@@ -154,22 +154,29 @@ Sitemap: https://legalit.it/sitemap.xml`
 
     // Fetch professionals for individual profile URLs
     const dbProfessionals = await storage.getAllProfessionals().catch(() => []);
-    const professionalPages = dbProfessionals.map(p => ({
-      loc: `/professionisti?id=${p.id}`,
-      priority: "0.7",
-      changefreq: "monthly",
-    }));
 
-    const allPages = [...staticPages, ...practiceAreaPages, ...professionalPages];
-
-    const urls = allPages.map(p =>
+    const staticUrls = [...staticPages, ...practiceAreaPages].map(p =>
       `  <url>
     <loc>${SITE_URL}${p.loc}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
   </url>`
-    ).join("\n");
+    );
+
+    const professionalUrls = dbProfessionals.map(p => {
+      const lastmod = p.updatedAt
+        ? new Date(p.updatedAt).toISOString().split("T")[0]
+        : today;
+      return `  <url>
+    <loc>${SITE_URL}/professionisti?id=${p.id}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+    });
+
+    const urls = [...staticUrls, ...professionalUrls].join("\n");
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -1266,15 +1273,65 @@ ${urls}
     }
   });
 
-  // Server-side crawler handler for /professionisti?id=X
-  // Returns OG meta + schema.org/Person JSON-LD for bots that don't render JS
+  // Server-side crawler handlers for /professionisti
+  // Returns rich HTML for bots that don't render JS (Googlebot, LinkedIn, etc.)
+
+  const SSR_CRAWLERS = /linkedinbot|facebookexternalhit|twitterbot|whatsapp|telegram|slackbot|discordbot|googlebot|bingbot|duckduckbot/i;
+
+  const escHtml = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const stripMd = (s: string) =>
+    s.replace(/\*\*/g, "").replace(/\*/g, "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/#{1,6}\s/g, "").trim();
+
+  // Handler A: /professionisti (no id) — serve list with real <a href> links
+  app.get("/professionisti", async (req, res, next) => {
+    if (req.query.id) return next();
+    const ua = (req.headers["user-agent"] || "").toLowerCase();
+    if (!SSR_CRAWLERS.test(ua)) return next();
+
+    try {
+      const profs = await storage.getAllProfessionals().catch(() => []);
+      const listItems = profs
+        .map(p => {
+          const profUrl = `${SITE_URL}/professionisti?id=${p.id}`;
+          return `<li><a href="${profUrl}">${escHtml(p.name)}${p.title ? ` – ${escHtml(p.title)}` : ""}</a></li>`;
+        })
+        .join("\n");
+
+      res.send(`<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<title>I Professionisti di LEGALIT – Studio Legale Roma, Milano, Palermo</title>
+<meta name="description" content="Scopri i professionisti di LEGALIT Società tra Avvocati: avvocati specializzati in diritto del lavoro, penale, societario, compliance, M&amp;A e molto altro." />
+<link rel="canonical" href="${SITE_URL}/professionisti" />
+</head>
+<body>
+<nav><a href="${SITE_URL}">LEGALIT – Home</a></nav>
+<h1>I Professionisti di LEGALIT</h1>
+<p>LEGALIT Società tra Avvocati è uno studio legale con sedi a Roma, Milano, Palermo, Latina e Napoli. Il nostro team è composto da avvocati specializzati nelle principali aree del diritto.</p>
+<ul>
+${listItems}
+</ul>
+<footer>
+<a href="${SITE_URL}/attivita">Aree di attività</a> |
+<a href="${SITE_URL}/sedi">Le nostre sedi</a> |
+<a href="${SITE_URL}/contatti">Contatti</a>
+</footer>
+</body>
+</html>`);
+    } catch {
+      next();
+    }
+  });
+
+  // Handler B: /professionisti?id=X — serve rich individual profile page
   app.get("/professionisti", async (req, res, next) => {
     const professionalId = req.query.id;
     if (!professionalId) return next();
 
     const ua = (req.headers["user-agent"] || "").toLowerCase();
-    const isCrawler = /linkedinbot|facebookexternalhit|twitterbot|whatsapp|telegram|slackbot|discordbot|googlebot/i.test(ua);
-    if (!isCrawler) return next();
+    if (!SSR_CRAWLERS.test(ua)) return next();
 
     try {
       const id = parseIntId(String(professionalId));
@@ -1283,14 +1340,15 @@ ${urls}
       if (!professional) return next();
 
       const profUrl = `${SITE_URL}/professionisti?id=${professional.id}`;
-      const escHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-      const stripMd = (s: string) => s.replace(/\*\*/g, "").replace(/\*/g, "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").trim();
       const name = escHtml(professional.name);
       const jobTitle = escHtml(professional.title || "");
-      const bio = escHtml(stripMd((professional.bio || professional.fullBio || "")).slice(0, 220));
+      const fullBioRaw = stripMd(professional.bio || professional.fullBio || "");
+      const bioShort = escHtml(fullBioRaw.slice(0, 220));
+      const bioFull = escHtml(fullBioRaw);
       const imageRaw = professional.imageUrl || "";
       const image = imageRaw.startsWith("http") ? imageRaw : `${SITE_URL}${imageRaw}`;
       const ogImage = image || `${SITE_URL}/favicon.png`;
+      const emailHtml = professional.email ? escHtml(professional.email) : "";
 
       const personSchema: Record<string, unknown> = {
         "@context": "https://schema.org",
@@ -1313,20 +1371,38 @@ ${urls}
 <meta charset="UTF-8" />
 <meta property="og:type" content="profile" />
 <meta property="og:title" content="${name} - LEGALIT" />
-<meta property="og:description" content="${bio || jobTitle + ' presso LEGALIT – Società tra Avvocati'}" />
+<meta property="og:description" content="${bioShort || jobTitle + " presso LEGALIT – Società tra Avvocati"}" />
 <meta property="og:image" content="${ogImage}" />
 <meta property="og:url" content="${profUrl}" />
 <meta property="og:site_name" content="LEGALIT - Società tra Avvocati" />
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="${name} - LEGALIT" />
-<meta name="twitter:description" content="${bio || jobTitle}" />
+<meta name="twitter:description" content="${bioShort || jobTitle}" />
 <meta name="twitter:image" content="${ogImage}" />
 <title>${name} - LEGALIT</title>
-<meta name="description" content="${bio || jobTitle + ' presso LEGALIT – Società tra Avvocati'}" />
+<meta name="description" content="${bioShort || jobTitle + " presso LEGALIT – Società tra Avvocati"}" />
 <link rel="canonical" href="${profUrl}" />
 <script type="application/ld+json">${JSON.stringify(personSchema)}</script>
 </head>
-<body><p>Profilo di <a href="${profUrl}">${name}</a> - LEGALIT Società tra Avvocati</p></body>
+<body>
+<nav>
+<a href="${SITE_URL}">LEGALIT – Home</a> |
+<a href="${SITE_URL}/professionisti">I nostri Professionisti</a>
+</nav>
+<main>
+<h1>${name}</h1>
+<p><strong>${jobTitle}</strong> presso LEGALIT – Società tra Avvocati S.r.l.</p>
+${image ? `<img src="${image}" alt="Foto di ${name}" />` : ""}
+${bioFull ? `<p>${bioFull}</p>` : ""}
+${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : ""}
+<p><a href="${profUrl}">Profilo completo di ${name}</a></p>
+</main>
+<footer>
+<a href="${SITE_URL}/attivita">Aree di attività</a> |
+<a href="${SITE_URL}/sedi">Le nostre sedi</a> |
+<a href="${SITE_URL}/contatti">Contatti</a>
+</footer>
+</body>
 </html>`);
     } catch {
       next();
@@ -1347,7 +1423,6 @@ ${urls}
 
       const siteUrl = `https://legalit.it`;
       const articleUrl = `${siteUrl}/news?article=${article.id}`;
-      const escHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       const title = escHtml(article.title);
       const description = escHtml((article.excerpt || article.content.slice(0, 200)));
       const image = article.imageUrl ? (article.imageUrl.startsWith("http") ? article.imageUrl : `${siteUrl}${article.imageUrl}`) : `${siteUrl}/favicon.png`;
