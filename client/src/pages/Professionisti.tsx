@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearch } from "wouter";
+import { useSearch, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ProfessionalCard from "@/components/ProfessionalCard";
@@ -98,6 +98,14 @@ export default function Professionisti() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedProfessional, setSelectedProfessional] = useState<ProfessionalData | null>(null);
   const search = useSearch();
+  const [, navigate] = useLocation();
+
+  const selectProfessional = (prof: ProfessionalData | null) => {
+    setSelectedProfessional(prof);
+    const newUrl = prof ? `/professionisti?id=${prof.id}` : `/professionisti`;
+    window.history.replaceState(null, "", newUrl);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
 
   const { data: dbProfessionals = [], isLoading: professionalsLoading } = useQuery<DbProfessional[]>({
     queryKey: ["/api/professionals"],
@@ -156,6 +164,47 @@ export default function Professionisti() {
       setSelectedArea(areaParam);
     }
   }, [search, professionals]);
+
+  const SITE_DEFAULT_TITLE = "LEGALIT - Società tra Avvocati | Studio Legale Roma, Milano, Palermo, Latina, Napoli";
+  const SITE_DEFAULT_DESC = "LEGALIT - Società tra Avvocati con sedi a Roma, Milano, Palermo, Latina e Napoli. Assistenza legale specializzata in diritto societario, penale, del lavoro, amministrativo, compliance e M&A.";
+  const PROFESSIONISTI_DEFAULT_TITLE = "I Professionisti | LEGALIT - Società tra Avvocati";
+  const PROFESSIONISTI_DEFAULT_DESC = "Scopri il team di LEGALIT Società tra Avvocati: avvocati specializzati in diritto del lavoro, penale, societario, compliance e M&A con sedi a Roma, Milano, Palermo, Latina e Napoli.";
+  const SITE_DEFAULT_OG_TITLE = "LEGALIT - Società tra Avvocati";
+
+  useEffect(() => {
+    const stripMd = (s: string) =>
+      s.replace(/\*\*/g, "").replace(/\*/g, "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").trim();
+
+    const setMeta = (selector: string, content: string) => {
+      const el = document.querySelector<HTMLMetaElement>(selector);
+      if (el) el.content = content;
+    };
+
+    if (selectedProfessional) {
+      const name = selectedProfessional.name;
+      const role = selectedProfessional.title || "";
+      const rawBio = stripMd(selectedProfessional.fullBio || "");
+      const desc = rawBio.length > 0 ? rawBio.slice(0, 160) : `${role} presso LEGALIT – Società tra Avvocati S.r.l.`;
+      const pageTitle = `${name}${role ? " - " + role : ""} | LEGALIT`;
+
+      document.title = pageTitle;
+      setMeta('meta[name="description"]', desc);
+      setMeta('meta[property="og:title"]', `${name} - LEGALIT`);
+      setMeta('meta[property="og:description"]', desc);
+    } else {
+      document.title = PROFESSIONISTI_DEFAULT_TITLE;
+      setMeta('meta[name="description"]', PROFESSIONISTI_DEFAULT_DESC);
+      setMeta('meta[property="og:title"]', SITE_DEFAULT_OG_TITLE);
+      setMeta('meta[property="og:description"]', PROFESSIONISTI_DEFAULT_DESC);
+    }
+
+    return () => {
+      document.title = SITE_DEFAULT_TITLE;
+      setMeta('meta[name="description"]', SITE_DEFAULT_DESC);
+      setMeta('meta[property="og:title"]', SITE_DEFAULT_OG_TITLE);
+      setMeta('meta[property="og:description"]', SITE_DEFAULT_DESC);
+    };
+  }, [selectedProfessional]);
 
   const getRelatedNews = (professionalId: number | string, professionalName: string) => {
     return newsArticles
@@ -372,11 +421,11 @@ export default function Professionisti() {
                     className="cursor-pointer min-w-0 w-[calc(33.333%-0.375rem)] md:w-[calc(33.333%-1.25rem)] lg:w-[calc(25%-1.125rem)]"
                   >
                     <button
-                      onClick={() => setSelectedProfessional(professional)}
+                      onClick={() => selectProfessional(professional)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          setSelectedProfessional(professional);
+                          selectProfessional(professional);
                         }
                       }}
                       className="w-full min-w-0 text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
@@ -405,7 +454,7 @@ export default function Professionisti() {
       <ProfessionalModal
         professional={selectedProfessional}
         isOpen={!!selectedProfessional}
-        onClose={() => setSelectedProfessional(null)}
+        onClose={() => selectProfessional(null)}
         relatedNews={selectedProfessional ? getRelatedNews(selectedProfessional.id, selectedProfessional.name) : []}
       />
     </div>

@@ -1,4 +1,4 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, useLocation, useSearch } from "wouter";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -45,18 +45,20 @@ const SITE_ORIGIN = "https://legalit.it";
 
 function CanonicalUpdater() {
   const [location] = useLocation();
+  const search = useSearch();
   useEffect(() => {
     const tag = document.getElementById("canonical-tag") as HTMLLinkElement | null;
     if (!tag) return;
-    // For /professionisti?id=X keep the id param in the canonical (it identifies
-    // the specific person). For all other routes, use pathname only (no filters/search).
     let canonicalHref = `${SITE_ORIGIN}${location}`;
     if (location === "/professionisti") {
-      const id = new URLSearchParams(window.location.search).get("id");
+      const id = new URLSearchParams(search).get("id");
       if (id) canonicalHref = `${SITE_ORIGIN}/professionisti?id=${id}`;
     }
     tag.setAttribute("href", canonicalHref);
-  }, [location]);
+
+    const ogUrl = document.querySelector<HTMLMetaElement>('meta[property="og:url"]');
+    if (ogUrl) ogUrl.content = canonicalHref;
+  }, [location, search]);
   return null;
 }
 

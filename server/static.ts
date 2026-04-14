@@ -4,14 +4,37 @@ import path from "path";
 
 const SITE_URL = "https://legalit.it";
 
+function escapeHtmlAttr(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 function getCanonicalUrl(req: Request): string {
   const pathname = req.path;
   if (pathname === "/professionisti") {
-    const id = req.query.id;
-    if (id) return `${SITE_URL}/professionisti?id=${id}`;
+    const rawId = req.query.id;
+    if (rawId) {
+      const id = escapeHtmlAttr(String(rawId).replace(/[^0-9]/g, ""));
+      if (id) return `${SITE_URL}/professionisti?id=${id}`;
+    }
   }
   if (pathname === "/" || !pathname) return SITE_URL;
   return `${SITE_URL}${pathname}`;
+}
+
+function replaceMetaContent(html: string, attr: string, value: string, newContent: string): string {
+  const marker = `${attr}="${value}"`;
+  const pos = html.indexOf(marker);
+  if (pos === -1) return html;
+
+  const tagStart = html.lastIndexOf("<meta", pos);
+  if (tagStart === -1) return html;
+
+  const tagEnd = html.indexOf(">", pos);
+  if (tagEnd === -1) return html;
+
+  const tag = html.slice(tagStart, tagEnd + 1);
+  const updated = tag.replace(/content="[^"]*"/, `content="${newContent}"`);
+  return html.slice(0, tagStart) + updated + html.slice(tagEnd + 1);
 }
 
 function injectCanonical(html: string, canonical: string): string {
@@ -27,7 +50,11 @@ function injectCanonical(html: string, canonical: string): string {
 
   const linkTag = html.slice(linkStart, tagEnd + 1);
   const newLinkTag = linkTag.replace(/href="[^"]*"/, `href="${canonical}"`);
-  return html.slice(0, linkStart) + newLinkTag + html.slice(tagEnd + 1);
+  let result = html.slice(0, linkStart) + newLinkTag + html.slice(tagEnd + 1);
+
+  result = replaceMetaContent(result, 'property', 'og:url', canonical);
+
+  return result;
 }
 
 export function serveStatic(app: Express) {
