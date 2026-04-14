@@ -103,8 +103,7 @@ export default function Professionisti() {
   const selectProfessional = (prof: ProfessionalData | null) => {
     setSelectedProfessional(prof);
     const newUrl = prof ? `/professionisti?id=${prof.id}` : `/professionisti`;
-    window.history.replaceState(null, "", newUrl);
-    window.dispatchEvent(new PopStateEvent("popstate"));
+    navigate(newUrl, { replace: true });
   };
 
   const { data: dbProfessionals = [], isLoading: professionalsLoading } = useQuery<DbProfessional[]>({
