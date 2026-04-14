@@ -1284,9 +1284,10 @@ ${urls}
 
       const profUrl = `${SITE_URL}/professionisti?id=${professional.id}`;
       const escHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      const stripMd = (s: string) => s.replace(/\*\*/g, "").replace(/\*/g, "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").trim();
       const name = escHtml(professional.name);
       const jobTitle = escHtml(professional.title || "");
-      const bio = escHtml((professional.bio || "").slice(0, 220));
+      const bio = escHtml(stripMd((professional.bio || professional.fullBio || "")).slice(0, 220));
       const imageRaw = professional.imageUrl || "";
       const image = imageRaw.startsWith("http") ? imageRaw : `${SITE_URL}${imageRaw}`;
       const ogImage = image || `${SITE_URL}/favicon.png`;

@@ -128,19 +128,12 @@ export default function Professionisti() {
       // Single person focused view (modal open / ?id=X)
       tag.textContent = JSON.stringify(buildPersonSchema(selectedProfessional));
     } else {
-      // Full list view — emit all as ItemList of Person
-      const itemList = {
+      // Full list view — emit @graph with array of Person (one per professional)
+      const graph = {
         "@context": "https://schema.org",
-        "@type": "ItemList",
-        "name": "Professionisti LEGALIT",
-        "url": `${SITE_URL}/professionisti`,
-        "itemListElement": professionals.map((p, i) => ({
-          "@type": "ListItem",
-          "position": i + 1,
-          "item": buildPersonSchema(p),
-        })),
+        "@graph": professionals.map(p => buildPersonSchema(p)),
       };
-      tag.textContent = JSON.stringify(itemList);
+      tag.textContent = JSON.stringify(graph);
     }
     return () => {
       // Remove tag on unmount
