@@ -258,23 +258,43 @@ export default function News() {
             </p>
           )}
           <div className="flex flex-col gap-2 mt-auto">
-            {article.authorName && (
-              <button
-                type="button"
-                onClick={(e) => handleAuthorClick(article.authorName, e)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleAuthorClick(article.authorName, e as any);
-                  }
-                }}
-                className="hover:underline transition-colors text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded px-0 flex items-center gap-1 w-fit"
-                data-testid={`button-author-${article.id}`}
-                aria-label={`${language === "it" ? "Visualizza profilo di" : "View profile of"} ${article.authorName}`}
-              >
-                <span className="truncate">{article.authorName}</span>
-              </button>
-            )}
+            {article.authorName && (() => {
+              const matchedPro = !isLegalitAuthor(article.authorName)
+                ? findProfessionalByName(article.authorName)
+                : null;
+              const className = "hover:underline transition-colors text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded px-0 flex items-center gap-1 w-fit";
+              const ariaLabel = `${language === "it" ? "Visualizza profilo di" : "View profile of"} ${article.authorName}`;
+              if (matchedPro) {
+                return (
+                  <Link
+                    href={professionalUrl(matchedPro)}
+                    onClick={(e) => e.stopPropagation()}
+                    className={className}
+                    data-testid={`link-author-${article.id}`}
+                    aria-label={ariaLabel}
+                  >
+                    <span className="truncate">{article.authorName}</span>
+                  </Link>
+                );
+              }
+              return (
+                <button
+                  type="button"
+                  onClick={(e) => handleAuthorClick(article.authorName, e)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleAuthorClick(article.authorName, e as any);
+                    }
+                  }}
+                  className={className}
+                  data-testid={`button-author-${article.id}`}
+                  aria-label={ariaLabel}
+                >
+                  <span className="truncate">{article.authorName}</span>
+                </button>
+              );
+            })()}
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
                 <Calendar className="h-3 w-3" />

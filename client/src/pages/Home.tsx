@@ -3,6 +3,7 @@ import QuickLinks from "@/components/QuickLinks";
 import ValuesSection from "@/components/ValuesSection";
 import OfficesPreview from "@/components/OfficesPreview";
 import CtaSection from "@/components/CtaSection";
+import ManagingPartnerSection from "@/components/ManagingPartnerSection";
 import { useLoadingState } from "@/contexts/LoadingContext";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
       <Hero loadingComplete={loadingComplete} />
       <QuickLinks />
       <ValuesSection />
+      <ManagingPartnerSection />
       <OfficesPreview />
       <CtaSection />
     </div>

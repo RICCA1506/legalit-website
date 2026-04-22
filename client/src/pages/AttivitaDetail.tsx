@@ -204,23 +204,23 @@ export default function AttivitaDetail() {
                       transition={{ delay: index * 0.05 }}
                       className="cursor-pointer min-w-0 w-[calc(50%-6px)] md:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]"
                     >
-                      <button
-                        onClick={() => window.location.href = professionalUrl(professional)}
-                        className="w-full min-w-0 text-left"
-                        data-testid={`button-professional-${professional.id}`}
+                      <Link
+                        href={professionalUrl(professional)}
+                        className="w-full min-w-0 text-left block"
+                        data-testid={`link-professional-${professional.id}`}
                       >
                         <ProfessionalCard
                           name={professional.name}
                           title={professional.title}
                           imageUrl={professional.imageUrl}
-                          imagePosition={(professional as any).imagePosition}
-                          imageZoom={(professional as any).imageZoom}
+                          imagePosition={"imagePosition" in professional ? professional.imagePosition : undefined}
+                          imageZoom={"imageZoom" in professional ? professional.imageZoom : undefined}
                           email={professional.email}
                           office={professional.office}
                           specializations={professional.specializations}
                           fullBio={professional.fullBio}
                         />
-                      </button>
+                      </Link>
                     </motion.div>
                   ))}
                 </AnimatePresence>
