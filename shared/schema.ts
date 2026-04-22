@@ -157,12 +157,19 @@ export const professionals = pgTable("professionals", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertProfessionalSchema = createInsertSchema(professionals).omit({
-  id: true,
-  orderIndex: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertProfessionalSchema = createInsertSchema(professionals)
+  .omit({
+    id: true,
+    orderIndex: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  // Slug is auto-generated server-side from `name` when omitted by clients
+  // (admin form, scripts, tests). When provided it must still be a valid
+  // non-empty string — actual uniqueness is enforced at the storage layer.
+  .extend({
+    slug: z.string().min(1).optional(),
+  });
 
 export type InsertProfessional = z.infer<typeof insertProfessionalSchema>;
 export type Professional = typeof professionals.$inferSelect;

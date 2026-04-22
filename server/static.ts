@@ -12,13 +12,10 @@ const SLUG_RE = /^[a-z0-9-]+$/;
 
 function getCanonicalUrl(req: Request): string {
   const pathname = req.path;
-  if (pathname === "/professionisti") {
-    const rawId = req.query.id;
-    if (rawId) {
-      const id = escapeHtmlAttr(String(rawId).replace(/[^0-9]/g, ""));
-      if (id) return `${SITE_URL}/professionisti?id=${id}`;
-    }
-  }
+  // NB: `/professionisti?id=X` is 301-redirected to `/professionisti/{slug}`
+  // by the routes layer before reaching here, so it never produces canonical
+  // HTML. We deliberately do NOT emit a `?id=X` canonical to avoid signalling
+  // a parallel canonical URL to crawlers — slug is the single source of truth.
   const slugMatch = pathname.match(/^\/professionisti\/([^/]+)\/?$/);
   if (slugMatch) {
     const slug = slugMatch[1].toLowerCase();

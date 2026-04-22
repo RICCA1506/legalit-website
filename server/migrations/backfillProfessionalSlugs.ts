@@ -22,8 +22,9 @@
  * can be re-run safely on any future environment that ends up with NULL
  * slugs (e.g. a fresh DB created from older snapshots).
  */
+import { eq } from "drizzle-orm";
 import { db } from "../db";
-import { professionals } from "@shared/schema";
+import { professionals, type Professional } from "@shared/schema";
 import { slugifyName, uniqueSlug } from "@shared/slugify";
 
 export async function backfillProfessionalSlugs(): Promise<{
@@ -31,24 +32,23 @@ export async function backfillProfessionalSlugs(): Promise<{
   populated: number;
   updated: number;
 }> {
-  const all = await db.select().from(professionals);
-  const taken = new Set(
+  const all: Professional[] = await db.select().from(professionals);
+  const taken = new Set<string>(
     all
-      .map((r) => (r as any).slug)
-      .filter((s): s is string => !!s && s.trim().length > 0),
+      .map((r) => r.slug)
+      .filter((s): s is string => typeof s === "string" && s.trim().length > 0),
   );
 
   let updated = 0;
   for (const row of all) {
-    const current = (row as any).slug as string | null | undefined;
-    if (current && current.trim().length > 0) continue;
+    if (typeof row.slug === "string" && row.slug.trim().length > 0) continue;
     const base = slugifyName(row.name) || `prof-${row.id}`;
     const finalSlug = uniqueSlug(base, taken);
     taken.add(finalSlug);
     await db
       .update(professionals)
-      .set({ slug: finalSlug } as any)
-      .where((await import("drizzle-orm")).eq(professionals.id, row.id));
+      .set({ slug: finalSlug })
+      .where(eq(professionals.id, row.id));
     updated++;
   }
 
