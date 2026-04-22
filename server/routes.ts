@@ -1466,32 +1466,88 @@ ${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : "
 
   // Handler B2: /professionisti?id=X — bots get rich SSR (canonical points to slug URL),
   // human browsers get 301 redirect to /professionisti/{slug} so they land on the
-  // semantic URL.
+  // semantic URL. If the id is invalid or unknown, fall back to a 301 to the list
+  // page (avoids serving SPA 200 for stale links indexed by Google).
   app.get("/professionisti", async (req, res, next) => {
     const professionalId = req.query.id;
     if (!professionalId) return next();
 
+    const accept = String(req.headers["accept"] || "");
+    const fetchDest = String(req.headers["sec-fetch-dest"] || "");
+    const isHtmlRequest =
+      accept.includes("text/html") || fetchDest === "document" || fetchDest === "";
+    if (!isHtmlRequest) return next();
+
     const id = parseIntId(String(professionalId));
-    if (!id) return next();
+    if (!id) return res.redirect(301, "/professionisti");
 
     try {
       const professional = await storage.getProfessional(id);
-      if (!professional) return next();
-
-      // Only redirect HTML page navigations. API/JSON/asset clients that
-      // happen to hit this URL must keep their existing semantics (they
-      // would normally never request this path, but be defensive).
-      const accept = String(req.headers["accept"] || "");
-      const fetchDest = String(req.headers["sec-fetch-dest"] || "");
-      const isHtmlRequest =
-        accept.includes("text/html") || fetchDest === "document" || fetchDest === "";
-      if (!isHtmlRequest) return next();
+      if (!professional) return res.redirect(301, "/professionisti");
 
       const canonicalSlug = professional.slug || slugifyName(professional.name);
       return res.redirect(301, `/professionisti/${canonicalSlug}`);
     } catch {
-      next();
+      return res.redirect(301, "/professionisti");
     }
+  });
+
+  // ---------------------------------------------------------------------------
+  // Legacy WordPress URL handlers
+  // ---------------------------------------------------------------------------
+  // The previous WP site left a long tail of URLs that external indices and
+  // bots still hit. Without explicit handling they fall through to the SPA
+  // catch-all and respond 200, causing soft-404s and duplicate-content
+  // signals in Google Search Console. Each block below converts one family
+  // of legacy URLs into the correct HTTP signal (301/410).
+
+  // A) /avvocato-{slug}[/anything] — legacy professional profile URLs.
+  // Try to map the trailing slug to a current professional and 301 to the
+  // new semantic URL; fall back to the professionals list page.
+  app.get(/^\/avvocato-([a-z0-9-]+)(?:\/.*)?$/i, async (req, res) => {
+    const legacySlug = (req.params as any)[0] as string;
+    try {
+      const candidates = await storage.getAllProfessionals().catch(() => []);
+      const match = candidates.find(
+        (p) =>
+          p.slug && (p.slug === legacySlug || p.slug.endsWith(`-${legacySlug}`))
+      );
+      const target = match ? `/professionisti/${match.slug}` : "/professionisti";
+      return res.redirect(301, target);
+    } catch {
+      return res.redirect(301, "/professionisti");
+    }
+  });
+
+  // B) WordPress endpoints that are gone for good → 410 Gone.
+  // 410 is a stronger signal than 404 to remove the URL from Google's index.
+  const WP_GONE_PATHS: RegExp[] = [
+    /^\/wp-login\.php$/i,
+    /^\/wp-admin(\/.*)?$/i,
+    /^\/wp-content(\/.*)?$/i,
+    /^\/wp-includes(\/.*)?$/i,
+    /^\/xmlrpc\.php$/i,
+    /^\/feed\/?$/i,
+    /^\/comments\/feed\/?$/i,
+  ];
+  app.use((req, res, next) => {
+    if (req.method !== "GET" && req.method !== "HEAD") return next();
+    if (WP_GONE_PATHS.some((rx) => rx.test(req.path))) {
+      res.status(410).type("text/plain").send("Gone");
+      return;
+    }
+    next();
+  });
+
+  // C) WordPress query strings on the root → 301 to clean home.
+  // E.g. /?et_core_page_resource, /?p=123, /?page_id=2, /?preview=true
+  app.get("/", (req, res, next) => {
+    const wpQueryKeys = ["et_core_page_resource", "p", "page_id", "preview", "feed"];
+    const hasWpQuery = wpQueryKeys.some((k) => k in req.query);
+    if (hasWpQuery) {
+      return res.redirect(301, "/");
+    }
+    next();
   });
 
   app.get("/news", async (req, res, next) => {
