@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { slugifyName } from "@shared/slugify";
 import {
   SITE_URL,
+  buildArticleMeta,
   buildProfessionalMeta,
   extractSlugFromPath,
   getCanonicalUrl,
@@ -40,6 +41,25 @@ async function renderIndexHtml(template: string, req: Request): Promise<string> 
       console.error("[static] professional meta injection failed:", err);
     }
   }
+
+  if (pathname === "/news" || pathname === "/news/") {
+    const articleQuery = req.query?.article;
+    const articleIdRaw = Array.isArray(articleQuery) ? articleQuery[0] : articleQuery;
+    const articleId = articleIdRaw != null ? Number(articleIdRaw) : NaN;
+    if (Number.isFinite(articleId) && articleId > 0) {
+      try {
+        const article = await storage.getNewsArticle(articleId);
+        if (article) {
+          const articleUrl = `${SITE_URL}/news?article=${article.id}`;
+          const meta = buildArticleMeta(article, articleUrl);
+          return injectProfessionalMeta(template, meta);
+        }
+      } catch (err) {
+        console.error("[static] news article meta injection failed:", err);
+      }
+    }
+  }
+
   return injectCanonical(template, getCanonicalUrl(pathname));
 }
 

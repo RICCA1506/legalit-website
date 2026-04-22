@@ -1,4 +1,4 @@
-import type { Professional } from "@shared/schema";
+import type { NewsArticle, Professional } from "@shared/schema";
 
 const SITE_URL = "https://legalit.it";
 const SLUG_RE = /^[a-z0-9-]+$/;
@@ -143,6 +143,35 @@ export function buildProfessionalMeta(professional: Professional, profUrl: strin
  * so non-crawler clients (browsers, metatags.io, generic OG scrapers)
  * see the right preview without going through the SSR crawler path.
  */
+export function buildArticleMeta(article: NewsArticle, articleUrl: string): ProfessionalMeta {
+  const title = article.title;
+  const rawDesc = stripMd(article.excerpt || article.content || "");
+  const description = (rawDesc.slice(0, 220) || `${title} - LEGALIT Società tra Avvocati`);
+
+  const imageRaw = article.imageUrl || "";
+  const image = imageRaw
+    ? imageRaw.startsWith("http")
+      ? imageRaw
+      : `${SITE_URL}${imageRaw.startsWith("/") ? "" : "/"}${imageRaw}`
+    : `${SITE_URL}/favicon.png`;
+
+  const titleStr = `${title} - LEGALIT`;
+
+  return {
+    title: titleStr,
+    description,
+    ogTitle: titleStr,
+    ogDescription: description,
+    ogImage: image,
+    ogType: "article",
+    twitterCard: "summary_large_image",
+    twitterTitle: titleStr,
+    twitterDescription: description,
+    twitterImage: image,
+    canonical: articleUrl,
+  };
+}
+
 export function injectProfessionalMeta(html: string, meta: ProfessionalMeta): string {
   let out = html;
   out = replaceTitle(out, meta.title);
