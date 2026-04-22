@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearch, useLocation } from "wouter";
+import { useSearch, useLocation, useRoute } from "wouter";
+import { slugifyName } from "@shared/slugify";
 import { motion } from "framer-motion";
 import PageHeader from "@/components/PageHeader";
 import ProfessionalCard from "@/components/ProfessionalCard";
@@ -76,12 +77,13 @@ function buildPersonSchema(p: ProfessionalData) {
   const imageUrl = p.imageUrl
     ? (p.imageUrl.startsWith("http") ? p.imageUrl : `${SITE_URL}${p.imageUrl}`)
     : undefined;
+  const profSlug = (p as any).slug || slugifyName(p.name);
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": p.name,
     "jobTitle": p.title,
-    "url": `${SITE_URL}/professionisti?id=${p.id}`,
+    "url": `${SITE_URL}/professionisti/${profSlug}`,
     "worksFor": WORKS_FOR,
   };
   if (imageUrl) schema["image"] = imageUrl;
@@ -99,11 +101,16 @@ export default function Professionisti() {
   const [selectedProfessional, setSelectedProfessional] = useState<ProfessionalData | null>(null);
   const search = useSearch();
   const [, navigate] = useLocation();
+  const [, slugRouteParams] = useRoute<{ slug: string }>("/professionisti/:slug");
 
   const selectProfessional = (prof: ProfessionalData | null) => {
     setSelectedProfessional(prof);
-    const newUrl = prof ? `/professionisti?id=${prof.id}` : `/professionisti`;
-    navigate(newUrl, { replace: true });
+    if (!prof) {
+      navigate(`/professionisti`, { replace: true });
+      return;
+    }
+    const profSlug = (prof as any).slug || slugifyName(prof.name);
+    navigate(`/professionisti/${profSlug}`, { replace: true });
   };
 
   const { data: dbProfessionals = [], isLoading: professionalsLoading } = useQuery<DbProfessional[]>({
@@ -156,24 +163,39 @@ export default function Professionisti() {
     const params = new URLSearchParams(search);
     const professionalId = params.get('id');
     const areaParam = params.get('area');
+    const routeSlug = slugRouteParams?.slug || null;
 
-    if (professionalId) {
-      // Only resolve once professionals are loaded to avoid resolving against an
-      // empty/stale list. If the id can't be found we explicitly clear the
-      // selection rather than silently keeping a stale one (handles back/forward).
+    if (routeSlug) {
+      // /professionisti/:slug → resolve by slug (or fallback by slugified name
+      // for any legacy professional missing a slug column value).
       if (professionals.length > 0) {
-        const prof = professionals.find(p => String(p.id) === professionalId);
+        const prof = professionals.find((p) => {
+          const pSlug = (p as any).slug || slugifyName(p.name);
+          return pSlug === routeSlug;
+        });
         setSelectedProfessional(prof ?? null);
       }
+    } else if (professionalId) {
+      // Legacy /professionisti?id=X — resolve, then redirect to slug URL so the
+      // canonical /professionisti/{slug} becomes the active address.
+      if (professionals.length > 0) {
+        const prof = professionals.find(p => String(p.id) === professionalId);
+        if (prof) {
+          const profSlug = (prof as any).slug || slugifyName(prof.name);
+          navigate(`/professionisti/${profSlug}`, { replace: true });
+        } else {
+          setSelectedProfessional(null);
+        }
+      }
     } else {
-      // No id in URL → modal must be closed
+      // No id / no slug → modal must be closed
       setSelectedProfessional(null);
     }
 
     if (areaParam) {
       setSelectedArea(areaParam);
     }
-  }, [search, professionals]);
+  }, [search, professionals, slugRouteParams?.slug, navigate]);
 
   const SITE_DEFAULT_TITLE = "LEGALIT - Società tra Avvocati | Studio Legale Roma, Milano, Palermo, Latina, Napoli";
   const SITE_DEFAULT_DESC = "LEGALIT - Società tra Avvocati con sedi a Roma, Milano, Palermo, Latina e Napoli. Assistenza legale specializzata in diritto societario, penale, del lavoro, amministrativo, compliance e M&A.";

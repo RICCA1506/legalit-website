@@ -8,6 +8,8 @@ function escapeHtmlAttr(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+const SLUG_RE = /^[a-z0-9-]+$/;
+
 function getCanonicalUrl(req: Request): string {
   const pathname = req.path;
   if (pathname === "/professionisti") {
@@ -16,6 +18,11 @@ function getCanonicalUrl(req: Request): string {
       const id = escapeHtmlAttr(String(rawId).replace(/[^0-9]/g, ""));
       if (id) return `${SITE_URL}/professionisti?id=${id}`;
     }
+  }
+  const slugMatch = pathname.match(/^\/professionisti\/([^/]+)\/?$/);
+  if (slugMatch) {
+    const slug = slugMatch[1].toLowerCase();
+    if (SLUG_RE.test(slug)) return `${SITE_URL}/professionisti/${slug}`;
   }
   if (pathname === "/" || !pathname) return SITE_URL;
   return `${SITE_URL}${pathname}`;
@@ -71,9 +78,6 @@ export function serveStatic(app: Express) {
     : "";
 
   const hasCanonicalMarker = indexHtml.includes('id="canonical-tag"');
-  console.log(
-    `[static] distPath=${distPath} indexHtmlBytes=${indexHtml.length} canonicalMarker=${hasCanonicalMarker}`,
-  );
   if (!hasCanonicalMarker) {
     console.error(
       "[static] WARNING: built index.html does not contain id=\"canonical-tag\" — canonical injection will be a no-op!",
@@ -98,12 +102,6 @@ export function serveStatic(app: Express) {
   app.use("/{*path}", (req: Request, res: Response) => {
     const canonical = getCanonicalUrl(req);
     const html = injectCanonical(indexHtml, canonical);
-    if (req.path === "/professionisti" || req.path === "/") {
-      const injected = html.includes(`href="${canonical}"`);
-      console.log(
-        `[static] serve path=${req.path} query=${JSON.stringify(req.query)} canonical=${canonical} injected=${injected}`,
-      );
-    }
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");

@@ -11,6 +11,7 @@ import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import { sendContactEmail, sendJobApplicationEmail } from "./email";
 import { syncDevDataToCurrentDb, exportDbToDevData } from "./syncData";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { slugifyName } from "@shared/slugify";
 
 function parseIntId(raw: string): number | null {
   const n = parseInt(raw, 10);
@@ -177,8 +178,9 @@ Sitemap: https://legalit.it/sitemap.xml`
       const lastmod = raw
         ? new Date(raw).toISOString().split("T")[0]
         : "2026-01-15";
+      const slug = p.slug || `id-${p.id}`;
       return `  <url>
-    <loc>${SITE_URL}/professionisti?id=${p.id}</loc>
+    <loc>${SITE_URL}/professionisti/${slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -436,6 +438,23 @@ ${urls}
     } catch (error) {
       console.error("Error fetching professionals:", error);
       res.status(500).json({ message: "Failed to fetch professionals" });
+    }
+  });
+
+  // NOTE: by-slug must be registered BEFORE :id to avoid the slug being matched
+  // against the numeric :id route (which would 400 on non-numeric input).
+  app.get("/api/professionals/by-slug/:slug", async (req, res) => {
+    try {
+      const slug = String(req.params.slug || "").trim();
+      if (!slug) return res.status(400).json({ message: "Slug non valido" });
+      const professional = await storage.getProfessionalBySlug(slug);
+      if (!professional) {
+        return res.status(404).json({ message: "Professional not found" });
+      }
+      res.json(professional);
+    } catch (error) {
+      console.error("Error fetching professional by slug:", error);
+      res.status(500).json({ message: "Failed to fetch professional" });
     }
   });
 
@@ -1301,9 +1320,10 @@ ${urls}
     try {
       const profs = await storage.getAllProfessionals().catch(() => []);
       const listItems = profs
-        .map(p =>
-          `<li><a href="/professionisti?id=${p.id}">${escHtml(p.name)}${p.title ? ` – ${escHtml(p.title)}` : ""}</a></li>`
-        )
+        .map(p => {
+          const slug = p.slug || slugifyName(p.name);
+          return `<li><a href="/professionisti/${slug}">${escHtml(p.name)}${p.title ? ` – ${escHtml(p.title)}` : ""}</a></li>`;
+        })
         .join("\n");
 
       res.send(`<!DOCTYPE html>
@@ -1333,21 +1353,8 @@ ${listItems}
     }
   });
 
-  // Handler B: /professionisti?id=X — serve rich individual profile page
-  app.get("/professionisti", async (req, res, next) => {
-    const professionalId = req.query.id;
-    if (!professionalId) return next();
-
-    const ua = (req.headers["user-agent"] || "").toLowerCase();
-    if (!SSR_CRAWLERS.test(ua)) return next();
-
-    try {
-      const id = parseIntId(String(professionalId));
-      if (!id) return next();
-      const professional = await storage.getProfessional(id);
-      if (!professional) return next();
-
-      const profUrl = `${SITE_URL}/professionisti?id=${professional.id}`;
+  // Shared renderer for SSR profile pages (used by both ?id=X and /:slug paths).
+  const renderProfessionalSsr = (professional: any, profUrl: string) => {
       const name = escHtml(professional.name);
       const jobTitle = escHtml(professional.title || "");
       const fullBioRaw = stripMd(professional.bio || professional.fullBio || "");
@@ -1373,7 +1380,7 @@ ${listItems}
       if (image) personSchema["image"] = image;
       if (professional.email) personSchema["email"] = `mailto:${professional.email}`;
 
-      res.send(`<!DOCTYPE html>
+      return `<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8" />
@@ -1411,7 +1418,59 @@ ${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : "
 <a href="${SITE_URL}/contatti">Contatti</a>
 </footer>
 </body>
-</html>`);
+</html>`;
+  };
+
+  // Handler B1: /professionisti/:slug — semantic URL, SSR for crawlers + 301 for browsers to NOTHING
+  // (browsers render the SPA route directly).
+  app.get("/professionisti/:slug", async (req, res, next) => {
+    const ua = (req.headers["user-agent"] || "").toLowerCase();
+    if (!SSR_CRAWLERS.test(ua)) return next();
+
+    try {
+      const slug = String(req.params.slug || "").trim().toLowerCase();
+      if (!slug || !/^[a-z0-9-]+$/.test(slug)) return next();
+      let professional = await storage.getProfessionalBySlug(slug);
+      // Fallback: legacy rows with NULL slug — try matching slugifyName(name).
+      if (!professional) {
+        const all = await storage.getAllProfessionals();
+        professional = all.find(p => !p.slug && slugifyName(p.name) === slug);
+      }
+      if (!professional) return next();
+      const profUrl = `${SITE_URL}/professionisti/${professional.slug || slug}`;
+      res.send(renderProfessionalSsr(professional, profUrl));
+    } catch {
+      next();
+    }
+  });
+
+  // Handler B2: /professionisti?id=X — bots get rich SSR (canonical points to slug URL),
+  // human browsers get 301 redirect to /professionisti/{slug} so they land on the
+  // semantic URL.
+  app.get("/professionisti", async (req, res, next) => {
+    const professionalId = req.query.id;
+    if (!professionalId) return next();
+
+    const id = parseIntId(String(professionalId));
+    if (!id) return next();
+
+    try {
+      const professional = await storage.getProfessional(id);
+      if (!professional) return next();
+
+      const ua = (req.headers["user-agent"] || "").toLowerCase();
+      const isCrawler = SSR_CRAWLERS.test(ua);
+
+      // For human browsers: 301 redirect to the slug URL (preserves SEO signal).
+      if (!isCrawler && professional.slug) {
+        return res.redirect(301, `/professionisti/${professional.slug}`);
+      }
+
+      // For crawlers (or legacy rows without a slug): serve SSR with the slug
+      // canonical when available so Google consolidates the URL.
+      const canonicalSlug = professional.slug || slugifyName(professional.name);
+      const profUrl = `${SITE_URL}/professionisti/${canonicalSlug}`;
+      res.send(renderProfessionalSsr(professional, profUrl));
     } catch {
       next();
     }

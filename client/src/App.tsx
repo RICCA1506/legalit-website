@@ -50,6 +50,9 @@ function CanonicalUpdater() {
     const tag = document.getElementById("canonical-tag") as HTMLLinkElement | null;
     if (!tag) return;
     let canonicalHref = `${SITE_ORIGIN}${location}`;
+    // For /professionisti?id=X keep the legacy canonical (the page itself
+    // performs a client-side replace to /professionisti/{slug} once the
+    // professional is resolved, which will re-trigger this effect).
     if (location === "/professionisti") {
       const id = new URLSearchParams(search).get("id");
       if (id) canonicalHref = `${SITE_ORIGIN}/professionisti?id=${id}`;
@@ -93,6 +96,7 @@ function Router() {
         <Route path="/attivita" component={Attivita} />
         <Route path="/attivita/:id" component={AttivitaDetail} />
         <Route path="/professionisti" component={Professionisti} />
+        <Route path="/professionisti/:slug" component={Professionisti} />
         <Route path="/sedi" component={Sedi} />
         <Route path="/news" component={News} />
         <Route path="/contatti" component={Contatti} />

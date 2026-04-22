@@ -35,8 +35,9 @@ import {
   type ChatConversation,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, asc, and, gt, gte, isNull, isNotNull } from "drizzle-orm";
+import { eq, desc, asc, and, gt, gte, isNull, isNotNull, ne } from "drizzle-orm";
 import crypto from "crypto";
+import { slugifyName } from "@shared/slugify";
 
 export function hashToken(token: string): string {
   return crypto.createHash("sha256").update(token).digest("hex");
@@ -73,6 +74,7 @@ export interface IStorage {
   // Professional operations
   getAllProfessionals(): Promise<Professional[]>;
   getProfessional(id: number): Promise<Professional | undefined>;
+  getProfessionalBySlug(slug: string): Promise<Professional | undefined>;
   createProfessional(professional: InsertProfessional): Promise<Professional>;
   updateProfessional(id: number, professional: Partial<InsertProfessional>): Promise<Professional | undefined>;
   deleteProfessional(id: number): Promise<boolean>;
@@ -282,15 +284,49 @@ export class DatabaseStorage implements IStorage {
     return professional;
   }
 
+  async getProfessionalBySlug(slug: string): Promise<Professional | undefined> {
+    const [professional] = await db.select().from(professionals).where(eq(professionals.slug, slug));
+    return professional;
+  }
+
+  async ensureUniqueSlug(base: string, excludeId?: number): Promise<string> {
+    const all = await db.select({ slug: professionals.slug, id: professionals.id }).from(professionals);
+    const taken = new Set(
+      all
+        .filter(r => r.slug && (excludeId === undefined || r.id !== excludeId))
+        .map(r => r.slug as string),
+    );
+    if (!taken.has(base)) return base;
+    let n = 2;
+    while (taken.has(`${base}-${n}`)) n++;
+    return `${base}-${n}`;
+  }
+
   async createProfessional(professional: InsertProfessional): Promise<Professional> {
-    const [newProfessional] = await db.insert(professionals).values(professional).returning();
+    // Always normalize the slug — whether the caller provided one or we derive
+    // it from the name — so that DB stores only safe, lowercase, ASCII slugs.
+    const requested = professional.slug?.trim();
+    let base = requested ? slugifyName(requested) : slugifyName(professional.name);
+    if (!base) base = slugifyName(professional.name) || `prof-${Date.now()}`;
+    const slug = await this.ensureUniqueSlug(base);
+    const [newProfessional] = await db
+      .insert(professionals)
+      .values({ ...professional, slug })
+      .returning();
     return newProfessional;
   }
 
   async updateProfessional(id: number, professional: Partial<InsertProfessional>): Promise<Professional | undefined> {
+    const patch: Partial<InsertProfessional> = { ...professional };
+    if (patch.name && !patch.slug) {
+      const base = slugifyName(patch.name);
+      patch.slug = await this.ensureUniqueSlug(base, id);
+    } else if (patch.slug) {
+      patch.slug = await this.ensureUniqueSlug(slugifyName(patch.slug), id);
+    }
     const [updated] = await db
       .update(professionals)
-      .set({ ...professional, updatedAt: new Date() })
+      .set({ ...patch, updatedAt: new Date() })
       .where(eq(professionals.id, id))
       .returning();
     return updated;

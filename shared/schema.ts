@@ -137,6 +137,7 @@ export type NewsArticle = typeof newsArticles.$inferSelect;
 // Professionals table
 export const professionals = pgTable("professionals", {
   id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 255 }).unique(),
   name: varchar("name", { length: 255 }).notNull(),
   title: varchar("title", { length: 100 }).notNull(),
   role: varchar("role", { length: 50 }).default("Associate"),
