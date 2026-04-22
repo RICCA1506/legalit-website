@@ -1,0 +1,131 @@
+Sei il mio assistente SEO/Webmaster operativo per il sito legalit.it
+(LEGALIT – Società tra Avvocati s.r.l.). Ho appena completato due
+modifiche tecniche sul sito ospitato su Replit e devo:
+
+A) Pubblicarle in produzione
+B) Verificare che funzionino correttamente
+C) Inviare/aggiornare la sitemap su Google Search Console (GSC)
+D) Pianificare le richieste di indicizzazione manuale entro il limite
+   giornaliero di GSC (~10 URL/giorno)
+
+================================================================
+CONTESTO TECNICO (cosa è cambiato)
+================================================================
+1) Task #30 — Meta tag dinamici per le pagine dei professionisti
+   URL pattern: https://legalit.it/professionisti/{slug}
+   Esempi di slug attivi (26 totali): avv-francesco-vaccaro,
+   prof-pasquale-passalacqua, avv-giuseppe-tortorici, ecc.
+   Prima: solo i bot (Googlebot, LinkedIn, Facebook, Twitter,
+   WhatsApp, Telegram, Slack, Discord, Bing, DuckDuckGo) ricevevano
+   meta tag specifici via SSR. Tutti gli altri client (browser,
+   metatags.io, Perplexity, scraper OG generici) vedevano i meta
+   generici dello studio.
+   Ora: l'HTML SPA iniettato lato server contiene title,
+   description, og:title, og:description, og:image, og:url,
+   og:type=profile, twitter:title, twitter:description,
+   twitter:image e canonical specifici del professionista,
+   indipendentemente dallo User-Agent.
+
+2) Task #31 — Stesso meccanismo per le pagine delle news
+   URL pattern: https://legalit.it/news?article={ID}
+   Esempi: /news?article=78, /news?article=77, ecc.
+   Ora qualsiasi client riceve title, description, og:*, twitter:*
+   e canonical specifici dell'articolo (con og:type=article).
+   La pagina /news (lista, senza query) resta con meta generici.
+
+Nessun cambio di URL/slug rispetto a quanto già indicizzato.
+Nessun cambio di schema DB. Il redirect 301 da
+/professionisti?id={N} verso /professionisti/{slug} resta attivo.
+
+================================================================
+COSA DEVI FARMI FARE — PASSO PER PASSO
+================================================================
+
+PASSO 1 — DEPLOY
+- Dimmi esattamente cosa cliccare su Replit per pubblicare la nuova
+  versione (Publish / Redeploy) del progetto già in produzione su
+  legalit.it. Avvisami se devo aspettare il riavvio.
+
+PASSO 2 — VERIFICA TECNICA POST-DEPLOY
+Per ognuno di questi controlli, dammi il comando esatto da
+eseguire e cosa devo vedere come risultato corretto:
+
+2a) curl con User-Agent browser (Mozilla/5.0) su:
+    - https://legalit.it/professionisti/avv-francesco-vaccaro
+    - https://legalit.it/professionisti/prof-pasquale-passalacqua
+    - https://legalit.it/news?article=78
+    Devo verificare che nell'HTML iniziale (prima di qualunque JS)
+    siano presenti title, og:title, og:description, og:image,
+    twitter:image e canonical SPECIFICI (non quelli generici dello
+    studio).
+
+2b) curl con User-Agent Googlebot sugli stessi URL: deve continuare
+    a tornare l'HTML SSR ricco con <h1>, bio completa e JSON-LD
+    schema.org Person/Article.
+
+2c) Verifica su https://metatags.io di:
+    - 2 profili professionisti
+    - 1 articolo news
+    Anteprima Google, Facebook, Twitter, LinkedIn devono mostrare
+    titolo, descrizione e immagine corretti.
+
+2d) Verifica che https://legalit.it/professionisti?id=3 risponda
+    301 verso /professionisti/avv-francesco-vaccaro (curl -I).
+
+2e) Verifica con Rich Results Test di Google
+    (https://search.google.com/test/rich-results) che lo schema
+    Person su un profilo e Article su una news siano riconosciuti
+    senza errori.
+
+PASSO 3 — SITEMAP SU GOOGLE SEARCH CONSOLE
+Sapendo che la sitemap è su https://legalit.it/sitemap.xml e
+contiene già i 26 nuovi URL slug-based dei professionisti più gli
+articoli delle news:
+
+3a) Indicami passo passo come accedere a GSC, selezionare la
+    proprietà legalit.it, andare in "Sitemap" e (ri)inviare
+    sitemap.xml. Spiegami come interpretare lo stato "Operazione
+    riuscita" vs eventuali errori.
+
+3b) Dimmi come controllare in GSC quanti URL sono stati scoperti
+    dalla sitemap e cosa fare se il numero è inferiore a quello
+    atteso (26 professionisti + N articoli).
+
+PASSO 4 — INDICIZZAZIONE MANUALE (PIANO 4 GIORNI)
+GSC limita a circa 10 richieste "Richiedi indicizzazione" al
+giorno per proprietà. Costruiscimi un piano scaglionato su 4
+giorni che copra:
+- I 26 URL dei professionisti in formato
+  https://legalit.it/professionisti/{slug}
+- Almeno gli ultimi 6-8 articoli news più recenti pubblicati
+- La home https://legalit.it/ e le pagine principali (Chi siamo,
+  Aree di competenza, Contatti, News, Professionisti)
+
+Per ogni giorno (Day 1 → Day 4) elencami massimo 10 URL precisi
+da incollare in GSC > "Controllo URL" > "Richiedi indicizzazione",
+spiegando in 2 righe cosa devo fare per ognuno (incolla URL → vedi
+"URL non presente in Google" oppure "URL presente in Google" →
+clicca "Richiedi indicizzazione" → attendi conferma).
+
+NB: per ricostruire la lista completa degli slug dei
+professionisti, dammi prima un comando curl o un'istruzione per
+estrarli da https://legalit.it/sitemap.xml (es. parsing XML con
+grep) così non devo elencarteli a mano.
+
+PASSO 5 — MONITORAGGIO POST-INDICIZZAZIONE
+Dimmi cosa controllare in GSC nei 7-14 giorni successivi:
+- Quali rapporti guardare (Pagine, Copertura, Prestazioni)
+- Come accorgermi se Google sta ancora servendo le vecchie URL
+  /professionisti?id=N invece dei nuovi slug
+- Cosa fare se vedo errori "Pagina con reindirizzamento" o
+  "Esclusa da tag canonical"
+- Una query site:legalit.it/professionisti/ da lanciare su Google
+  per verificare l'indicizzazione progressiva degli slug
+
+================================================================
+FORMATO DELLA RISPOSTA
+================================================================
+Strutturala esattamente in 5 sezioni numerate (PASSO 1 …
+PASSO 5), con sotto-elenchi puntati, comandi curl in blocchi
+codice, e per il PASSO 4 una tabella o lista chiara giorno per
+giorno. Niente preamboli generici, vai dritto ai passi operativi.
