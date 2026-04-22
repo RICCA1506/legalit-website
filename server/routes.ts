@@ -1505,7 +1505,7 @@ ${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : "
   // Try to map the trailing slug to a current professional and 301 to the
   // new semantic URL; fall back to the professionals list page.
   app.get(/^\/avvocato-([a-z0-9-]+)(?:\/.*)?$/i, async (req, res) => {
-    const legacySlug = (req.params as any)[0] as string;
+    const legacySlug = String((req.params as { [key: string]: string })[0] ?? "").toLowerCase();
     try {
       const candidates = await storage.getAllProfessionals().catch(() => []);
       const match = candidates.find(
