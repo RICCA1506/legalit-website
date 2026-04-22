@@ -1465,15 +1465,16 @@ ${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : "
       const professional = await storage.getProfessional(id);
       if (!professional) return next();
 
-      // Always derive a usable canonical slug — DB column is NOT NULL but we
-      // also keep slugifyName(name) as a safety net for any code path that
-      // could pass a record with an empty slug.
-      const canonicalSlug = professional.slug || slugifyName(professional.name);
+      // Only redirect HTML page navigations. API/JSON/asset clients that
+      // happen to hit this URL must keep their existing semantics (they
+      // would normally never request this path, but be defensive).
+      const accept = String(req.headers["accept"] || "");
+      const fetchDest = String(req.headers["sec-fetch-dest"] || "");
+      const isHtmlRequest =
+        accept.includes("text/html") || fetchDest === "document" || fetchDest === "";
+      if (!isHtmlRequest) return next();
 
-      // True 301 canonicalization for ALL HTML page requests — including
-      // crawlers — so search engines consolidate `?id=X` into the slug URL
-      // rather than indexing two parallel URLs. The slug handler (B1) then
-      // serves the rich SSR HTML to crawlers.
+      const canonicalSlug = professional.slug || slugifyName(professional.name);
       return res.redirect(301, `/professionisti/${canonicalSlug}`);
     } catch {
       next();

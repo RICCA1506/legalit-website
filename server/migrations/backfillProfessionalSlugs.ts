@@ -1,27 +1,3 @@
-/**
- * One-time backfill for `professionals.slug`.
- *
- * Context:
- *   The `slug` column was added to the `professionals` table to support
- *   semantic profile URLs (`/professionisti/avv-francesco-vaccaro` etc.).
- *   When the column was added it was nullable; this script populates a
- *   unique slug for every row that does not yet have one, so the column
- *   can safely be promoted to `NOT NULL UNIQUE`.
- *
- * Idempotency:
- *   - Rows that already have a non-empty slug are left untouched.
- *   - Slugs are derived deterministically via `slugifyName(name)` and made
- *     unique against the existing slug set by appending `-2`, `-3`, etc.
- *
- * Usage:
- *   tsx server/migrations/backfillProfessionalSlugs.ts
- *
- * Note: As of Apr 2026 this script has already been executed once in
- * production and dev: all 26 professionals received a slug, and the column
- * was promoted to `NOT NULL UNIQUE`. The script is kept in the repo so it
- * can be re-run safely on any future environment that ends up with NULL
- * slugs (e.g. a fresh DB created from older snapshots).
- */
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { professionals, type Professional } from "@shared/schema";
@@ -52,11 +28,7 @@ export async function backfillProfessionalSlugs(): Promise<{
     updated++;
   }
 
-  return {
-    total: all.length,
-    populated: all.length - updated,
-    updated,
-  };
+  return { total: all.length, populated: all.length - updated, updated };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

@@ -50,12 +50,12 @@ function CanonicalUpdater() {
     const tag = document.getElementById("canonical-tag") as HTMLLinkElement | null;
     if (!tag) return;
     let canonicalHref = `${SITE_ORIGIN}${location}`;
-    // For /professionisti?id=X keep the legacy canonical (the page itself
-    // performs a client-side replace to /professionisti/{slug} once the
-    // professional is resolved, which will re-trigger this effect).
+    // /professionisti?id=X is a legacy URL; canonical is always the slug
+    // form. Strip query params and let the page itself perform the
+    // history.replaceState to /professionisti/{slug} once the record is
+    // resolved (re-triggers this effect with the slug path).
     if (location === "/professionisti") {
-      const id = new URLSearchParams(search).get("id");
-      if (id) canonicalHref = `${SITE_ORIGIN}/professionisti?id=${id}`;
+      canonicalHref = `${SITE_ORIGIN}/professionisti`;
     }
     tag.setAttribute("href", canonicalHref);
 
