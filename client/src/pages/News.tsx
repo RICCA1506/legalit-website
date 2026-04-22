@@ -254,7 +254,7 @@ export default function News() {
           )}
           {article.excerpt && (
             <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-              {renderInlineMd(autoT(article.excerpt))}
+              {renderInlineMd(autoT(article.excerpt), dbProfessionals)}
             </p>
           )}
           <div className="flex flex-col gap-2 mt-auto">
@@ -441,7 +441,7 @@ export default function News() {
           </h3>
           {article.excerpt && (
             <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed">
-              {renderInlineMd(autoT(article.excerpt))}
+              {renderInlineMd(autoT(article.excerpt), dbProfessionals)}
             </p>
           )}
           {article.linkedPracticeArea && (

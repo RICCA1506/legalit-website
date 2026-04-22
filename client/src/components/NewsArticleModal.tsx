@@ -101,7 +101,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
           } else {
             elements.push(
               <p key={elementIndex++} className="text-muted-foreground leading-relaxed my-4">
-                {renderInlineMd(text)}
+                {renderInlineMd(text, dbProfessionals)}
               </p>
             );
           }
@@ -116,7 +116,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
           elements.push(
             <ul key={elementIndex++} className="list-disc pl-6 space-y-2 my-4">
               {currentList.items.map((item, i) => (
-                <li key={i} className="text-muted-foreground">{renderInlineMd(item)}</li>
+                <li key={i} className="text-muted-foreground">{renderInlineMd(item, dbProfessionals)}</li>
               ))}
             </ul>
           );
@@ -124,7 +124,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
           elements.push(
             <ol key={elementIndex++} className="list-decimal pl-6 space-y-2 my-4">
               {currentList.items.map((item, i) => (
-                <li key={i} className="text-muted-foreground">{renderInlineMd(item)}</li>
+                <li key={i} className="text-muted-foreground">{renderInlineMd(item, dbProfessionals)}</li>
               ))}
             </ol>
           );
@@ -370,7 +370,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
               <article className="prose prose-slate dark:prose-invert max-w-none">
                 {article.excerpt && (
                   <p className="text-lg font-medium text-foreground mb-6 leading-relaxed">
-                    {autoT(article.excerpt)}
+                    {renderInlineMd(autoT(article.excerpt), dbProfessionals)}
                   </p>
                 )}
                 {formatContent(article.content)}
