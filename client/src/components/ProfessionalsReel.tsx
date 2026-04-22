@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { User, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { professionals as staticProfessionals } from "@/lib/data";
 import type { Professional as DbProfessional } from "@shared/schema";
 import { useLanguage } from "@/lib/i18n";
 interface ProfessionalsReelProps {
@@ -200,8 +199,11 @@ export default function ProfessionalsReel({
     queryKey: ["/api/professionals"],
   });
 
-  const allProfessionals: any[] =
-    dbProfessionals.length > 0 ? dbProfessionals : staticProfessionals;
+  // Use only DB data — never fall back to staticProfessionals because the static
+  // list has different IDs than the DB (Vaccaro static id="1" → DB id=3, etc.).
+  // Falling back would cause clicks to navigate to /professionisti?id=<wrong>
+  // and the modal would resolve to the wrong person.
+  const allProfessionals: any[] = dbProfessionals;
 
   const cleanName = (n: string) =>
     n

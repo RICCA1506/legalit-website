@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { offices, professionals as staticProfessionals } from "@/lib/data";
+import { offices } from "@/lib/data";
 import { practiceAreasEnhanced, professionalMatchesArea } from "@/lib/practiceAreasData";
 import { useLanguage } from "@/lib/i18n";
 import { Search, X, Filter } from "lucide-react";
@@ -114,11 +114,14 @@ export default function Professionisti() {
     queryKey: ["/api/news"],
   });
 
-  const professionals: ProfessionalData[] = professionalsLoading
-    ? []
-    : dbProfessionals.length > 0
-      ? dbProfessionals
-      : staticProfessionals;
+  // IMPORTANT: Do NOT fall back to staticProfessionals here.
+  // The static data has DIFFERENT IDs than the DB (e.g. Vaccaro is id "1" in static
+  // but id 3 in DB; Fabiana is id "4" in static but id 1 in DB). Mixing the two
+  // sources causes the URL→state sync effect below to resolve to the wrong person
+  // (e.g. clicking Vaccaro from a stale cached JS bundle leads to the URL ?id=1,
+  // which dbProfessionals then resolves to Fabiana). Using only dbProfessionals
+  // guarantees IDs are always consistent.
+  const professionals: ProfessionalData[] = dbProfessionals;
 
   // Inject/update schema.org/Person JSON-LD for SEO (Googlebot renders JS)
   useEffect(() => {
@@ -153,12 +156,20 @@ export default function Professionisti() {
     const params = new URLSearchParams(search);
     const professionalId = params.get('id');
     const areaParam = params.get('area');
+
     if (professionalId) {
-      const prof = professionals.find(p => String(p.id) === professionalId);
-      if (prof) {
-        setSelectedProfessional(prof);
+      // Only resolve once professionals are loaded to avoid resolving against an
+      // empty/stale list. If the id can't be found we explicitly clear the
+      // selection rather than silently keeping a stale one (handles back/forward).
+      if (professionals.length > 0) {
+        const prof = professionals.find(p => String(p.id) === professionalId);
+        setSelectedProfessional(prof ?? null);
       }
+    } else {
+      // No id in URL → modal must be closed
+      setSelectedProfessional(null);
     }
+
     if (areaParam) {
       setSelectedArea(areaParam);
     }

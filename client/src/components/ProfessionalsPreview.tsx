@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight, User, Mail } from "lucide-react";
-import { professionals as staticProfessionals } from "@/lib/data";
 import type { Professional as DbProfessional } from "@shared/schema";
 import OptimizedPicture from "./OptimizedPicture";
 import ProfessionalModal from "./ProfessionalModal";
@@ -97,11 +96,10 @@ export default function ProfessionalsPreview() {
     queryKey: ["/api/professionals"],
   });
 
-  const rawProfessionals: ProfessionalData[] = professionalsLoading
-    ? []
-    : dbProfessionals.length > 0
-      ? dbProfessionals
-      : staticProfessionals;
+  // Use only DB data — never fall back to staticProfessionals because the static
+  // list has different IDs than the DB (Vaccaro static id="1" → DB id=3, etc.),
+  // which would cause "click Vaccaro → modal opens Fabiana" bugs on the listing page.
+  const rawProfessionals: ProfessionalData[] = dbProfessionals;
 
   const roleOrder = ["Managing Partner", "Partner", "Of Counsel", "Senior Associate", "Associate", "Trainee"];
   const professionals: ProfessionalData[] = [...rawProfessionals].sort((a, b) => {

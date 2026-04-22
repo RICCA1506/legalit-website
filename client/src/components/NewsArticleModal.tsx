@@ -9,7 +9,6 @@ import { SiLinkedin } from "react-icons/si";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import type { NewsArticle } from "@shared/schema";
-import { professionals as staticProfessionals } from "@/lib/data";
 import { practiceAreasEnhanced } from "@/lib/practiceAreasData";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useLanguage } from "@/lib/i18n";
@@ -42,15 +41,13 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
     if (!name) return null;
     const cleanName = (n: string) => n.replace(/^(Avv\.\s*|Prof\.\s*|Dott\.\s*|Dott\.ssa\s*)/i, '').toLowerCase().trim();
     const cleaned = cleanName(name);
-    const dbMatch = dbProfessionals.find((p: any) => {
+    // Look up only in the DB list. Falling back to staticProfessionals would
+    // return an entry whose id does NOT match the DB id (e.g. Vaccaro is "1"
+    // in static but 3 in DB), causing /professionisti?id=<wrong> → wrong modal.
+    return dbProfessionals.find((p: any) => {
       const pClean = cleanName(p.name);
       return pClean === cleaned || pClean.includes(cleaned) || cleaned.includes(pClean);
-    });
-    if (dbMatch) return dbMatch;
-    return staticProfessionals.find(p => {
-      const pClean = cleanName(p.name);
-      return pClean === cleaned || pClean.includes(cleaned) || cleaned.includes(pClean);
-    });
+    }) ?? null;
   };
 
   const isLegalitAuthor = (name: string | null | undefined) => {
