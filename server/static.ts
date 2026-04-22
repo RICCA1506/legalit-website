@@ -70,10 +70,21 @@ export function serveStatic(app: Express) {
     ? fs.readFileSync(indexHtmlPath, "utf-8")
     : "";
 
+  const hasCanonicalMarker = indexHtml.includes('id="canonical-tag"');
+  console.log(
+    `[static] distPath=${distPath} indexHtmlBytes=${indexHtml.length} canonicalMarker=${hasCanonicalMarker}`,
+  );
+  if (!hasCanonicalMarker) {
+    console.error(
+      "[static] WARNING: built index.html does not contain id=\"canonical-tag\" — canonical injection will be a no-op!",
+    );
+  }
+
   app.use(
     express.static(distPath, {
       maxAge: "1y",
       immutable: true,
+      index: false,
       setHeaders: (res, filePath) => {
         if (filePath.endsWith(".html")) {
           res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -87,6 +98,12 @@ export function serveStatic(app: Express) {
   app.use("/{*path}", (req: Request, res: Response) => {
     const canonical = getCanonicalUrl(req);
     const html = injectCanonical(indexHtml, canonical);
+    if (req.path === "/professionisti" || req.path === "/") {
+      const injected = html.includes(`href="${canonical}"`);
+      console.log(
+        `[static] serve path=${req.path} query=${JSON.stringify(req.query)} canonical=${canonical} injected=${injected}`,
+      );
+    }
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");
