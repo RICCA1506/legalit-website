@@ -6,7 +6,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { slugifyName } from "@shared/slugify";
+import { slugifyName, uniqueSlug } from "@shared/slugify";
 import type { NewsArticle, PartnerInvite, Professional, NewsCategory, NewsletterSubscriber, ContactMessage } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -965,6 +965,14 @@ export default function Admin() {
     setIsProfessionalDialogOpen(true);
   };
 
+  const otherProfessionalSlugs = useMemo(() => {
+    const editingId = editingProfessional?.id;
+    return professionals
+      .filter((p) => p.id !== editingId)
+      .map((p) => (p.slug || slugifyName(p.name)).trim().toLowerCase())
+      .filter((s) => s.length > 0);
+  }, [professionals, editingProfessional]);
+
   const handleProfessionalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!professionalForm.name || !professionalForm.title || !professionalForm.office) {
@@ -980,9 +988,18 @@ export default function Admin() {
       });
       return;
     }
+    const finalSlug = trimmedSlug || slugifyName(professionalForm.name);
+    if (finalSlug && otherProfessionalSlugs.includes(finalSlug)) {
+      toast({
+        title: "Slug già in uso",
+        description: `Lo slug "${finalSlug}" è già usato da un altro professionista. Scegli un valore diverso.`,
+        variant: "destructive",
+      });
+      return;
+    }
     const payload = {
       ...professionalForm,
-      slug: trimmedSlug || slugifyName(professionalForm.name),
+      slug: finalSlug,
     };
     if (editingProfessional) {
       updateProfessionalMutation.mutate({ id: editingProfessional.id, data: payload });
@@ -2768,10 +2785,17 @@ export default function Admin() {
             </div>
 
             {(() => {
-              const trimmedSlug = professionalForm.slug.trim();
+              const trimmedSlug = professionalForm.slug.trim().toLowerCase();
               const derivedSlug = slugifyName(professionalForm.name);
               const previewSlug = trimmedSlug || derivedSlug;
               const slugIsInvalid = trimmedSlug.length > 0 && !SLUG_REGEX.test(trimmedSlug);
+              const slugIsDuplicate =
+                !slugIsInvalid &&
+                previewSlug.length > 0 &&
+                otherProfessionalSlugs.includes(previewSlug);
+              const suggestion = slugIsDuplicate
+                ? uniqueSlug(previewSlug, otherProfessionalSlugs)
+                : null;
               return (
                 <div className="space-y-2">
                   <Label htmlFor="prof-slug">Slug URL</Label>
@@ -2788,22 +2812,39 @@ export default function Admin() {
                       })
                     }
                     placeholder={derivedSlug || "slug-automatico-dal-nome"}
-                    aria-invalid={slugIsInvalid}
+                    aria-invalid={slugIsInvalid || slugIsDuplicate}
                     data-testid="input-professional-slug"
                   />
                   <p
                     className={cn(
                       "text-xs",
-                      slugIsInvalid ? "text-destructive" : "text-muted-foreground",
+                      slugIsInvalid || slugIsDuplicate
+                        ? "text-destructive"
+                        : "text-muted-foreground",
                     )}
                     data-testid="text-professional-slug-preview"
                   >
                     {slugIsInvalid
                       ? "Slug non valido: usa solo lettere minuscole, numeri e trattini."
-                      : previewSlug
-                        ? `Anteprima URL: /professionisti/${previewSlug}`
-                        : "Lo slug verrà generato automaticamente dal nome."}
+                      : slugIsDuplicate
+                        ? `Slug già in uso da un altro professionista.`
+                        : previewSlug
+                          ? `Anteprima URL: /professionisti/${previewSlug}`
+                          : "Lo slug verrà generato automaticamente dal nome."}
                   </p>
+                  {slugIsDuplicate && suggestion && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setProfessionalForm({ ...professionalForm, slug: suggestion })
+                      }
+                      data-testid="button-use-suggested-slug"
+                    >
+                      Usa "{suggestion}"
+                    </Button>
+                  )}
                 </div>
               );
             })()}
@@ -3047,7 +3088,16 @@ export default function Admin() {
               </Button>
               <Button
                 type="submit"
-                disabled={createProfessionalMutation.isPending || updateProfessionalMutation.isPending}
+                disabled={
+                  createProfessionalMutation.isPending ||
+                  updateProfessionalMutation.isPending ||
+                  (() => {
+                    const trimmed = professionalForm.slug.trim().toLowerCase();
+                    const preview = trimmed || slugifyName(professionalForm.name);
+                    if (trimmed && !SLUG_REGEX.test(trimmed)) return true;
+                    return preview.length > 0 && otherProfessionalSlugs.includes(preview);
+                  })()
+                }
                 data-testid="button-submit-professional"
               >
                 {createProfessionalMutation.isPending || updateProfessionalMutation.isPending
