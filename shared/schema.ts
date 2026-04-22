@@ -137,7 +137,11 @@ export type NewsArticle = typeof newsArticles.$inferSelect;
 // Professionals table
 export const professionals = pgTable("professionals", {
   id: serial("id").primaryKey(),
-  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  // Schema-level definition is intentionally nullable so the deploy-time
+  // diff produces a non-destructive `ADD COLUMN`. The column is promoted to
+  // NOT NULL at runtime by `server/migrate.ts#ensureSchema()` after the
+  // backfill step, which is idempotent and safe to re-run.
+  slug: varchar("slug", { length: 255 }).unique(),
   name: varchar("name", { length: 255 }).notNull(),
   title: varchar("title", { length: 100 }).notNull(),
   role: varchar("role", { length: 50 }).default("Associate"),
