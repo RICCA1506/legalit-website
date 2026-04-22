@@ -199,6 +199,35 @@ export async function ensureSchema() {
     await addColumnIfNotExists(pool, 'professionals', 'image_zoom', "INTEGER DEFAULT 100");
     await addColumnIfNotExists(pool, 'news_articles', 'linked_professional_ids', 'TEXT[]');
 
+    // --- professionals.slug rollout (semantic profile URLs) -------------
+    // 1. Add nullable column on existing DBs.
+    // 2. Backfill any NULL/empty value from `name` via slugifyName, dedup with -2/-3 suffix.
+    // 3. Promote to NOT NULL + UNIQUE constraint (idempotent).
+    await addColumnIfNotExists(pool, 'professionals', 'slug', 'VARCHAR(255)');
+    try {
+      const { slugifyName, uniqueSlug } = await import("@shared/slugify");
+      const { rows } = await pool.query<{ id: string; name: string; slug: string | null }>(
+        `SELECT id, name, slug FROM professionals`,
+      );
+      const taken = new Set<string>(
+        rows
+          .map((r) => r.slug)
+          .filter((s): s is string => typeof s === "string" && s.trim().length > 0),
+      );
+      for (const row of rows) {
+        if (typeof row.slug === "string" && row.slug.trim().length > 0) continue;
+        const base = slugifyName(row.name) || `prof-${row.id}`;
+        const finalSlug = uniqueSlug(base, taken);
+        taken.add(finalSlug);
+        await pool.query(`UPDATE professionals SET slug = $1 WHERE id = $2`, [finalSlug, row.id]);
+        console.log(`[migrate] backfilled slug for professional ${row.id} → ${finalSlug}`);
+      }
+      await pool.query(`ALTER TABLE professionals ALTER COLUMN slug SET NOT NULL`);
+    } catch (err) {
+      console.warn("[migrate] slug backfill skipped/partial:", err);
+    }
+    await addUniqueConstraintIfNotExists(pool, 'professionals', 'slug', 'professionals_slug_unique');
+
     console.log("Database schema verified and up to date");
   } catch (err) {
     console.error("FATAL: Error ensuring database schema:", err);
