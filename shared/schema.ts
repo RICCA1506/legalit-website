@@ -168,7 +168,14 @@ export const insertProfessionalSchema = createInsertSchema(professionals)
   // (admin form, scripts, tests). When provided it must still be a valid
   // non-empty string — actual uniqueness is enforced at the storage layer.
   .extend({
-    slug: z.string().min(1).optional(),
+    slug: z
+      .string()
+      .min(1, "Lo slug non può essere vuoto")
+      .regex(
+        /^[a-z0-9-]+$/,
+        "Lo slug può contenere solo lettere minuscole, numeri e trattini",
+      )
+      .optional(),
   });
 
 export type InsertProfessional = z.infer<typeof insertProfessionalSchema>;

@@ -6,6 +6,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import { slugifyName } from "@shared/slugify";
 import type { NewsArticle, PartnerInvite, Professional, NewsCategory, NewsletterSubscriber, ContactMessage } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -89,8 +90,11 @@ const emptyForm: ArticleForm = {
 const offices = officesData.map(o => o.city);
 const titles = ["Managing Partner", "Partner", "Of Counsel", "Senior Associate", "Associate", "Trainee"];
 
+const SLUG_REGEX = /^[a-z0-9-]+$/;
+
 interface ProfessionalForm {
   name: string;
+  slug: string;
   title: string;
   specializations: string[];
   office: string;
@@ -106,6 +110,7 @@ interface ProfessionalForm {
 
 const emptyProfessionalForm: ProfessionalForm = {
   name: "",
+  slug: "",
   title: "",
   specializations: [],
   office: "",
@@ -942,6 +947,7 @@ export default function Admin() {
     setEditingProfessional(professional);
     setProfessionalForm({
       name: professional.name,
+      slug: professional.slug || "",
       title: professional.title,
       specializations: professional.specializations || [],
       office: professional.office,
@@ -965,10 +971,23 @@ export default function Admin() {
       toast({ title: "Campi obbligatori", description: "Compila nome, titolo e sede.", variant: "destructive" });
       return;
     }
+    const trimmedSlug = professionalForm.slug.trim();
+    if (trimmedSlug && !SLUG_REGEX.test(trimmedSlug)) {
+      toast({
+        title: "Slug non valido",
+        description: "Lo slug può contenere solo lettere minuscole, numeri e trattini.",
+        variant: "destructive",
+      });
+      return;
+    }
+    const payload = {
+      ...professionalForm,
+      slug: trimmedSlug || slugifyName(professionalForm.name),
+    };
     if (editingProfessional) {
-      updateProfessionalMutation.mutate({ id: editingProfessional.id, data: professionalForm });
+      updateProfessionalMutation.mutate({ id: editingProfessional.id, data: payload });
     } else {
-      createProfessionalMutation.mutate(professionalForm);
+      createProfessionalMutation.mutate(payload);
     }
   };
 
@@ -2747,6 +2766,47 @@ export default function Admin() {
                 </Select>
               </div>
             </div>
+
+            {(() => {
+              const trimmedSlug = professionalForm.slug.trim();
+              const derivedSlug = slugifyName(professionalForm.name);
+              const previewSlug = trimmedSlug || derivedSlug;
+              const slugIsInvalid = trimmedSlug.length > 0 && !SLUG_REGEX.test(trimmedSlug);
+              return (
+                <div className="space-y-2">
+                  <Label htmlFor="prof-slug">Slug URL</Label>
+                  <Input
+                    id="prof-slug"
+                    value={professionalForm.slug}
+                    onChange={(e) =>
+                      setProfessionalForm({
+                        ...professionalForm,
+                        slug: e.target.value
+                          .toLowerCase()
+                          .replace(/\s+/g, "-")
+                          .replace(/[^a-z0-9-]/g, ""),
+                      })
+                    }
+                    placeholder={derivedSlug || "slug-automatico-dal-nome"}
+                    aria-invalid={slugIsInvalid}
+                    data-testid="input-professional-slug"
+                  />
+                  <p
+                    className={cn(
+                      "text-xs",
+                      slugIsInvalid ? "text-destructive" : "text-muted-foreground",
+                    )}
+                    data-testid="text-professional-slug-preview"
+                  >
+                    {slugIsInvalid
+                      ? "Slug non valido: usa solo lettere minuscole, numeri e trattini."
+                      : previewSlug
+                        ? `Anteprima URL: /professionisti/${previewSlug}`
+                        : "Lo slug verrà generato automaticamente dal nome."}
+                  </p>
+                </div>
+              );
+            })()}
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
