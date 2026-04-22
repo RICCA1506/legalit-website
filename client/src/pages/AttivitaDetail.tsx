@@ -14,6 +14,7 @@ import ProfessionalCard from "@/components/ProfessionalCard";
 import RichText from "@/components/RichText";
 import { renderInlineMd } from "@/lib/markdownUtils";
 import type { NewsArticle, Professional as DbProfessional } from "@shared/schema";
+import { professionalUrl } from "@shared/slugify";
 import { 
   Building2, 
   Scale, 
@@ -204,7 +205,7 @@ export default function AttivitaDetail() {
                       className="cursor-pointer min-w-0 w-[calc(50%-6px)] md:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]"
                     >
                       <button
-                        onClick={() => window.location.href = `/professionisti?id=${professional.id}`}
+                        onClick={() => window.location.href = professionalUrl(professional)}
                         className="w-full min-w-0 text-left"
                         data-testid={`button-professional-${professional.id}`}
                       >

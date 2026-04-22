@@ -9,6 +9,7 @@ import { SiLinkedin } from "react-icons/si";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import type { NewsArticle } from "@shared/schema";
+import { professionalUrl, slugifyName } from "@shared/slugify";
 import { practiceAreasEnhanced } from "@/lib/practiceAreasData";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useLanguage } from "@/lib/i18n";
@@ -63,7 +64,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
     const professional = findProfessionalByName(authorName);
     if (professional) {
       onClose();
-      navigate(`/professionisti?id=${professional.id}`);
+      navigate(professionalUrl(professional));
     }
   };
   if (!article) return null;
@@ -463,7 +464,7 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
                             <div
                               key={pro.id}
                               className={`relative rounded-lg overflow-hidden cursor-pointer aspect-[3/4] bg-muted ${isAuthor ? 'ring-2 ring-primary ring-offset-2' : ''}`}
-                              onClick={() => { onClose(); navigate(`/professionisti?id=${pro.id}`); }}
+                              onClick={() => { onClose(); navigate(professionalUrl(pro)); }}
                               data-testid={`card-linked-pro-${pro.id}`}
                             >
                               {imgUrl && (
@@ -498,9 +499,10 @@ export default function NewsArticleModal({ article, isOpen, onClose }: NewsArtic
                         columns={3}
                         filterByAreas={allAreaIds}
                         highlightAuthor={article.authorName}
-                        onProfessionalClick={(id) => {
+                        onProfessionalClick={(_id, pro) => {
                           onClose();
-                          navigate(`/professionisti?id=${id}`);
+                          if (pro) navigate(professionalUrl(pro));
+                          else navigate("/professionisti");
                         }}
                       />
                     )}

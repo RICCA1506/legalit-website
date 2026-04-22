@@ -5,13 +5,14 @@ import { useLocation } from "wouter";
 import { User, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Professional as DbProfessional } from "@shared/schema";
+import { professionalUrl } from "@shared/slugify";
 import { useLanguage } from "@/lib/i18n";
 interface ProfessionalsReelProps {
   columns: number;
   filterByAreas?: string[];
   filterByIds?: string[];
   highlightAuthor?: string | null;
-  onProfessionalClick?: (id: string | number) => void;
+  onProfessionalClick?: (id: string | number, pro?: { slug?: string | null; name: string }) => void;
   interval?: number;
   decorative?: boolean;
 }
@@ -115,7 +116,7 @@ function ReelSlot({
   tick: number;
   index: number;
   isAuthorCard: boolean;
-  onProfessionalClick?: (id: string | number) => void;
+  onProfessionalClick?: (id: string | number, pro?: { slug?: string | null; name: string }) => void;
   autoT: (text: string) => string;
   decorative?: boolean;
 }) {
@@ -143,9 +144,9 @@ function ReelSlot({
   const handleClick = useCallback(() => {
     if (!settled) return;
     if (onProfessionalClick) {
-      onProfessionalClick(pro.id);
+      onProfessionalClick(pro.id, pro);
     } else {
-      navigate(`/professionisti?id=${pro.id}`);
+      navigate(professionalUrl(pro));
     }
   }, [onProfessionalClick, pro.id, navigate, settled]);
 

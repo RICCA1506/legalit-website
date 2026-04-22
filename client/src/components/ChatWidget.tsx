@@ -3,6 +3,7 @@ import { X, Send, ArrowDown, Building2, User, Phone, Mail, ExternalLink, CheckCi
 import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import { practiceAreasEnhanced } from "@/lib/practiceAreasData";
+import { professionalUrl } from "@shared/slugify";
 import logoSymbol from "@assets/logo_legalit_cropped_(1)_1771133031977.png";
 import corteCassazione from "@assets/optimized/hero-cassazione.webp";
 import * as THREE from "three";
@@ -192,7 +193,7 @@ function DirectLinkCard({ lawyerData, onNavigate }: {
 }) {
   return (
     <button
-      onClick={() => onNavigate(`/professionisti?id=${lawyerData.id}`)}
+      onClick={() => onNavigate(professionalUrl(lawyerData))}
       className="flex items-center gap-3 w-full my-1.5 px-3 py-2.5 rounded-xl text-left transition-all duration-200"
       style={{
         background: "rgba(126, 184, 229, 0.12)",

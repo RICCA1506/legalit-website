@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { SiLinkedin } from "react-icons/si";
 import { Link, useLocation } from "wouter";
 import { practiceAreasEnhanced } from "@/lib/practiceAreasData";
+import { professionalUrl } from "@shared/slugify";
 import { getOutletFromUrl } from "@/lib/pressOutlets";
 import { renderInlineMd } from "@/lib/markdownUtils";
 import {
@@ -185,7 +186,7 @@ export default function News() {
     }
     const professional = findProfessionalByName(authorName);
     if (professional) {
-      navigate(`/professionisti?id=${professional.id}`);
+      navigate(professionalUrl(professional));
     }
   };
 

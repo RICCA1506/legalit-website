@@ -1355,8 +1355,11 @@ ${listItems}
     }
   });
 
-  // Shared renderer for SSR profile pages (used by both ?id=X and /:slug paths).
-  const renderProfessionalSsr = (professional: any, profUrl: string) => {
+  // Shared renderer for SSR profile pages (used by /:slug path).
+  const renderProfessionalSsr = (
+    professional: import("@shared/schema").Professional,
+    profUrl: string,
+  ) => {
       const name = escHtml(professional.name);
       const jobTitle = escHtml(professional.title || "");
       const fullBioRaw = stripMd(professional.bio || professional.fullBio || "");
@@ -1462,23 +1465,16 @@ ${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : "
       const professional = await storage.getProfessional(id);
       if (!professional) return next();
 
-      const ua = (req.headers["user-agent"] || "").toLowerCase();
-      const isCrawler = SSR_CRAWLERS.test(ua);
-
       // Always derive a usable canonical slug — DB column is NOT NULL but we
       // also keep slugifyName(name) as a safety net for any code path that
       // could pass a record with an empty slug.
       const canonicalSlug = professional.slug || slugifyName(professional.name);
 
-      // For human browsers: 301 redirect to the slug URL (preserves SEO
-      // signal and consolidates the canonical URL in browser history).
-      if (!isCrawler) {
-        return res.redirect(301, `/professionisti/${canonicalSlug}`);
-      }
-
-      // For crawlers: serve SSR with canonical pointing to the slug URL.
-      const profUrl = `${SITE_URL}/professionisti/${canonicalSlug}`;
-      res.send(renderProfessionalSsr(professional, profUrl));
+      // True 301 canonicalization for ALL HTML page requests — including
+      // crawlers — so search engines consolidate `?id=X` into the slug URL
+      // rather than indexing two parallel URLs. The slug handler (B1) then
+      // serves the rich SSR HTML to crawlers.
+      return res.redirect(301, `/professionisti/${canonicalSlug}`);
     } catch {
       next();
     }
