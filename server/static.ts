@@ -1,65 +1,49 @@
 import express, { type Express, type Request, type Response } from "express";
 import fs from "fs";
 import path from "path";
+import { storage } from "./storage";
+import { slugifyName } from "@shared/slugify";
+import {
+  SITE_URL,
+  buildProfessionalMeta,
+  extractSlugFromPath,
+  getCanonicalUrl,
+  injectCanonical,
+  injectProfessionalMeta,
+} from "./metaInjection";
 
-const SITE_URL = "https://legalit.it";
-
-function escapeHtmlAttr(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function getPathname(req: Request): string {
+  // In Express 5, req.path inside `app.use("/{*path}", ...)` is relative to
+  // the mount and returns "/". Parse req.originalUrl so we get the absolute
+  // request path regardless of how the middleware was mounted.
+  const raw = req.originalUrl || req.url || "/";
+  const qIdx = raw.indexOf("?");
+  return qIdx === -1 ? raw : raw.slice(0, qIdx);
 }
 
-const SLUG_RE = /^[a-z0-9-]+$/;
-
-function getCanonicalUrl(req: Request): string {
-  const pathname = req.path;
-  // NB: `/professionisti?id=X` is 301-redirected to `/professionisti/{slug}`
-  // by the routes layer before reaching here, so it never produces canonical
-  // HTML. We deliberately do NOT emit a `?id=X` canonical to avoid signalling
-  // a parallel canonical URL to crawlers — slug is the single source of truth.
-  const slugMatch = pathname.match(/^\/professionisti\/([^/]+)\/?$/);
-  if (slugMatch) {
-    const slug = slugMatch[1].toLowerCase();
-    if (SLUG_RE.test(slug)) return `${SITE_URL}/professionisti/${slug}`;
+async function renderIndexHtml(template: string, req: Request): Promise<string> {
+  const pathname = getPathname(req);
+  const slug = extractSlugFromPath(pathname);
+  if (slug) {
+    try {
+      let professional = await storage.getProfessionalBySlug(slug);
+      if (!professional) {
+        const all = await storage.getAllProfessionals().catch(() => []);
+        professional = all.find(p => !p.slug && slugifyName(p.name) === slug);
+      }
+      if (professional) {
+        const profUrl = `${SITE_URL}/professionisti/${professional.slug || slug}`;
+        const meta = buildProfessionalMeta(professional, profUrl);
+        return injectProfessionalMeta(template, meta);
+      }
+    } catch (err) {
+      console.error("[static] professional meta injection failed:", err);
+    }
   }
-  if (pathname === "/" || !pathname) return SITE_URL;
-  return `${SITE_URL}${pathname}`;
+  return injectCanonical(template, getCanonicalUrl(pathname));
 }
 
-function replaceMetaContent(html: string, attr: string, value: string, newContent: string): string {
-  const marker = `${attr}="${value}"`;
-  const pos = html.indexOf(marker);
-  if (pos === -1) return html;
-
-  const tagStart = html.lastIndexOf("<meta", pos);
-  if (tagStart === -1) return html;
-
-  const tagEnd = html.indexOf(">", pos);
-  if (tagEnd === -1) return html;
-
-  const tag = html.slice(tagStart, tagEnd + 1);
-  const updated = tag.replace(/content="[^"]*"/, `content="${newContent}"`);
-  return html.slice(0, tagStart) + updated + html.slice(tagEnd + 1);
-}
-
-function injectCanonical(html: string, canonical: string): string {
-  const CANONICAL_ID = 'id="canonical-tag"';
-  const idPos = html.indexOf(CANONICAL_ID);
-  if (idPos === -1) return html;
-
-  const linkStart = html.lastIndexOf("<link", idPos);
-  if (linkStart === -1) return html;
-
-  const tagEnd = html.indexOf(">", idPos);
-  if (tagEnd === -1) return html;
-
-  const linkTag = html.slice(linkStart, tagEnd + 1);
-  const newLinkTag = linkTag.replace(/href="[^"]*"/, `href="${canonical}"`);
-  let result = html.slice(0, linkStart) + newLinkTag + html.slice(tagEnd + 1);
-
-  result = replaceMetaContent(result, 'property', 'og:url', canonical);
-
-  return result;
-}
+export { renderIndexHtml };
 
 export function serveStatic(app: Express) {
   const distPath = path.resolve(__dirname, "public");
@@ -96,9 +80,8 @@ export function serveStatic(app: Express) {
     }),
   );
 
-  app.use("/{*path}", (req: Request, res: Response) => {
-    const canonical = getCanonicalUrl(req);
-    const html = injectCanonical(indexHtml, canonical);
+  app.use("/{*path}", async (req: Request, res: Response) => {
+    const html = await renderIndexHtml(indexHtml, req);
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");
