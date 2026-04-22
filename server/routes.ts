@@ -189,7 +189,20 @@ Sitemap: https://legalit.it/sitemap.xml`
   </url>`;
     });
 
-    const urls = [...staticUrls, ...professionalUrls].join("\n");
+    const newsUrls = allNews.map(a => {
+      const raw = a.updatedAt || a.createdAt;
+      const lastmod = raw
+        ? new Date(raw).toISOString().split("T")[0]
+        : "2026-01-15";
+      return `  <url>
+    <loc>${SITE_URL}/news?article=${a.id}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>`;
+    });
+
+    const urls = [...staticUrls, ...professionalUrls, ...newsUrls].join("\n");
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
