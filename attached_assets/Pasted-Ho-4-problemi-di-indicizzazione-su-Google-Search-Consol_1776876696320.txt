@@ -1,0 +1,31 @@
+Ho 4 problemi di indicizzazione su Google Search Console che devo fixare. Analizza il codice e implementa tutte le fix necessarie:
+
+**PROBLEMA 1 - Pagina con reindirizzamento (61 pagine, convalida non riuscita)**
+Google vede URL duplicati come https://legalit.it/professionisti-milano/ e https://www.legalit.it/professionisti-milano/. Il sito risponde su ENTRAMBI i domini (legalit.it e www.legalit.it). Aggiungi nel server Express un middleware di redirect 301 che reindirizza TUTTE le richieste da www.legalit.it a legalit.it (senza www). Anche http deve andare a https, ma quello lo gestisce già Replit.
+
+**PROBLEMA 2 - Pagina alternativa con tag canonical (5 pagine, convalida non riuscita)**
+Le seguenti URL hanno un canonical tag che punta a se stesse ma Google le considera alternative:
+- https://legalit.it/professionisti?id=5 → deve redirectare 301 a /professionisti (rimuovere ?id= param)
+- https://legalit.it/attivita → verificare che il canonical sia https://legalit.it/attivita
+- https://legalit.it/avvocato-giovanni-puntarello/1000 → sembra un vecchio URL con ID numerico, deve dare 301 redirect a /professionisti o al profilo corretto
+- https://www.legalit.it/cookies → già coperta dal fix 1 (www redirect)
+- https://www.legalit.it/contatti → già coperta dal fix 1 (www redirect)
+Assicurati che i canonical tag in tutte le pagine React usino https://legalit.it (senza www) come base.
+
+**PROBLEMA 3 - Pagina scansionata ma non indicizzata (3 pagine, convalida non riuscita)**
+- https://www.legalit.it/?et_core_page_resource → questa è una richiesta WordPress residua, deve dare 404 o redirect al fix 1
+- https://www.legalit.it/news/ → già coperta dal fix 1
+- https://www.legalit.it/feed/ → il feed RSS/Atom, se non esiste deve dare 404
+Verifica che /news esista e funzioni, e che /feed dia una risposta appropriata (404 o redirect).
+
+**PROBLEMA 4 - Pagina duplicata, Google ha scelto canonical diversa (1 pagina)**
+- https://legalit.it/attivita/terzo-settore → il canonical tag su questa pagina probabilmente punta a https://legalit.it/attivita invece di se stessa. Verifica e correggi il canonical tag specifico per questa pagina in modo che punti a https://legalit.it/attivita/terzo-settore
+
+**AZIONI RICHIESTE:**
+1. Nel server Express (server/index.ts o simile), aggiungi middleware redirect www→non-www PRIMA di tutti gli altri middleware
+2. Aggiungi redirect 301 per /professionisti?id=:num → /professionisti
+3. Verifica il routing per /avvocato-:slug/:id numerico e aggiusta
+4. Assicurati che il canonical tag dinamico in ogni pagina usi il path corretto (https://legalit.it + pathname senza trailing slash e senza www)
+5. Gestisci /feed e /?et_core_page_resource con 404 appropriati
+
+Dopo le modifiche, fai il deploy.
