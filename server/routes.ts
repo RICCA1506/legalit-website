@@ -178,7 +178,9 @@ Sitemap: https://legalit.it/sitemap.xml`
       const lastmod = raw
         ? new Date(raw).toISOString().split("T")[0]
         : "2026-01-15";
-      const slug = p.slug || `id-${p.id}`;
+      // Defensive: slug is NOT NULL in DB, but fall back to a deterministic
+      // slugified name so we never emit non-resolvable placeholder URLs.
+      const slug = p.slug || slugifyName(p.name);
       return `  <url>
     <loc>${SITE_URL}/professionisti/${slug}</loc>
     <lastmod>${lastmod}</lastmod>
@@ -1421,8 +1423,10 @@ ${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : "
 </html>`;
   };
 
-  // Handler B1: /professionisti/:slug — semantic URL, SSR for crawlers + 301 for browsers to NOTHING
-  // (browsers render the SPA route directly).
+  // Handler B1: /professionisti/:slug — semantic URL.
+  // For crawlers we serve the rich SSR HTML so search engines index name,
+  // bio, and JSON-LD. Human browsers fall through to the SPA which renders
+  // the same modal client-side.
   app.get("/professionisti/:slug", async (req, res, next) => {
     const ua = (req.headers["user-agent"] || "").toLowerCase();
     if (!SSR_CRAWLERS.test(ua)) return next();
@@ -1461,14 +1465,18 @@ ${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : "
       const ua = (req.headers["user-agent"] || "").toLowerCase();
       const isCrawler = SSR_CRAWLERS.test(ua);
 
-      // For human browsers: 301 redirect to the slug URL (preserves SEO signal).
-      if (!isCrawler && professional.slug) {
-        return res.redirect(301, `/professionisti/${professional.slug}`);
+      // Always derive a usable canonical slug — DB column is NOT NULL but we
+      // also keep slugifyName(name) as a safety net for any code path that
+      // could pass a record with an empty slug.
+      const canonicalSlug = professional.slug || slugifyName(professional.name);
+
+      // For human browsers: 301 redirect to the slug URL (preserves SEO
+      // signal and consolidates the canonical URL in browser history).
+      if (!isCrawler) {
+        return res.redirect(301, `/professionisti/${canonicalSlug}`);
       }
 
-      // For crawlers (or legacy rows without a slug): serve SSR with the slug
-      // canonical when available so Google consolidates the URL.
-      const canonicalSlug = professional.slug || slugifyName(professional.name);
+      // For crawlers: serve SSR with canonical pointing to the slug URL.
       const profUrl = `${SITE_URL}/professionisti/${canonicalSlug}`;
       res.send(renderProfessionalSsr(professional, profUrl));
     } catch {

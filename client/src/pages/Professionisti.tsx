@@ -30,6 +30,7 @@ interface ProfessionalData {
   id: number | string;
   name: string;
   title: string;
+  slug?: string | null;
   role?: string | null;
   specializations?: string[] | null;
   office: string;
@@ -77,7 +78,7 @@ function buildPersonSchema(p: ProfessionalData) {
   const imageUrl = p.imageUrl
     ? (p.imageUrl.startsWith("http") ? p.imageUrl : `${SITE_URL}${p.imageUrl}`)
     : undefined;
-  const profSlug = (p as any).slug || slugifyName(p.name);
+  const profSlug = p.slug || slugifyName(p.name);
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -109,7 +110,7 @@ export default function Professionisti() {
       navigate(`/professionisti`, { replace: true });
       return;
     }
-    const profSlug = (prof as any).slug || slugifyName(prof.name);
+    const profSlug = prof.slug || slugifyName(prof.name);
     navigate(`/professionisti/${profSlug}`, { replace: true });
   };
 
@@ -170,7 +171,7 @@ export default function Professionisti() {
       // for any legacy professional missing a slug column value).
       if (professionals.length > 0) {
         const prof = professionals.find((p) => {
-          const pSlug = (p as any).slug || slugifyName(p.name);
+          const pSlug = p.slug || slugifyName(p.name);
           return pSlug === routeSlug;
         });
         setSelectedProfessional(prof ?? null);
@@ -181,7 +182,7 @@ export default function Professionisti() {
       if (professionals.length > 0) {
         const prof = professionals.find(p => String(p.id) === professionalId);
         if (prof) {
-          const profSlug = (prof as any).slug || slugifyName(prof.name);
+          const profSlug = prof.slug || slugifyName(prof.name);
           navigate(`/professionisti/${profSlug}`, { replace: true });
         } else {
           setSelectedProfessional(null);
