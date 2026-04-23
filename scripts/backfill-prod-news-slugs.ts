@@ -15,21 +15,21 @@ async function main() {
   try {
     console.log(`[backfill] mode = ${DRY_RUN ? "DRY-RUN" : "WRITE"}`);
 
-    const colExists = await client.query<{ exists: boolean }>(
+    const colExistsBefore = await client.query<{ exists: boolean }>(
       `SELECT EXISTS (
         SELECT 1 FROM information_schema.columns
-        WHERE table_name = 'news_articles' AND column_name = 'slug'
+        WHERE table_schema = 'public' AND table_name = 'news_articles' AND column_name = 'slug'
       ) AS exists;`,
     );
-    console.log(`[backfill] slug column exists in prod: ${colExists.rows[0].exists}`);
+    console.log(`[backfill] slug column exists in prod: ${colExistsBefore.rows[0].exists}`);
 
     await client.query("BEGIN");
 
-    if (!colExists.rows[0].exists) {
-      const sql = `ALTER TABLE news_articles ADD COLUMN slug VARCHAR(255);`;
-      console.log(`[backfill] ${DRY_RUN ? "WOULD RUN" : "RUN"}: ${sql}`);
-      if (!DRY_RUN) await client.query(sql);
+    const addColSql = `ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS slug VARCHAR(255);`;
+    if (!colExistsBefore.rows[0].exists) {
+      console.log(`[backfill] ${DRY_RUN ? "WOULD RUN (executed inside dry-run tx, will be rolled back)" : "RUN"}: ${addColSql}`);
     }
+    await client.query(addColSql);
 
     const rowsRes = await client.query<{ id: number; title: string; slug: string | null }>(
       `SELECT id, title, slug FROM news_articles ORDER BY id;`,
@@ -81,7 +81,7 @@ async function main() {
     const conRes = await client.query<{ exists: boolean }>(
       `SELECT EXISTS (
         SELECT 1 FROM information_schema.table_constraints
-        WHERE table_name = 'news_articles' AND constraint_name = 'news_articles_slug_unique'
+        WHERE table_schema = 'public' AND table_name = 'news_articles' AND constraint_name = 'news_articles_slug_unique'
       ) AS exists;`,
     );
     if (!conRes.rows[0].exists) {
