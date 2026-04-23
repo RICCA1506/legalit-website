@@ -183,6 +183,7 @@ const downloadVCard = (professional: Professional) => {
 interface RelatedNews {
   id: number;
   title: string;
+  slug?: string | null;
   createdAt: string | null;
 }
 
@@ -508,7 +509,7 @@ export default function ProfessionalModal({ professional, isOpen, onClose, relat
                       {relatedNews.slice(0, 5).map((news) => (
                         <li key={news.id}>
                           <Link 
-                            href={`/news?article=${news.id}`}
+                            href={news.slug ? `/news/${news.slug}` : `/news?article=${news.id}`}
                             className="group flex items-start gap-3 text-muted-foreground hover:text-foreground transition-colors"
                             onClick={onClose}
                             data-testid={`link-news-${news.id}`}

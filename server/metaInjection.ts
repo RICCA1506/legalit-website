@@ -3,6 +3,7 @@ import type { NewsArticle, Professional } from "@shared/schema";
 const SITE_URL = "https://legalit.it";
 const SLUG_RE = /^[a-z0-9-]+$/;
 const PROFESSIONAL_PATH_RE = /^\/professionisti\/([^/]+)\/?$/;
+const NEWS_ARTICLE_PATH_RE = /^\/news\/([^/]+)\/?$/;
 
 function escapeHtmlAttr(s: string): string {
   return s
@@ -37,9 +38,18 @@ export function extractSlugFromPath(pathname: string): string | null {
   return SLUG_RE.test(slug) ? slug : null;
 }
 
+export function extractNewsSlugFromPath(pathname: string): string | null {
+  const m = pathname.match(NEWS_ARTICLE_PATH_RE);
+  if (!m) return null;
+  const slug = m[1].toLowerCase();
+  return SLUG_RE.test(slug) ? slug : null;
+}
+
 export function getCanonicalUrl(pathname: string): string {
   const slug = extractSlugFromPath(pathname);
   if (slug) return `${SITE_URL}/professionisti/${slug}`;
+  const newsSlug = extractNewsSlugFromPath(pathname);
+  if (newsSlug) return `${SITE_URL}/news/${newsSlug}`;
   if (pathname === "/" || !pathname) return SITE_URL;
   return `${SITE_URL}${pathname}`;
 }

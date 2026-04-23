@@ -67,6 +67,7 @@ export interface IStorage {
   // News article operations
   getAllNewsArticles(): Promise<NewsArticle[]>;
   getNewsArticle(id: number): Promise<NewsArticle | undefined>;
+  getNewsArticleBySlug(slug: string): Promise<NewsArticle | undefined>;
   createNewsArticle(article: InsertNewsArticle): Promise<NewsArticle>;
   updateNewsArticle(id: number, article: Partial<InsertNewsArticle>): Promise<NewsArticle | undefined>;
   deleteNewsArticle(id: number): Promise<boolean>;
@@ -251,15 +252,46 @@ export class DatabaseStorage implements IStorage {
     return article;
   }
 
+  async getNewsArticleBySlug(slug: string): Promise<NewsArticle | undefined> {
+    const [article] = await db.select().from(newsArticles).where(eq(newsArticles.slug, slug));
+    return article;
+  }
+
+  async ensureUniqueArticleSlug(base: string, excludeId?: number): Promise<string> {
+    const all = await db.select({ slug: newsArticles.slug, id: newsArticles.id }).from(newsArticles);
+    const taken = new Set(
+      all
+        .filter(r => r.slug && (excludeId === undefined || r.id !== excludeId))
+        .map(r => r.slug as string),
+    );
+    if (!taken.has(base)) return base;
+    let n = 2;
+    while (taken.has(`${base}-${n}`)) n++;
+    return `${base}-${n}`;
+  }
+
   async createNewsArticle(article: InsertNewsArticle): Promise<NewsArticle> {
-    const [newArticle] = await db.insert(newsArticles).values(article).returning();
+    const requested = article.slug?.trim();
+    let base = requested ? slugifyName(requested) : slugifyName(article.title);
+    if (!base) base = slugifyName(article.title) || `articolo-${Date.now()}`;
+    const slug = await this.ensureUniqueArticleSlug(base);
+    const [newArticle] = await db.insert(newsArticles).values({ ...article, slug }).returning();
     return newArticle;
   }
 
   async updateNewsArticle(id: number, article: Partial<InsertNewsArticle>): Promise<NewsArticle | undefined> {
+    const patch: Partial<InsertNewsArticle> = { ...article };
+    if (patch.slug) {
+      patch.slug = await this.ensureUniqueArticleSlug(slugifyName(patch.slug), id);
+    } else if (patch.title) {
+      // Title changed but slug not explicitly provided: keep existing slug
+      // stable to preserve external links. Slug only changes when admin
+      // sets it explicitly.
+      delete patch.slug;
+    }
     const [updated] = await db
       .update(newsArticles)
-      .set({ ...article, updatedAt: new Date() })
+      .set({ ...patch, updatedAt: new Date() })
       .where(eq(newsArticles.id, id))
       .returning();
     return updated;

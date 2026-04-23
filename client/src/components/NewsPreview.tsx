@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { articleUrl } from "@shared/slugify";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -122,6 +123,22 @@ function CurtainNewsCard({ article, onClick, autoT, t }: {
 export default function NewsPreview() {
   const { t, autoT } = useLanguage();
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
+  const [, navigate] = useLocation();
+
+  const openArticle = (article: NewsArticle) => {
+    setSelectedArticle(article);
+    const target = articleUrl(article);
+    if (window.location.pathname + window.location.search !== target) {
+      navigate(target);
+    }
+  };
+
+  const closeArticle = () => {
+    setSelectedArticle(null);
+    if (window.location.pathname.startsWith("/news/")) {
+      navigate("/", { replace: true });
+    }
+  };
 
   const { data: newsArticles = [], isLoading } = useQuery<NewsArticle[]>({
     queryKey: ["/api/news"],
@@ -192,7 +209,7 @@ export default function NewsPreview() {
             >
               <CurtainNewsCard
                 article={article}
-                onClick={() => setSelectedArticle(article)}
+                onClick={() => openArticle(article)}
                 autoT={autoT}
                 t={t}
               />
@@ -204,7 +221,7 @@ export default function NewsPreview() {
       <NewsArticleModal
         article={selectedArticle}
         isOpen={!!selectedArticle}
-        onClose={() => setSelectedArticle(null)}
+        onClose={closeArticle}
       />
     </section>
   );

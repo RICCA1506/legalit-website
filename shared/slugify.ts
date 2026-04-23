@@ -21,3 +21,8 @@ export function professionalUrl(p: { slug?: string | null; name: string }): stri
   const slug = (p.slug && p.slug.trim()) || slugifyName(p.name);
   return `/professionisti/${slug}`;
 }
+
+export function articleUrl(a: { slug?: string | null; title: string; id?: number }): string {
+  const slug = (a.slug && a.slug.trim()) || slugifyName(a.title) || (a.id ? `articolo-${a.id}` : "");
+  return `/news/${slug}`;
+}

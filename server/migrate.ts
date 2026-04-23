@@ -228,6 +228,36 @@ export async function ensureSchema() {
     }
     await addUniqueConstraintIfNotExists(pool, 'professionals', 'slug', 'professionals_slug_unique');
 
+    // --- news_articles.slug rollout (semantic article URLs) -------------
+    // 1. Add nullable column on existing DBs.
+    // 2. Backfill any NULL/empty value from `title` via slugifyName,
+    //    deduplicate with -2/-3 suffix.
+    // 3. Promote to NOT NULL + UNIQUE constraint (idempotent).
+    await addColumnIfNotExists(pool, 'news_articles', 'slug', 'VARCHAR(255)');
+    try {
+      const { slugifyName, uniqueSlug } = await import("@shared/slugify");
+      const { rows } = await pool.query<{ id: number; title: string; slug: string | null }>(
+        `SELECT id, title, slug FROM news_articles`,
+      );
+      const taken = new Set<string>(
+        rows
+          .map((r) => r.slug)
+          .filter((s): s is string => typeof s === "string" && s.trim().length > 0),
+      );
+      for (const row of rows) {
+        if (typeof row.slug === "string" && row.slug.trim().length > 0) continue;
+        const base = slugifyName(row.title) || `articolo-${row.id}`;
+        const finalSlug = uniqueSlug(base, taken);
+        taken.add(finalSlug);
+        await pool.query(`UPDATE news_articles SET slug = $1 WHERE id = $2`, [finalSlug, row.id]);
+        console.log(`[migrate] backfilled slug for news article ${row.id} → ${finalSlug}`);
+      }
+      await pool.query(`ALTER TABLE news_articles ALTER COLUMN slug SET NOT NULL`);
+    } catch (err) {
+      console.warn("[migrate] news slug backfill skipped/partial:", err);
+    }
+    await addUniqueConstraintIfNotExists(pool, 'news_articles', 'slug', 'news_articles_slug_unique');
+
     console.log("Database schema verified and up to date");
   } catch (err) {
     console.error("FATAL: Error ensuring database schema:", err);

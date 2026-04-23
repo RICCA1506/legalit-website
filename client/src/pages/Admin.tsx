@@ -6,7 +6,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { slugifyName, uniqueSlug } from "@shared/slugify";
+import { articleUrl as buildArticleUrl, slugifyName, uniqueSlug } from "@shared/slugify";
 import type { NewsArticle, PartnerInvite, Professional, NewsCategory, NewsletterSubscriber, ContactMessage } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -1376,7 +1376,7 @@ export default function Admin() {
                             size="sm"
                             onClick={(e) => {
                               e.stopPropagation();
-                              const url = `${window.location.origin}/news?article=${article.id}`;
+                              const url = `${window.location.origin}${buildArticleUrl(article)}`;
                               navigator.clipboard.writeText(url);
                               toast({ title: "Link copiato!", description: "Il link all'articolo è stato copiato negli appunti." });
                             }}
@@ -1389,7 +1389,7 @@ export default function Admin() {
                             size="sm"
                             onClick={(e) => {
                               e.stopPropagation();
-                              const articleUrl = `${window.location.origin}/news?article=${article.id}`;
+                              const articleUrl = `${window.location.origin}${buildArticleUrl(article)}`;
                               const postText = `${article.linkedinSummary || article.excerpt || article.title}\n\n${articleUrl}`;
                               const linkedinPostUrl = `https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(postText)}`;
                               window.open(linkedinPostUrl, '_blank');
@@ -1618,7 +1618,7 @@ export default function Admin() {
                                       </Button>
                                       <Button variant="ghost" size="icon" onClick={(e) => {
                                         e.stopPropagation();
-                                        const url = `${window.location.origin}/news?article=${art.id}`;
+                                        const url = `${window.location.origin}${buildArticleUrl(art)}`;
                                         window.open(url, '_blank');
                                       }} data-testid={`area-view-article-${art.id}`}>
                                         <ExternalLink className="h-3.5 w-3.5" />

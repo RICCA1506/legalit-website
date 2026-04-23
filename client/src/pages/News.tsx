@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Calendar, ArrowRight, Clock, ArrowUpDown, Filter, ExternalLink, Search, ChevronLeft, ChevronRight, Newspaper, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SiLinkedin } from "react-icons/si";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useRoute } from "wouter";
 import { practiceAreasEnhanced } from "@/lib/practiceAreasData";
-import { professionalUrl } from "@shared/slugify";
+import { articleUrl, professionalUrl, slugifyName } from "@shared/slugify";
 import { getOutletFromUrl } from "@/lib/pressOutlets";
 import { renderInlineMd } from "@/lib/markdownUtils";
 import {
@@ -83,18 +83,59 @@ export default function News() {
   });
 
   const linkedInSentinelRef = useLinkedInSentinel();
+  const [, navigate] = useLocation();
+  const [matchSlug, slugParams] = useRoute("/news/:slug");
+  const slugFromUrl = matchSlug ? slugParams?.slug : undefined;
 
+  // Resolve article from URL: prefer slug-based /news/{slug} but keep
+  // legacy ?article=N working for any in-flight links until 301 redirects
+  // propagate everywhere.
   useEffect(() => {
     if (newsArticles.length === 0) return;
+    if (slugFromUrl) {
+      const bySlug = newsArticles.find(a => {
+        const aSlug = (a.slug && a.slug.trim()) || slugifyName(a.title);
+        return aSlug === slugFromUrl;
+      });
+      if (bySlug) {
+        setSelectedArticle(bySlug);
+        return;
+      }
+    }
     const params = new URLSearchParams(window.location.search);
     const articleId = params.get("article");
     if (articleId) {
       const article = newsArticles.find(a => a.id === Number(articleId));
       if (article) {
         setSelectedArticle(article);
+        // Replace legacy URL with the slug-based one in the address bar so
+        // sharing/refreshing always uses the canonical URL.
+        const target = articleUrl(article);
+        if (window.location.pathname + window.location.search !== target) {
+          window.history.replaceState(null, "", target);
+        }
       }
     }
-  }, [newsArticles]);
+  }, [newsArticles, slugFromUrl]);
+
+  // When the modal closes (via the X button or backdrop), restore the
+  // /news listing URL so the address bar reflects the visible page.
+  const handleModalClose = () => {
+    setSelectedArticle(null);
+    if (window.location.pathname.startsWith("/news/")) {
+      navigate("/news", { replace: true });
+    }
+  };
+
+  // When opening an article via card click, push the slug URL so the
+  // address bar updates and the browser back button returns to /news.
+  const openArticle = (article: NewsArticle) => {
+    setSelectedArticle(article);
+    const target = articleUrl(article);
+    if (window.location.pathname + window.location.search !== target) {
+      navigate(target);
+    }
+  };
 
   const studioNews = newsArticles.filter(a => {
     const type = a.newsType || "studio";
@@ -153,8 +194,6 @@ export default function News() {
     setStudioPage(1);
   };
 
-  const [, navigate] = useLocation();
-
   const findProfessionalByName = (name: string | null | undefined) => {
     if (!name) return null;
     const cleanName = (n: string) => n.replace(/^(Avv\.\s*|Prof\.\s*|Dott\.\s*|Dott\.ssa\s*)/i, '').toLowerCase().trim();
@@ -194,7 +233,7 @@ export default function News() {
     return (
       <Card
         className="group overflow-hidden hover-elevate active-elevate-2 cursor-pointer border-0 bg-card h-full flex flex-col"
-        onClick={() => setSelectedArticle(article)}
+        onClick={() => openArticle(article)}
         data-testid={`card-news-${article.id}`}
       >
         <div
@@ -343,7 +382,7 @@ export default function News() {
     return (
       <Card
         className="group overflow-hidden hover-elevate active-elevate-2 cursor-pointer border-0 bg-card h-full flex flex-col"
-        onClick={() => setSelectedArticle(article)}
+        onClick={() => openArticle(article)}
         data-testid={`card-press-${article.id}`}
       >
         {/* Outlet masthead */}
@@ -708,7 +747,7 @@ export default function News() {
       <NewsArticleModal
         article={selectedArticle}
         isOpen={!!selectedArticle}
-        onClose={() => setSelectedArticle(null)}
+        onClose={handleModalClose}
       />
     </div>
   );

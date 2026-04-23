@@ -99,6 +99,7 @@ function Router() {
         <Route path="/professionisti/:slug" component={Professionisti} />
         <Route path="/sedi" component={Sedi} />
         <Route path="/news" component={News} />
+        <Route path="/news/:slug" component={News} />
         <Route path="/contatti" component={Contatti} />
         <Route path="/area-riservata" component={Admin} />
         <Route path="/login" component={Login} />

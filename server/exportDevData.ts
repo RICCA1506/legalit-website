@@ -16,7 +16,7 @@ export async function exportDevData() {
     );
 
     const newsResult = await client.query(
-      "SELECT id, title, content, excerpt, category, image_url, image_position, image_zoom, read_time, author_id, author_name, created_at, updated_at, document_url, document_name, news_type, macro_category, micro_category, linkedin_url, linked_professional_id, linked_professional_ids, linked_practice_area, tags, linkedin_summary FROM news_articles ORDER BY id"
+      "SELECT id, title, content, excerpt, category, image_url, image_position, image_zoom, read_time, author_id, author_name, created_at, updated_at, document_url, document_name, news_type, macro_category, micro_category, linkedin_url, linked_professional_id, linked_professional_ids, linked_practice_area, tags, linkedin_summary, slug FROM news_articles ORDER BY id"
     );
 
     const categoriesResult = await client.query(

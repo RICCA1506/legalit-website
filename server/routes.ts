@@ -194,8 +194,11 @@ Sitemap: https://legalit.it/sitemap.xml`
       const lastmod = raw
         ? new Date(raw).toISOString().split("T")[0]
         : "2026-01-15";
+      // Defensive: slug is NOT NULL in DB, but fall back to a deterministic
+      // slugified title so we never emit non-resolvable URLs.
+      const slug = a.slug || slugifyName(a.title) || `articolo-${a.id}`;
       return `  <url>
-    <loc>${SITE_URL}/news?article=${a.id}</loc>
+    <loc>${SITE_URL}/news/${slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1550,10 +1553,10 @@ ${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : "
     next();
   });
 
-  // /news?article=N — validate ID and set 404 status for missing articles.
-  // The unified meta-injection pipeline in server/static.ts handles meta tags
-  // + canonical for both browsers and crawlers, so no separate crawler HTML
-  // is needed. We just intercept invalid IDs to avoid soft-404s.
+  // /news?article=N — legacy URL. 301 redirect to the slug-based URL
+  // (/news/{slug}) so we keep all external links and old sitemap entries
+  // working. If the article does not exist, set 404 status and let the
+  // SPA render its not-found state.
   app.get("/news", async (req, res, next) => {
     const articleQuery = req.query.article;
     if (!articleQuery) return next();
@@ -1564,6 +1567,29 @@ ${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : "
     }
     try {
       const article = await storage.getNewsArticle(id);
+      if (!article) {
+        res.status(404);
+        return next();
+      }
+      const slug = article.slug || slugifyName(article.title) || `articolo-${article.id}`;
+      return res.redirect(301, `/news/${slug}`);
+    } catch {
+      // On storage error, let the SPA render normally.
+    }
+    next();
+  });
+
+  // /news/{slug} — validate that the slug resolves to an article, otherwise
+  // set 404 status so crawlers don't see a soft-404 200. The SPA still
+  // renders so users see the news layout with a friendly empty state.
+  app.get("/news/:slug", async (req, res, next) => {
+    const slug = String(req.params.slug || "").trim().toLowerCase();
+    if (!/^[a-z0-9-]+$/.test(slug)) {
+      res.status(404);
+      return next();
+    }
+    try {
+      const article = await storage.getNewsArticleBySlug(slug);
       if (!article) res.status(404);
     } catch {
       // On storage error, let the SPA render normally.

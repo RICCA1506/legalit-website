@@ -267,6 +267,7 @@ export default function Professionisti() {
       .map(article => ({
         id: article.id,
         title: article.title,
+        slug: article.slug ?? null,
         createdAt: article.createdAt ? String(article.createdAt) : null,
       }));
   };

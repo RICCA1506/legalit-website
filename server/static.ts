@@ -7,6 +7,7 @@ import {
   SITE_URL,
   buildArticleMeta,
   buildProfessionalMeta,
+  extractNewsSlugFromPath,
   extractSlugFromPath,
   getCanonicalUrl,
   injectCanonical,
@@ -42,6 +43,26 @@ async function renderIndexHtml(template: string, req: Request): Promise<string> 
     }
   }
 
+  // /news/{slug} — preferred semantic URL. Resolve the article and inject
+  // its meta tags + canonical for browsers and crawlers.
+  const newsSlug = extractNewsSlugFromPath(pathname);
+  if (newsSlug) {
+    try {
+      const article = await storage.getNewsArticleBySlug(newsSlug);
+      if (article) {
+        const canonicalSlug = article.slug || newsSlug;
+        const articleHref = `${SITE_URL}/news/${canonicalSlug}`;
+        const meta = buildArticleMeta(article, articleHref);
+        return injectProfessionalMeta(template, meta);
+      }
+    } catch (err) {
+      console.error("[static] news article (slug) meta injection failed:", err);
+    }
+  }
+
+  // Legacy: /news?article=N may still hit static.ts in edge cases (the
+  // express handler in routes.ts normally 301-redirects first). Inject
+  // canonical pointing to the slug URL so crawlers see the correct one.
   if (pathname === "/news" || pathname === "/news/") {
     const articleQuery = req.query?.article;
     const articleIdRaw = Array.isArray(articleQuery) ? articleQuery[0] : articleQuery;
@@ -50,8 +71,9 @@ async function renderIndexHtml(template: string, req: Request): Promise<string> 
       try {
         const article = await storage.getNewsArticle(articleId);
         if (article) {
-          const articleUrl = `${SITE_URL}/news?article=${article.id}`;
-          const meta = buildArticleMeta(article, articleUrl);
+          const slug = article.slug || slugifyName(article.title) || `articolo-${article.id}`;
+          const articleHref = `${SITE_URL}/news/${slug}`;
+          const meta = buildArticleMeta(article, articleHref);
           return injectProfessionalMeta(template, meta);
         }
       } catch (err) {

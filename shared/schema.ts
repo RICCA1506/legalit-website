@@ -81,6 +81,10 @@ export type InsertAuditLog = typeof auditLogs.$inferInsert;
 // News articles table
 export const newsArticles = pgTable("news_articles", {
   id: serial("id").primaryKey(),
+  // Slug is nullable in the schema definition so deploy-time diffs produce a
+  // non-destructive ADD COLUMN. It is backfilled and promoted to NOT NULL +
+  // UNIQUE at runtime in `server/migrate.ts#ensureSchema()`.
+  slug: varchar("slug", { length: 255 }).unique(),
   title: varchar("title", { length: 255 }).notNull(),
   content: text("content").notNull(),
   excerpt: varchar("excerpt", { length: 500 }),
@@ -125,11 +129,25 @@ export const insertNewsCategorySchema = createInsertSchema(newsCategories).omit(
 export type InsertNewsCategory = z.infer<typeof insertNewsCategorySchema>;
 export type NewsCategory = typeof newsCategories.$inferSelect;
 
-export const insertNewsArticleSchema = createInsertSchema(newsArticles).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const insertNewsArticleSchema = createInsertSchema(newsArticles)
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  // Slug is auto-generated server-side from `title` when omitted by clients.
+  // When provided it must be a valid lowercase ascii slug; uniqueness is
+  // enforced at the storage layer.
+  .extend({
+    slug: z
+      .string()
+      .min(1, "Lo slug non può essere vuoto")
+      .regex(
+        /^[a-z0-9-]+$/,
+        "Lo slug può contenere solo lettere minuscole, numeri e trattini",
+      )
+      .optional(),
+  });
 
 export type InsertNewsArticle = z.infer<typeof insertNewsArticleSchema>;
 export type NewsArticle = typeof newsArticles.$inferSelect;
