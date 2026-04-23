@@ -18,6 +18,17 @@ function parseIntId(raw: string): number | null {
   return Number.isNaN(n) ? null : n;
 }
 
+function stripHtmlTags(text: string): string {
+  return text.replace(/<[^>]*>/g, '');
+}
+
+function sanitizeProfessionalBio(data: Record<string, unknown>): Record<string, unknown> {
+  if (typeof data.fullBio === 'string') {
+    return { ...data, fullBio: stripHtmlTags(data.fullBio) };
+  }
+  return data;
+}
+
 const practiceAreaKeywords: Record<string, string[]> = {
   "diritto-lavoro": ["diritto del lavoro", "giuslavoristic", "lavoratore", "lavoratori", "lavoratrice", "licenziamento", "licenziamenti", "previdenziale", "sindacale", "sindacato", "contratto collettivo", "ccnl", "relazioni industriali", "retribuzione", "tfr", "inps", "inail", "cassa integrazione", "mobbing", "demansionamento", "jobs act", "smart working", "lavoro agile", "welfare aziendale", "sicurezza sul lavoro", "rapporto di lavoro", "datore di lavoro"],
   "diritto-penale": ["diritto penale", "procedimento penale", "processo penale", "codice penale", "cassazione penale", "tribunale penale", "reato", "reati", "imputato", "imputazione", "condanna", "assoluzione", "pubblico ministero", "custodia cautelare", "reclusione", "querela", "delitto"],
@@ -499,7 +510,7 @@ ${urls}
         return res.status(400).json({ message: "Invalid professional data", errors: parsed.error.errors });
       }
       
-      const professional = await storage.createProfessional(parsed.data);
+      const professional = await storage.createProfessional(sanitizeProfessionalBio(parsed.data) as typeof parsed.data);
       res.status(201).json(professional);
       exportDbToDevData().catch(e => console.error("[Export] Error:", e));
     } catch (error) {
@@ -519,7 +530,7 @@ ${urls}
         return res.status(400).json({ message: "Invalid professional data", errors: parsed.error.errors });
       }
       
-      const professional = await storage.updateProfessional(id, parsed.data);
+      const professional = await storage.updateProfessional(id, sanitizeProfessionalBio(parsed.data) as typeof parsed.data);
       if (!professional) {
         return res.status(404).json({ message: "Professional not found" });
       }
