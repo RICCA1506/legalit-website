@@ -36,7 +36,11 @@ The project uses a bidirectional data sync mechanism between the PostgreSQL data
 
 ### Module Structure
 
-The project is organized into `client/` (UI components, pages, utilities, hooks), `server/` (Express app, routes, storage, authentication, database connection), `shared/` (database schema definitions, type exports), and `script/` (build orchestration).
+The project is organized into `client/` (UI components, pages, utilities, hooks), `server/` (Express app, routes, storage, authentication, database connection), `shared/` (database schema definitions, type exports), `script/` (build orchestration), and `tests/` (regression tests).
+
+### SEO Regression Tests
+
+`tests/seo.test.mjs` is a Node built-in test runner suite that boots the production bundle (`dist/index.cjs`, building it on demand if stale) on a free port in `NODE_ENV=production` and asserts the SEO contract for the legacy/canonical routes: `/news?article=<id>` 301-redirects to `/news/<slug>` (no meta-refresh in either response, final SPA carries canonical to `https://legalit.it/news/<slug>`), unknown news IDs and practice areas return 404, `/avvocato-<slug>` 301-redirects to the professionals area, `/wp-login.php` returns 410, and `/?p=123` 301-redirects to `/`. Run via `bash scripts/test-seo.sh` (or directly with `node --test tests/seo.test.mjs`).
 
 ### Security Features
 
