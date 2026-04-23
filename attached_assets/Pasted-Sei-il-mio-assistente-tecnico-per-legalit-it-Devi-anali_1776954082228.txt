@@ -1,0 +1,74 @@
+Sei il mio assistente tecnico per legalit.it.
+Devi analizzare il sito e il codice (in particolare sitemap XML e canonical) per individuare e correggere errori strutturali che impattano l’indicizzazione SEO.
+
+Parti da questi errori già osservati:
+
+Alcuni URL /professionisti/{slug} risultano “sconosciuti a Google” perché:
+
+non sono presenti in nessuna sitemap XML
+
+hanno poco o nessun linking interno.
+
+Alcuni URL /attivita/{slug} hanno canonical sbagliato:
+
+la pagina attività dichiara come canonical la homepage (/) invece di sé stessa.
+
+Alcuni URL di news tipo /news?article=N hanno canonical che punta alla lista news (/news) invece che all’articolo specifico (/news?article=N).
+
+Il tuo compito è:
+
+Mappare la situazione attuale
+
+Elenca tutte le sitemap attive (sitemap index e sotto‑sitemap) e verifica che contengano solo URL canonici e realmente esistenti.
+
+Per le sezioni /professionisti/, /attivita/, /news individua quali URL sono:
+
+non presenti in sitemap
+
+presenti in sitemap ma con canonical diverso
+
+presenti con parametri o versioni non canoniche.
+
+Correggere i pattern di errore
+
+Per /professionisti/:
+
+includi in sitemap tutti i profili che devono essere indicizzati
+
+assicurati che il canonical di ogni profilo punti a sé stesso e che ci sia un minimo di internal linking.
+
+Per /attivita/{slug}:
+
+correggi i canonical che puntano alla homepage → devono puntare all’URL attività corretto
+
+verifica che la sitemap elenchi solo le URL attività canoniche (niente homepage al posto loro).
+
+Per /news e /news?article=N:
+
+fai in modo che ogni articolo abbia canonical verso l’URL definitivo (slug o query, a seconda della scelta architetturale)
+
+allinea le sitemap perché contengano solo quegli URL canonici, non la lista generica.
+
+Cercare altri errori simili
+
+Una volta sistemati questi casi, fai un audit esteso su tutto il sito per vedere se gli stessi problemi (URL non in sitemap, canonical che punta ad altre pagine, URL non canonici nelle sitemap) si ripetono su:
+
+altre sezioni
+
+varianti http/https o www/non‑www
+
+pagine con parametri.
+
+Output richiesto
+
+Lista sintetica degli errori trovati, raggruppati per tipo (es. “profili fuori da sitemap”, “attività con canonical homepage”, “news con canonical su lista”, “non‑canonical in sitemap”, ecc.).
+
+Per ogni gruppo, cosa hai cambiato (template, generatori sitemap, configurazione canonical).
+
+Conferma finale che:
+
+le sitemap ora contengono solo URL canonici e importanti
+
+i canonical delle pagine chiave /professionisti/, /attivita/, /news puntano alla versione corretta.
+
+Quando questo audit sarà completato e il codice deployato, useremo poi GSC (Controllo URL + Richiedi indicizzazione) solo per spingere i cluster di pagine già “pulite”.

@@ -1550,47 +1550,35 @@ ${emailHtml ? `<p>Email: <a href="mailto:${emailHtml}">${emailHtml}</a></p>` : "
     next();
   });
 
+  // /news?article=N — validate ID and set 404 status for missing articles.
+  // The unified meta-injection pipeline in server/static.ts handles meta tags
+  // + canonical for both browsers and crawlers, so no separate crawler HTML
+  // is needed. We just intercept invalid IDs to avoid soft-404s.
   app.get("/news", async (req, res, next) => {
-    const articleId = req.query.article;
-    if (!articleId) return next();
-
-    const ua = (req.headers["user-agent"] || "").toLowerCase();
-    const isCrawler = /linkedinbot|facebookexternalhit|twitterbot|whatsapp|telegram|slackbot|discordbot|googlebot/i.test(ua);
-    if (!isCrawler) return next();
-
-    try {
-      const article = await storage.getNewsArticle(Number(articleId));
-      if (!article) return next();
-
-      const siteUrl = `https://legalit.it`;
-      const articleUrl = `${siteUrl}/news?article=${article.id}`;
-      const title = escHtml(article.title);
-      const description = escHtml((article.excerpt || article.content.slice(0, 200)));
-      const image = article.imageUrl ? (article.imageUrl.startsWith("http") ? article.imageUrl : `${siteUrl}${article.imageUrl}`) : `${siteUrl}/favicon.png`;
-
-      res.send(`<!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8" />
-<meta property="og:type" content="article" />
-<meta property="og:title" content="${title}" />
-<meta property="og:description" content="${description}" />
-<meta property="og:image" content="${image}" />
-<meta property="og:url" content="${articleUrl}" />
-<meta property="og:site_name" content="LEGALIT - Società tra Avvocati" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="${title}" />
-<meta name="twitter:description" content="${description}" />
-<meta name="twitter:image" content="${image}" />
-<title>${title} - LEGALIT</title>
-<meta name="description" content="${description}" />
-<meta http-equiv="refresh" content="0;url=${articleUrl}" />
-</head>
-<body><p>Redirecting to <a href="${articleUrl}">${title}</a></p></body>
-</html>`);
-    } catch {
-      next();
+    const articleQuery = req.query.article;
+    if (!articleQuery) return next();
+    const id = parseIntId(String(Array.isArray(articleQuery) ? articleQuery[0] : articleQuery));
+    if (!id) {
+      res.status(404);
+      return next();
     }
+    try {
+      const article = await storage.getNewsArticle(id);
+      if (!article) res.status(404);
+    } catch {
+      // On storage error, let the SPA render normally.
+    }
+    next();
+  });
+
+  // /attivita/{slug} — validate against the known practice-area slugs so
+  // unknown URLs respond 404 instead of soft-404 200.
+  app.get("/attivita/:slug", (req, res, next) => {
+    const slug = String(req.params.slug || "").trim().toLowerCase();
+    if (!PRACTICE_AREA_SLUGS.includes(slug)) {
+      res.status(404);
+    }
+    next();
   });
 
   // Gemini AI Chatbot route
