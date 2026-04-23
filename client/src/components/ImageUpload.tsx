@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { getCsrfToken } from "@/lib/queryClient";
 import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -82,10 +83,12 @@ export function ImageUpload({
       const formData = new FormData();
       formData.append("file", file);
 
+      const csrfToken = await getCsrfToken();
       const response = await fetch("/api/upload-file", {
         method: "POST",
         body: formData,
         credentials: "include",
+        headers: { "X-CSRF-Token": csrfToken },
       });
 
       if (!response.ok) {

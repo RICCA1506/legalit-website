@@ -7,7 +7,7 @@ import rateLimit from "express-rate-limit";
 import { generateSecret as otpGenerateSecret, generateURI, verify as otpVerify } from "otplib";
 import QRCode from "qrcode";
 import { storage, hashToken } from "./storage";
-import { loginSchema, registerSchema, twoFactorSetupSchema, twoFactorVerifySchema } from "@shared/schema";
+import { loginSchema, registerSchema, twoFactorSetupSchema, twoFactorVerifySchema, passwordSchema } from "@shared/schema";
 import { sendPasswordResetEmail, sendLoginCodeEmail } from "./email";
 
 const BCRYPT_ROUNDS = 12;
@@ -108,6 +108,18 @@ export async function setupAuth(app: Express) {
     next();
   });
 
+  // CSRF validation middleware for all state-changing requests on authenticated sessions
+  const CSRF_SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+  app.use((req, res, next) => {
+    if (CSRF_SAFE_METHODS.has(req.method)) return next();
+    if (!req.session.userId) return next();
+    const token = req.headers["x-csrf-token"] as string | undefined;
+    if (!token || token !== req.session.csrfToken) {
+      return res.status(403).json({ message: "Richiesta non valida: token CSRF mancante o non corretto" });
+    }
+    next();
+  });
+
   // CSRF token endpoint - get a token for forms
   app.get("/api/auth/csrf-token", (req, res) => {
     if (!req.session.csrfToken) {
@@ -187,6 +199,10 @@ export async function setupAuth(app: Express) {
       req.session.pending2FAUserId = undefined;
       req.session.userId = user.id;
       req.session.lastActivity = Date.now();
+      // Initialize CSRF token for the new session
+      if (!req.session.csrfToken) {
+        req.session.csrfToken = generateCsrfToken();
+      }
       
       await storage.createAuditLog({ eventType: "login_success", actorId: user.id, actorEmail: user.email, targetEmail: email, ipAddress: ip, userAgent: ua, success: "true" });
       
@@ -459,10 +475,9 @@ export async function setupAuth(app: Express) {
 
       await storage.createPasswordResetToken(email.toLowerCase(), tokenHashed, expiresAt);
 
-      // Build reset URL
-      const protocol = req.headers["x-forwarded-proto"] || req.protocol;
-      const host = req.headers["x-forwarded-host"] || req.headers.host;
-      const resetUrl = `${protocol}://${host}/reset-password?token=${token}`;
+      // Build reset URL using a trusted base URL from environment, never from request headers
+      const appBaseUrl = process.env.APP_BASE_URL?.replace(/\/$/, "") || "https://legalit.it";
+      const resetUrl = `${appBaseUrl}/reset-password?token=${token}`;
 
       await sendPasswordResetEmail(email.toLowerCase(), resetUrl);
 
@@ -496,9 +511,10 @@ export async function setupAuth(app: Express) {
         return res.status(400).json({ message: "Token e password richiesti" });
       }
 
-      // Validate password strength
-      if (password.length < 5) {
-        return res.status(400).json({ message: "La password deve avere almeno 5 caratteri" });
+      // Validate password strength using the same policy as registration
+      const passwordValidation = passwordSchema.safeParse(password);
+      if (!passwordValidation.success) {
+        return res.status(400).json({ message: passwordValidation.error.errors[0].message });
       }
 
       const tokenHashed = hashToken(token);
@@ -701,8 +717,8 @@ export async function setupAdminRoutes(app: Express) {
   app.get("/api/admin/users", requireAdmin, async (req: any, res) => {
     try {
       const users = await storage.getAllUsers();
-      // Return users without password hashes
-      const safeUsers = users.map(({ hashedPassword, ...user }) => user);
+      // Return users without sensitive fields (password hash and 2FA secret)
+      const safeUsers = users.map(({ hashedPassword, twoFactorSecret, ...user }) => user);
       res.json(safeUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -780,18 +796,27 @@ export async function setupAdminRoutes(app: Express) {
     try {
       const { userId, newPassword } = req.body;
       const requestingUser = req.user;
-      
+
       if (!userId || !newPassword) {
         return res.status(400).json({ message: "UserId e nuova password richiesti" });
       }
 
-      if (newPassword.length < 5) {
-        return res.status(400).json({ message: "La password deve avere almeno 5 caratteri" });
+      const passwordValidation = passwordSchema.safeParse(newPassword);
+      if (!passwordValidation.success) {
+        return res.status(400).json({ message: passwordValidation.error.errors[0].message });
       }
 
       const targetUser = await storage.getUser(userId);
       if (!targetUser) {
         return res.status(404).json({ message: "Utente non trovato" });
+      }
+
+      // Admins cannot reset passwords for superadmins or other admins — only superadmins can do that
+      if (targetUser.role === 'superadmin') {
+        return res.status(403).json({ message: "Non puoi resettare la password di un superadmin" });
+      }
+      if (targetUser.role === 'admin' && requestingUser.role !== 'superadmin') {
+        return res.status(403).json({ message: "Solo un superadmin può resettare la password di un admin" });
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);

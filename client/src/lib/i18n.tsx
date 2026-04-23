@@ -1405,12 +1405,13 @@ function flushPendingTranslations() {
   const textsToTranslate = Array.from(pendingTexts);
   pendingTexts = new Set();
 
+  import("@/lib/queryClient").then(({ getCsrfToken }) => getCsrfToken()).then((csrfToken) =>
   fetch("/api/auto-translate", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken },
     credentials: "include",
     body: JSON.stringify({ texts: textsToTranslate }),
-  })
+  }))
     .then((res) => res.ok ? res.json() : {})
     .then((results: Record<string, string>) => {
       let hasNew = false;

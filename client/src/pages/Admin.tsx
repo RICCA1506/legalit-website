@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/i18n";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryClient, apiRequest } from "@/lib/queryClient";
+import { queryClient, apiRequest, getCsrfToken } from "@/lib/queryClient";
 import { cn } from "@/lib/utils";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { articleUrl as buildArticleUrl, slugifyName, uniqueSlug } from "@shared/slugify";
@@ -166,7 +166,8 @@ function CardQuickUpload({ professionalId, professionalName }: { professionalId:
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const uploadRes = await fetch("/api/upload-file", { method: "POST", body: formData, credentials: "include" });
+      const csrfToken = await getCsrfToken();
+      const uploadRes = await fetch("/api/upload-file", { method: "POST", body: formData, credentials: "include", headers: { "X-CSRF-Token": csrfToken } });
       if (!uploadRes.ok) throw new Error("Upload failed");
       const { url } = await uploadRes.json();
       await apiRequest("PATCH", `/api/professionals/${professionalId}`, { imageUrl: url });
@@ -2145,27 +2146,24 @@ export default function Admin() {
                             </CollapsibleTrigger>
                             <CollapsibleContent>
                               <div className="px-4 pb-4 space-y-3 border-t border-border/50 pt-3">
-                                {/* Reset Password */}
+                                {/* Reset Password — hidden for admin targets when current user is not superadmin */}
+                                {(adminUser.role !== 'admin' || isSuperAdmin) && (
                                 <div className="flex items-center justify-between">
                                   <span className="text-sm font-medium">Password</span>
                                   {resetPasswordUserId === adminUser.id ? (
                                     <div className="flex items-center gap-2">
                                       <Input
                                         type="password"
-                                        placeholder="Nuova password (min 8 caratteri)"
+                                        placeholder="Min 12 caratteri, A-Z, 0-9, simbolo"
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
-                                        className="w-48 h-8"
+                                        className="w-56 h-8"
                                         data-testid="input-new-password"
                                       />
                                       <Button
                                         size="sm"
                                         onClick={() => {
-                                          if (newPassword.length >= 8) {
-                                            resetPasswordMutation.mutate({ userId: adminUser.id, newPassword });
-                                          } else {
-                                            toast({ title: "Errore", description: "La password deve essere almeno 8 caratteri.", variant: "destructive" });
-                                          }
+                                          resetPasswordMutation.mutate({ userId: adminUser.id, newPassword });
                                         }}
                                         disabled={resetPasswordMutation.isPending}
                                         data-testid="button-confirm-reset"
@@ -2182,6 +2180,7 @@ export default function Admin() {
                                     </Button>
                                   )}
                                 </div>
+                                )}
                                 
                                 {/* Role management - only for superadmin */}
                                 {isSuperAdmin && (

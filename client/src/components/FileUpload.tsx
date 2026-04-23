@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import { getCsrfToken } from "@/lib/queryClient";
 import { Upload, X, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -51,9 +52,10 @@ export function FileUpload({
     setError(null);
 
     try {
+      const csrfToken = await getCsrfToken();
       const response = await fetch("/api/upload", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken },
         body: JSON.stringify({ filename: file.name, contentType: file.type }),
         credentials: "include",
       });

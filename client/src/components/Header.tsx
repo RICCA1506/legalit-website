@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getCsrfToken, clearCsrfToken } from "@/lib/queryClient";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -292,7 +293,9 @@ export default function Header() {
                 <DropdownMenuItem
                   className="text-destructive cursor-pointer"
                   onClick={async () => {
-                    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+                    const token = await getCsrfToken();
+                    await fetch("/api/auth/logout", { method: "POST", credentials: "include", headers: { "X-CSRF-Token": token } });
+                    clearCsrfToken();
                     window.location.href = "/";
                   }}
                   data-testid="button-logout"
@@ -483,7 +486,9 @@ export default function Header() {
                     variant="outline"
                     className="w-full"
                     onClick={async () => {
-                      await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+                      const token = await getCsrfToken();
+                      await fetch("/api/auth/logout", { method: "POST", credentials: "include", headers: { "X-CSRF-Token": token } });
+                      clearCsrfToken();
                       setIsOpen(false);
                       window.location.href = "/";
                     }}

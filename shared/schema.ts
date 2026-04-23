@@ -309,7 +309,7 @@ export type ChatConversation = typeof chatConversations.$inferSelect;
 export type InsertChatConversation = typeof chatConversations.$inferInsert;
 
 // Password complexity requirements
-const passwordSchema = z.string()
+export const passwordSchema = z.string()
   .min(12, "La password deve avere almeno 12 caratteri")
   .regex(/[A-Z]/, "La password deve contenere almeno una lettera maiuscola")
   .regex(/[a-z]/, "La password deve contenere almeno una lettera minuscola")

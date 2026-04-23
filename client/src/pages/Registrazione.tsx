@@ -167,7 +167,10 @@ export default function Registrazione() {
             <Button
               className="w-full"
               onClick={async () => {
-                await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+                const { getCsrfToken: getToken, clearCsrfToken: clearToken } = await import("@/lib/queryClient");
+                const csrfToken = await getToken();
+                await fetch("/api/auth/logout", { method: "POST", credentials: "include", headers: { "X-CSRF-Token": csrfToken } });
+                clearToken();
                 window.location.reload();
               }}
             >

@@ -7,14 +7,43 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+let csrfToken: string | null = null;
+
+export async function getCsrfToken(): Promise<string> {
+  if (csrfToken) return csrfToken;
+  const res = await fetch("/api/auth/csrf-token", { credentials: "include" });
+  if (res.ok) {
+    const data = await res.json();
+    csrfToken = data.csrfToken as string;
+    return csrfToken;
+  }
+  return "";
+}
+
+export function clearCsrfToken() {
+  csrfToken = null;
+}
+
+const CSRF_SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  const headers: Record<string, string> = {};
+  if (data) {
+    headers["Content-Type"] = "application/json";
+  }
+  if (!CSRF_SAFE_METHODS.has(method.toUpperCase())) {
+    const token = await getCsrfToken();
+    if (token) {
+      headers["X-CSRF-Token"] = token;
+    }
+  }
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
