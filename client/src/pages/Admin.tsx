@@ -573,7 +573,7 @@ export default function Admin() {
   };
 
   const createMutation = useMutation({
-    mutationFn: async (data: ArticleForm) => {
+    mutationFn: async (data: Partial<ArticleForm>) => {
       await apiRequest("POST", "/api/news", data);
     },
     onSuccess: () => {
@@ -592,7 +592,7 @@ export default function Admin() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: ArticleForm }) => {
+    mutationFn: async ({ id, data }: { id: number; data: Partial<ArticleForm> }) => {
       await apiRequest("PATCH", `/api/news/${id}`, data);
     },
     onSuccess: () => {
@@ -919,12 +919,10 @@ export default function Admin() {
       });
       return;
     }
-    const submitForm: any = { ...form };
-    if (trimmedSlug) {
-      submitForm.slug = trimmedSlug;
-    } else {
-      delete submitForm.slug;
-    }
+    const { slug: _formSlug, ...rest } = form;
+    const submitForm: Partial<ArticleForm> = trimmedSlug
+      ? { ...rest, slug: trimmedSlug }
+      : rest;
     if (!submitForm.category && submitForm.linkedPracticeArea) {
       const area = practiceAreasEnhanced.find(a => a.id === submitForm.linkedPracticeArea);
       if (area) submitForm.category = area.titleIT;
