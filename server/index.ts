@@ -89,8 +89,16 @@ app.use((req, res, next) => {
 });
 
 const attachedAssetsPath = path.resolve(process.cwd(), "attached_assets");
+const PUBLIC_ASSET_EXT_RE = /\.(avif|webp|jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|otf)$/i;
 if (fs.existsSync(attachedAssetsPath)) {
-  app.use("/attached_assets", express.static(attachedAssetsPath, {
+  app.use("/attached_assets", (req, res, next) => {
+    if (!PUBLIC_ASSET_EXT_RE.test(req.path)) {
+      return res.status(404).end();
+    }
+    next();
+  }, express.static(attachedAssetsPath, {
+    index: false,
+    dotfiles: "deny",
     maxAge: isProduction ? "7d" : 0,
     setHeaders: (res, filePath) => {
       if (isProduction && /\.(avif|webp|jpg|jpeg|png|gif|svg)$/i.test(filePath)) {
@@ -98,7 +106,7 @@ if (fs.existsSync(attachedAssetsPath)) {
       }
     },
   }));
-  console.log(`[Static] Serving attached_assets from: ${attachedAssetsPath}`);
+  console.log(`[Static] Serving attached_assets (allowlisted extensions only) from: ${attachedAssetsPath}`);
 } else {
   console.warn(`[Static] attached_assets directory not found at: ${attachedAssetsPath}`);
 }

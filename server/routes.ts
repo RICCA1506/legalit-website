@@ -1011,18 +1011,56 @@ ${urls}
     }
   });
 
+  const isLinkedInUrl = (raw: string): boolean => {
+    try {
+      const u = new URL(raw);
+      if (u.protocol !== "https:" && u.protocol !== "http:") return false;
+      const host = u.hostname.toLowerCase();
+      return host === "linkedin.com" || host.endsWith(".linkedin.com");
+    } catch {
+      return false;
+    }
+  };
+
+  const safeFetchLinkedIn = async (
+    startUrl: string,
+    headers: Record<string, string>,
+    timeoutMs: number,
+  ): Promise<Response | null> => {
+    let currentUrl = startUrl;
+    for (let hop = 0; hop < 5; hop++) {
+      if (!isLinkedInUrl(currentUrl)) return null;
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(currentUrl, {
+          headers,
+          redirect: "manual",
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        if (response.status >= 300 && response.status < 400) {
+          const loc = response.headers.get("location");
+          if (!loc) return response;
+          currentUrl = new URL(loc, currentUrl).toString();
+          continue;
+        }
+        return response;
+      } catch {
+        clearTimeout(timeout);
+        return null;
+      }
+    }
+    return null;
+  };
+
   app.post("/api/scrape-linkedin", requireAdmin, async (req: any, res) => {
     try {
       const { url } = req.body;
       if (!url || typeof url !== "string") {
         return res.status(400).json({ message: "URL mancante" });
       }
-      try {
-        const parsedUrl = new URL(url);
-        if (!parsedUrl.hostname.endsWith("linkedin.com")) {
-          return res.status(400).json({ message: "URL non valido. Inserisci un link LinkedIn." });
-        }
-      } catch {
+      if (!isLinkedInUrl(url)) {
         return res.status(400).json({ message: "URL non valido. Inserisci un link LinkedIn." });
       }
 
@@ -1046,36 +1084,31 @@ ${urls}
       let html = "";
       let fetched = false;
 
-      const uniqueUrls = Array.from(new Set(urlsToTry));
+      const uniqueUrls = Array.from(new Set(urlsToTry.filter(isLinkedInUrl)));
       for (const tryUrl of uniqueUrls) {
         if (fetched) break;
         for (const ua of userAgents) {
-          try {
-            const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 10000);
-            const response = await fetch(tryUrl, {
-              headers: {
-                "User-Agent": ua,
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
-                "Cache-Control": "no-cache",
-              },
-              redirect: "follow",
-              signal: controller.signal,
-            });
-            clearTimeout(timeout);
-            if (response.ok) {
-              const text = await response.text();
-              if (text.includes("og:title") || text.includes("og:description") || text.includes("data-id")) {
-                html = text;
-                fetched = true;
-                break;
-              }
-              if (!html && text.length > 1000) {
-                html = text;
-              }
+          const response = await safeFetchLinkedIn(
+            tryUrl,
+            {
+              "User-Agent": ua,
+              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+              "Accept-Language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+              "Cache-Control": "no-cache",
+            },
+            10000,
+          );
+          if (response && response.ok) {
+            const text = await response.text();
+            if (text.includes("og:title") || text.includes("og:description") || text.includes("data-id")) {
+              html = text;
+              fetched = true;
+              break;
             }
-          } catch {}
+            if (!html && text.length > 1000) {
+              html = text;
+            }
+          }
         }
       }
 
