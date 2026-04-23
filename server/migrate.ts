@@ -109,7 +109,8 @@ export async function ensureSchema() {
         email VARCHAR(255) NOT NULL UNIQUE,
         subscribed_at TIMESTAMP DEFAULT NOW(),
         unsubscribed_at TIMESTAMP,
-        source VARCHAR(50) DEFAULT 'website'
+        source VARCHAR(50) DEFAULT 'website',
+        unsubscribe_token VARCHAR(64) NOT NULL UNIQUE
       );
 
       CREATE TABLE IF NOT EXISTS contact_messages (
@@ -172,6 +173,29 @@ export async function ensureSchema() {
     await addUniqueConstraintIfNotExists(pool, 'partner_invites', 'token_hash', 'partner_invites_token_hash_unique');
     await addUniqueConstraintIfNotExists(pool, 'users', 'email', 'users_email_unique');
     await addUniqueConstraintIfNotExists(pool, 'newsletter_subscribers', 'email', 'newsletter_subscribers_email_unique');
+    await addColumnIfNotExists(pool, 'newsletter_subscribers', 'unsubscribe_token', 'VARCHAR(64)');
+    await addUniqueConstraintIfNotExists(pool, 'newsletter_subscribers', 'unsubscribe_token', 'newsletter_subscribers_unsubscribe_token_unique');
+    // Backfill unsubscribe tokens for existing subscribers that don't have one
+    await pool.query(`
+      UPDATE newsletter_subscribers
+      SET unsubscribe_token = encode(gen_random_bytes(32), 'hex')
+      WHERE unsubscribe_token IS NULL
+    `);
+    // Enforce NOT NULL after backfill (idempotent)
+    await pool.query(`
+      DO $$
+      BEGIN
+        IF EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_schema = 'public'
+            AND table_name = 'newsletter_subscribers'
+            AND column_name = 'unsubscribe_token'
+            AND is_nullable = 'YES'
+        ) THEN
+          ALTER TABLE newsletter_subscribers ALTER COLUMN unsubscribe_token SET NOT NULL;
+        END IF;
+      END $$;
+    `);
     await addUniqueConstraintIfNotExists(pool, 'password_reset_tokens', 'token_hash', 'password_reset_tokens_token_hash_unique');
 
     await addColumnIfNotExists(pool, 'news_articles', 'news_type', "VARCHAR(50) DEFAULT 'studio'");

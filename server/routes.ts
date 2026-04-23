@@ -744,16 +744,13 @@ ${urls}
     }
   });
 
-  app.post("/api/newsletter/unsubscribe", async (req, res) => {
+  app.post("/api/newsletter/unsubscribe", rateLimitNewsletter, async (req, res) => {
     try {
-      const { email } = req.body;
-      if (!email) {
-        return res.status(400).json({ message: "Email richiesta" });
+      const { token } = req.body;
+      if (!token || typeof token !== "string" || token.length < 32) {
+        return res.status(400).json({ message: "Token non valido" });
       }
-      const unsubscribed = await storage.unsubscribe(email);
-      if (!unsubscribed) {
-        return res.status(404).json({ message: "Email non trovata" });
-      }
+      await storage.unsubscribeByToken(token);
       res.json({ message: "Disiscrizione completata" });
     } catch (error) {
       console.error("Error unsubscribing:", error);

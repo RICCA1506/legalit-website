@@ -210,12 +210,14 @@ export const newsletterSubscribers = pgTable("newsletter_subscribers", {
   subscribedAt: timestamp("subscribed_at").defaultNow(),
   unsubscribedAt: timestamp("unsubscribed_at"),
   source: varchar("source", { length: 50 }).default("website"),
+  unsubscribeToken: varchar("unsubscribe_token", { length: 64 }).notNull().unique(),
 });
 
 export const insertNewsletterSubscriberSchema = createInsertSchema(newsletterSubscribers).omit({
   id: true,
   subscribedAt: true,
   unsubscribedAt: true,
+  unsubscribeToken: true,
 });
 
 export type InsertNewsletterSubscriber = z.infer<typeof insertNewsletterSubscriberSchema>;

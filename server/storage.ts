@@ -92,7 +92,7 @@ export interface IStorage {
   getAllSubscribers(): Promise<NewsletterSubscriber[]>;
   getSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined>;
   createSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
-  unsubscribe(email: string): Promise<boolean>;
+  unsubscribeByToken(token: string): Promise<boolean>;
   
   // Contact message operations
   getAllContactMessages(): Promise<ContactMessage[]>;
@@ -416,18 +416,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber> {
+    const { randomBytes } = await import("crypto");
+    const unsubscribeToken = randomBytes(32).toString("hex");
     const [newSubscriber] = await db.insert(newsletterSubscribers).values({
       ...subscriber,
       email: subscriber.email.toLowerCase(),
+      unsubscribeToken,
     }).returning();
     return newSubscriber;
   }
 
-  async unsubscribe(email: string): Promise<boolean> {
+  async unsubscribeByToken(token: string): Promise<boolean> {
     const result = await db
       .update(newsletterSubscribers)
       .set({ unsubscribedAt: new Date() })
-      .where(eq(newsletterSubscribers.email, email.toLowerCase()))
+      .where(eq(newsletterSubscribers.unsubscribeToken, token))
       .returning();
     return result.length > 0;
   }
