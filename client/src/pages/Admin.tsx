@@ -49,6 +49,7 @@ const newsTypes = [
 
 interface ArticleForm {
   title: string;
+  slug: string;
   content: string;
   excerpt: string;
   category: string;
@@ -69,6 +70,7 @@ interface ArticleForm {
 
 const emptyForm: ArticleForm = {
   title: "",
+  slug: "",
   content: "",
   excerpt: "",
   category: "",
@@ -872,6 +874,7 @@ export default function Admin() {
 
     setForm({
       title: article.title,
+      slug: article.slug || "",
       content: article.content,
       excerpt: article.excerpt || "",
       category: article.category,
@@ -898,7 +901,30 @@ export default function Admin() {
       toast({ title: "Campi obbligatori", description: "Compila titolo, contenuto e area di attività.", variant: "destructive" });
       return;
     }
-    const submitForm = { ...form };
+    const trimmedSlug = form.slug.trim().toLowerCase();
+    if (trimmedSlug && !SLUG_REGEX.test(trimmedSlug)) {
+      toast({
+        title: "Slug non valido",
+        description: "Lo slug può contenere solo lettere minuscole, numeri e trattini.",
+        variant: "destructive",
+      });
+      return;
+    }
+    const finalSlug = trimmedSlug || slugifyName(form.title);
+    if (finalSlug && otherArticleSlugs.includes(finalSlug)) {
+      toast({
+        title: "Slug già in uso",
+        description: `Lo slug "${finalSlug}" è già usato da un altro articolo. Scegli un valore diverso.`,
+        variant: "destructive",
+      });
+      return;
+    }
+    const submitForm: any = { ...form };
+    if (trimmedSlug) {
+      submitForm.slug = trimmedSlug;
+    } else {
+      delete submitForm.slug;
+    }
     if (!submitForm.category && submitForm.linkedPracticeArea) {
       const area = practiceAreasEnhanced.find(a => a.id === submitForm.linkedPracticeArea);
       if (area) submitForm.category = area.titleIT;
@@ -964,6 +990,14 @@ export default function Admin() {
     setLanguageInput("");
     setIsProfessionalDialogOpen(true);
   };
+
+  const otherArticleSlugs = useMemo(() => {
+    const editingId = editingArticle?.id;
+    return articles
+      .filter((a) => a.id !== editingId)
+      .map((a) => (a.slug || slugifyName(a.title)).trim().toLowerCase())
+      .filter((s) => s.length > 0);
+  }, [articles, editingArticle]);
 
   const otherProfessionalSlugs = useMemo(() => {
     const editingId = editingProfessional?.id;
@@ -2507,6 +2541,69 @@ export default function Admin() {
                 data-testid="input-title"
               />
             </div>
+
+            {(() => {
+              const trimmedSlug = form.slug.trim().toLowerCase();
+              const derivedSlug = slugifyName(form.title);
+              const previewSlug = trimmedSlug || derivedSlug;
+              const slugIsInvalid = trimmedSlug.length > 0 && !SLUG_REGEX.test(trimmedSlug);
+              const slugIsDuplicate =
+                !slugIsInvalid &&
+                previewSlug.length > 0 &&
+                otherArticleSlugs.includes(previewSlug);
+              const suggestion = slugIsDuplicate
+                ? uniqueSlug(previewSlug, otherArticleSlugs)
+                : null;
+              return (
+                <div className="space-y-2">
+                  <Label htmlFor="article-slug">Slug URL</Label>
+                  <Input
+                    id="article-slug"
+                    value={form.slug}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        slug: e.target.value
+                          .toLowerCase()
+                          .replace(/\s+/g, "-")
+                          .replace(/[^a-z0-9-]/g, ""),
+                      })
+                    }
+                    placeholder={derivedSlug || "slug-automatico-dal-titolo"}
+                    aria-invalid={slugIsInvalid || slugIsDuplicate}
+                    data-testid="input-article-slug"
+                  />
+                  <p
+                    className={cn(
+                      "text-xs",
+                      slugIsInvalid || slugIsDuplicate
+                        ? "text-destructive"
+                        : "text-muted-foreground",
+                    )}
+                    data-testid="text-article-slug-preview"
+                  >
+                    {slugIsInvalid
+                      ? "Slug non valido: usa solo lettere minuscole, numeri e trattini."
+                      : slugIsDuplicate
+                        ? `Slug già in uso da un altro articolo.`
+                        : previewSlug
+                          ? `Anteprima URL: /news/${previewSlug}`
+                          : "Lo slug verrà generato automaticamente dal titolo."}
+                  </p>
+                  {slugIsDuplicate && suggestion && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setForm({ ...form, slug: suggestion })}
+                      data-testid="button-use-suggested-article-slug"
+                    >
+                      Usa "{suggestion}"
+                    </Button>
+                  )}
+                </div>
+              );
+            })()}
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">

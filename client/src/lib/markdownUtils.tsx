@@ -14,7 +14,11 @@ export type ProForLinking = {
   slug?: string | null;
 };
 
-const TITLE_PREFIX_RE = /^(?:Avv\.|Prof\.ssa|Prof\.|Dott\.ssa|Dott\.)\s+/i;
+const SINGULAR_TITLES = `(?:Avv\\.|Prof\\.ssa|Prof\\.|Dott\\.ssa|Dott\\.)`;
+const PLURAL_TITLES = `(?:Avv\\.ti|Dott\\.ri|Dott\\.sse|Proff\\.sse|Proff\\.)`;
+const ANY_TITLE = `(?:${PLURAL_TITLES}|${SINGULAR_TITLES})`;
+
+const TITLE_PREFIX_RE = new RegExp(`^${ANY_TITLE}\\s+`, "i");
 
 function stripTitle(name: string): string {
   return name.replace(TITLE_PREFIX_RE, "").trim();
@@ -30,6 +34,7 @@ function buildLinkRanges(text: string, pros: ProForLinking[]): Range[] {
   if (!pros || pros.length === 0) return [];
 
   const surnameCounts = new Map<string, number>();
+  const surnameLookup = new Map<string, ProForLinking>();
   for (const pro of pros) {
     if (!pro?.name) continue;
     const clean = stripTitle(pro.name);
@@ -37,9 +42,53 @@ function buildLinkRanges(text: string, pros: ProForLinking[]): Range[] {
     if (parts.length >= 2) {
       const surname = parts[parts.length - 1].toLowerCase();
       surnameCounts.set(surname, (surnameCounts.get(surname) || 0) + 1);
+      if (!surnameLookup.has(surname)) surnameLookup.set(surname, pro);
     }
   }
 
+  const ranges: Range[] = [];
+  const claimed = new Array<boolean>(text.length).fill(false);
+  const tryClaim = (start: number, end: number): boolean => {
+    for (let i = start; i < end; i++) if (claimed[i]) return false;
+    for (let i = start; i < end; i++) claimed[i] = true;
+    return true;
+  };
+
+  // Pass 1: plural-title patterns linking each capitalized name after the title.
+  // Matches "Avv.ti Liberati e Passalacqua", "Dott.ri Rossi, Bianchi e Verdi",
+  // and lists of arbitrary length ("Avv.ti A, B, C, D e E").
+  const NAME_TOKEN = `\\p{Lu}[\\p{L}'’-]+`;
+  const SEP_SRC = `(?:\\s*,\\s*|\\s+e\\s+|\\s+ed\\s+)`;
+  const pluralHeadPattern = new RegExp(
+    `(?:^|(?<=[^\\p{L}\\p{N}_]))(${PLURAL_TITLES})\\s+(?=${NAME_TOKEN}${SEP_SRC}${NAME_TOKEN})`,
+    "giu",
+  );
+  const nameWithSepPattern = new RegExp(`(${NAME_TOKEN})(${SEP_SRC})?`, "guy");
+  let hm: RegExpExecArray | null;
+  while ((hm = pluralHeadPattern.exec(text)) !== null) {
+    let cursor = hm.index + hm[0].length;
+    nameWithSepPattern.lastIndex = cursor;
+    let nm: RegExpExecArray | null;
+    while ((nm = nameWithSepPattern.exec(text)) !== null) {
+      const name = nm[1];
+      const sep = nm[2];
+      const nameStart = nm.index;
+      const nameEnd = nameStart + name.length;
+      const key = name.toLowerCase();
+      const pro = surnameLookup.get(key);
+      if (pro && surnameCounts.get(key) === 1) {
+        if (tryClaim(nameStart, nameEnd)) {
+          ranges.push({ start: nameStart, end: nameEnd, pro });
+        }
+      }
+      if (!sep) break;
+      cursor = nm.index + nm[0].length;
+      nameWithSepPattern.lastIndex = cursor;
+    }
+  }
+
+  // Pass 2: full-name and unique-surname triggers (with optional title prefix
+  // included in the linked text for singular titles like "Avv. Rossi").
   const triggers: Array<{ trigger: string; pro: ProForLinking }> = [];
   for (const pro of pros) {
     if (!pro?.name) continue;
@@ -57,13 +106,12 @@ function buildLinkRanges(text: string, pros: ProForLinking[]): Range[] {
 
   triggers.sort((a, b) => b.trigger.length - a.trigger.length);
 
-  const ranges: Range[] = [];
-  const claimed = new Array<boolean>(text.length).fill(false);
-
   for (const { trigger, pro } of triggers) {
+    // Only singular titles may be absorbed into the linked text. Plural titles
+    // are handled exclusively by Pass 1 to keep multi-name spans consistent.
     const pattern = new RegExp(
-      `(^|[^\\p{L}\\p{N}_])((?:(?:Avv\\.|Prof\\.ssa|Prof\\.|Dott\\.ssa|Dott\\.)\\s+)?${escapeRegex(trigger)})(?=[^\\p{L}\\p{N}_]|$)`,
-      "giu"
+      `(^|[^\\p{L}\\p{N}_])((?:${SINGULAR_TITLES}\\s+)?${escapeRegex(trigger)})(?=[^\\p{L}\\p{N}_]|$)`,
+      "giu",
     );
     let m: RegExpExecArray | null;
     while ((m = pattern.exec(text)) !== null) {
@@ -71,16 +119,9 @@ function buildLinkRanges(text: string, pros: ProForLinking[]): Range[] {
       const matchedText = m[2];
       const matchStart = m.index + lead.length;
       const matchEnd = matchStart + matchedText.length;
-      let clash = false;
-      for (let i = matchStart; i < matchEnd; i++) {
-        if (claimed[i]) {
-          clash = true;
-          break;
-        }
+      if (tryClaim(matchStart, matchEnd)) {
+        ranges.push({ start: matchStart, end: matchEnd, pro });
       }
-      if (clash) continue;
-      for (let i = matchStart; i < matchEnd; i++) claimed[i] = true;
-      ranges.push({ start: matchStart, end: matchEnd, pro });
     }
   }
 

@@ -160,7 +160,10 @@ export default function AttivitaDetail() {
         <div className="max-w-6xl mx-auto">
           <AnimatedElement>
             <div data-testid="text-detail-description">
-              <RichText text={language === "it" ? practiceArea.fullDescriptionIT : practiceArea.fullDescriptionEN} />
+              <RichText
+                text={language === "it" ? practiceArea.fullDescriptionIT : practiceArea.fullDescriptionEN}
+                professionals={dbProfessionals}
+              />
             </div>
           </AnimatedElement>
         </div>
@@ -304,7 +307,7 @@ export default function AttivitaDetail() {
                         {article.title}
                       </h3>
                       <p className="text-muted-foreground text-sm line-clamp-3 mb-4">
-                        {renderInlineMd(article.excerpt || "")}
+                        {renderInlineMd(article.excerpt || "", dbProfessionals)}
                       </p>
                       <div className="flex items-center gap-1 text-primary text-sm group-hover:gap-2 transition-all">
                         <span>{language === "it" ? "Approfondisci" : "Read more"}</span>

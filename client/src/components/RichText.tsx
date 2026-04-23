@@ -1,11 +1,12 @@
-import { renderInlineMd } from "@/lib/markdownUtils";
+import { renderInlineMd, type ProForLinking } from "@/lib/markdownUtils";
 
 interface RichTextProps {
   text: string;
   className?: string;
+  professionals?: ProForLinking[];
 }
 
-export default function RichText({ text, className = "" }: RichTextProps) {
+export default function RichText({ text, className = "", professionals }: RichTextProps) {
   const paragraphs = text.split(/\n\n+/);
   return (
     <div className={className}>
@@ -14,7 +15,7 @@ export default function RichText({ text, className = "" }: RichTextProps) {
           key={i}
           className="text-[15px] md:text-lg text-muted-foreground leading-relaxed mb-4 last:mb-0 text-center"
         >
-          {renderInlineMd(para.trim())}
+          {renderInlineMd(para.trim(), professionals)}
         </p>
       ))}
     </div>
