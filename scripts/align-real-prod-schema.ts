@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool, PoolClient } from "pg";
 import crypto from "crypto";
 import { slugifyName, uniqueSlug } from "../shared/slugify";
 
@@ -14,7 +14,7 @@ function log(...args: unknown[]) {
   console.log("[align-prod]", ...args);
 }
 
-async function constraintExists(client: any, table: string, name: string): Promise<boolean> {
+async function constraintExists(client: PoolClient, table: string, name: string): Promise<boolean> {
   const r = await client.query<{ exists: boolean }>(
     `SELECT EXISTS (
        SELECT 1 FROM information_schema.table_constraints
@@ -25,7 +25,7 @@ async function constraintExists(client: any, table: string, name: string): Promi
   return r.rows[0].exists;
 }
 
-async function columnInfo(client: any, table: string, column: string): Promise<{ exists: boolean; nullable: boolean | null }> {
+async function columnInfo(client: PoolClient, table: string, column: string): Promise<{ exists: boolean; nullable: boolean | null }> {
   const r = await client.query<{ is_nullable: string }>(
     `SELECT is_nullable FROM information_schema.columns
      WHERE table_schema = 'public' AND table_name = $1 AND column_name = $2;`,
@@ -35,7 +35,7 @@ async function columnInfo(client: any, table: string, column: string): Promise<{
   return { exists: true, nullable: r.rows[0].is_nullable === "YES" };
 }
 
-async function snapshotState(client: any) {
+async function snapshotState(client: PoolClient) {
   const counts = await client.query<{ t: string; c: string }>(
     `SELECT 'newsletter_subscribers' AS t, COUNT(*)::text AS c FROM newsletter_subscribers
      UNION ALL SELECT 'news_articles', COUNT(*)::text FROM news_articles
@@ -71,16 +71,6 @@ async function main() {
       await client.query(sql);
     } else {
       log(`STEP 1: SKIP (professionals.slug already nullable or missing)`);
-    }
-
-    // === Step 1b: professionals_slug_unique constraint if missing ===
-    const profSlugUniqueExists = await constraintExists(client, "professionals", "professionals_slug_unique");
-    if (!profSlugUniqueExists) {
-      const sql = `ALTER TABLE professionals ADD CONSTRAINT professionals_slug_unique UNIQUE (slug);`;
-      log(`STEP 1b: ${sql}`);
-      await client.query(sql);
-    } else {
-      log(`STEP 1b: SKIP (professionals_slug_unique already exists)`);
     }
 
     // === Step 2: news_articles.slug ADD COLUMN if missing, or DROP NOT NULL if drifted ===
@@ -146,7 +136,7 @@ async function main() {
     for (const row of subs.rows) {
       if (typeof row.unsubscribe_token === "string" && row.unsubscribe_token.length > 0) continue;
       const tok = crypto.randomBytes(32).toString("hex");
-      log(`STEP 6: newsletter id=${row.id} email=${row.email} -> token assigned (64 chars)`);
+      log(`STEP 6: newsletter id=${row.id} -> token assigned (64 chars)`);
       await client.query(`UPDATE newsletter_subscribers SET unsubscribe_token = $1 WHERE id = $2;`, [tok, row.id]);
       tokensUpdated++;
     }
