@@ -76,7 +76,7 @@ async function main() {
     // === Step 2: news_articles.slug ADD COLUMN if missing, or DROP NOT NULL if drifted ===
     const newsSlugBefore = await columnInfo(client, "news_articles", "slug");
     if (!newsSlugBefore.exists) {
-      const sql = `ALTER TABLE news_articles ADD COLUMN slug VARCHAR(255);`;
+      const sql = `ALTER TABLE news_articles ADD COLUMN IF NOT EXISTS slug VARCHAR(255);`;
       log(`STEP 2: ${sql}`);
       await client.query(sql);
     } else if (newsSlugBefore.nullable === false) {
@@ -121,7 +121,7 @@ async function main() {
     // === Step 5: newsletter_subscribers.unsubscribe_token ADD COLUMN if missing (nullable initially) ===
     const tokenBefore = await columnInfo(client, "newsletter_subscribers", "unsubscribe_token");
     if (!tokenBefore.exists) {
-      const sql = `ALTER TABLE newsletter_subscribers ADD COLUMN unsubscribe_token VARCHAR(64);`;
+      const sql = `ALTER TABLE newsletter_subscribers ADD COLUMN IF NOT EXISTS unsubscribe_token VARCHAR(64);`;
       log(`STEP 5: ${sql}`);
       await client.query(sql);
     } else {
