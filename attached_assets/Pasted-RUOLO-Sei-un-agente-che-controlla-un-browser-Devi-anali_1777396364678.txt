@@ -1,0 +1,128 @@
+RUOLO
+Sei un agente che controlla un browser. Devi analizzare lo stato attuale di Google Search Console per il sito legalit.it e produrre un report dettagliato su errori, pagine mancanti e problemi di indicizzazione.
+
+PRECONDIZIONI
+- L'utente è già loggato nel suo account Google con accesso proprietario alla proprietà "legalit.it" su Google Search Console.
+- Se ti viene chiesto di autenticarti o completare una verifica 2FA, FERMATI e chiedi all'utente di farlo manualmente.
+
+URL DI PARTENZA
+https://search.google.com/search-console
+
+================================================================
+STEP 1 — Selezionare la proprietà
+================================================================
+1. Apri https://search.google.com/search-console
+2. Verifica che la proprietà attiva sia "legalit.it" (o "sc-domain:legalit.it").
+3. Se non lo è, clicca sul selettore in alto a sinistra e selezionala.
+
+================================================================
+STEP 2 — Rapporto Pagine: errori completi
+================================================================
+1. Nella sidebar sinistra, clicca su "Pagine" (sotto "Indicizzazione").
+2. Aspetta il caricamento completo.
+3. Annota il totale di pagine "Indicizzate" e "Non indicizzate".
+4. Nella sezione "Perché le pagine non sono indicizzate", per OGNI voce della tabella:
+   - Annota la ragione esatta e il numero di pagine.
+5. Per ognuna delle seguenti voci (se presenti con count > 0), clicca e apri il dettaglio:
+   a. "Non trovata (404)" → annota TUTTE le URL elencate negli esempi.
+   b. "Pagina con reindirizzamento" → annota fino a 10 URL di esempio.
+   c. "Rilevata, ma attualmente non indicizzata" → annota fino a 10 URL di esempio.
+   d. "Bloccata da robots.txt" → annota tutte le URL di esempio.
+   e. "Esclusa in base al tag noindex" → annota tutte le URL di esempio.
+   f. "Pagina duplicata, Google ha scelto una pagina canonica diversa" → annota fino a 5 URL di esempio.
+6. Torna al rapporto principale pagine dopo ogni sottorapporto.
+
+CRITERIO DI SUCCESSO: hai la lista completa di tutti i motivi con conteggi e URL di esempio per ogni categoria critica.
+
+================================================================
+STEP 3 — Rapporto Copertura: URL escluse e bloccate
+================================================================
+1. Nella stessa pagina "Pagine", cambia il filtro in alto da "Tutte le pagine note" a "Sitemap" (se disponibile) per vedere solo le pagine che Google conosce dalla sitemap.
+2. Verifica se ci sono discrepanze tra pagine in sitemap e pagine indicizzate.
+3. Annota: quante pagine dalla sitemap risultano non indicizzate e per quale motivo.
+
+================================================================
+STEP 4 — Verifica sitemap
+================================================================
+1. Clicca su "Sitemap" nella sidebar sinistra.
+2. Verifica che la sitemap https://legalit.it/sitemap.xml:
+   - Sia presente con stato "Riuscita".
+   - Abbia una data di "Ultima lettura" recente (non più vecchia di 30 giorni).
+   - Il numero di "Pagine rilevate" sia coerente con il numero atteso di pagine del sito.
+3. Se ci sono sitemap con stato "Impossibile recuperare" o "Errore", segnalalo.
+
+================================================================
+STEP 5 — Rapporto Breadcrumb e Miglioramenti
+================================================================
+1. Nella sidebar, sotto "Miglioramenti", clicca su "Breadcrumb".
+2. Annota eventuali errori o avvisi con conteggio pagine interessate.
+3. Se ci sono errori, apri il dettaglio e annota fino a 5 URL di esempio.
+
+================================================================
+STEP 6 — Sicurezza e azioni manuali
+================================================================
+1. Nella sidebar, clicca su "Sicurezza e azioni manuali" → "Azioni manuali".
+2. Verifica che non ci siano penalizzazioni manuali attive. Annota l'esito.
+3. Clicca su "Problemi di sicurezza".
+4. Verifica che non ci siano problemi di sicurezza rilevati. Annota l'esito.
+
+================================================================
+STEP 7 — Core Web Vitals (solo se dati disponibili)
+================================================================
+1. Clicca su "Segnali web essenziali" nella sidebar.
+2. Se disponibili dati per Mobile:
+   - Annota: N URL scadenti (rosso), N da migliorare (arancio), N buoni (verde).
+   - Se ci sono URL scadenti o da migliorare, clicca "Apri rapporto" e annota i tipi di problema (LCP, FID/INP, CLS).
+3. Se disponibili dati per Desktop: stessa procedura.
+4. Se i dati non sono disponibili ("dati insufficienti"), segnalalo e indica di usare PageSpeed Insights come alternativa.
+
+================================================================
+STEP 8 — Verifica HTTPS
+================================================================
+1. Clicca su "HTTPS" nella sidebar (sotto "Esperienza").
+2. Annota il numero di pagine valide e quelle con problemi HTTPS (se presenti).
+
+================================================================
+REPORT FINALE
+================================================================
+Restituisci un report in italiano con questa struttura:
+
+**STATO INDICIZZAZIONE**
+- Pagine indicizzate: N
+- Pagine non indicizzate: N (X motivi)
+- Tabella completa motivi non indicizzazione: ragione | conteggio
+
+**ERRORI CRITICI DA RISOLVERE**
+- URL 404 (elenco completo)
+- URL bloccate da robots.txt (elenco)
+- Tag noindex accidentali (elenco)
+- Azioni manuali / problemi di sicurezza
+
+**REDIRECT DA MAPPARE (301)**
+- Elenco URL "Pagina con reindirizzamento" (fino a 10 esempi)
+
+**PAGINE IN ATTESA DI INDICIZZAZIONE**
+- Elenco URL "Rilevata, ma attualmente non indicizzata" (fino a 10 esempi)
+
+**SITEMAP**
+- Stato + data ultima lettura + pagine rilevate
+
+**MIGLIORAMENTI STRUTTURATI (Breadcrumb, ecc.)**
+- Stato + eventuali errori con esempi
+
+**CORE WEB VITALS**
+- Mobile: N rosso / N arancio / N verde (o "dati insufficienti")
+- Desktop: N rosso / N arancio / N verde (o "dati insufficienti")
+
+**HTTPS**
+- Stato + eventuali pagine con problemi
+
+**PRIORITÀ D'AZIONE SUGGERITE**
+- Lista ordinata per impatto SEO delle correzioni da fare
+
+REGOLE GENERALI
+- NON cliccare mai "Rimuovi proprietà", "Cambia proprietario", o qualsiasi pulsante che modifichi le impostazioni della proprietà.
+- NON cancellare sitemap esistenti.
+- NON richiedere indicizzazione di URL in questa sessione (solo analisi).
+- Se appare un popup di conferma sospetto, fai screenshot e chiedi conferma all'utente prima di procedere.
+- Se una pagina si blocca per più di 60 secondi, ricarica con F5 e riprova una volta; se fallisce ancora, segnala e prosegui con lo step successivo.
