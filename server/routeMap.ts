@@ -1,7 +1,19 @@
 /**
- * Route registry condiviso tra static.ts (per il fallback 404) e routes.ts
- * (per la generazione della sitemap). Tenere allineato con
- * client/src/App.tsx > <Router /> ogni volta che si aggiunge una route.
+ * Single source of truth per le route SPA, condiviso tra static.ts (fallback
+ * 404), routes.ts (sitemap.xml e validazione redirect) e i test.
+ *
+ * REGOLA DI SINCRONIZZAZIONE: ogni volta che si aggiunge/rimuove una route
+ * in `client/src/App.tsx` (dentro <Router />) bisogna:
+ *   1. aggiornare STATIC_SPA_ROUTES (per route statiche) o matchDynamicRoute
+ *      (per pattern con parametri) qui sotto;
+ *   2. se è una pagina indicizzabile, aggiungerla anche al generatore della
+ *      sitemap in `server/routes.ts` (cerca "sitemap.xml");
+ *   3. se è una nuova area pratica, aggiungere lo slug a
+ *      PRACTICE_AREA_SLUGS qui sotto E al data file
+ *      `client/src/lib/practiceAreasData.ts`.
+ *
+ * Mancare uno di questi step provoca soft 404 (path 200 ma non in sitemap)
+ * o falsi 404 (path valido ma non riconosciuto da static.ts).
  */
 
 /**
