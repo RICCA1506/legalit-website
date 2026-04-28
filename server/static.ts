@@ -25,7 +25,14 @@ function getPathname(req: Request): string {
   // request path regardless of how the middleware was mounted.
   const raw = req.originalUrl || req.url || "/";
   const qIdx = raw.indexOf("?");
-  return qIdx === -1 ? raw : raw.slice(0, qIdx);
+  let pathname = qIdx === -1 ? raw : raw.slice(0, qIdx);
+  // Defense-in-depth: il middleware in server/index.ts già fa 301 per i
+  // trailing slash, ma normalizziamo anche qui per essere robusti a future
+  // modifiche o invocazioni dirette di renderIndexHtml (es. test).
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    pathname = pathname.slice(0, -1);
+  }
+  return pathname;
 }
 
 /**
@@ -53,8 +60,36 @@ interface RenderResult {
   notFound: boolean;
 }
 
-async function renderIndexHtml(template: string, req: Request): Promise<RenderResult> {
+/**
+ * Versione "ricca": restituisce HTML + flag notFound. Usata dalla catch-all di
+ * production (serveStatic) per settare lo status HTTP 404 quando opportuno.
+ */
+async function renderIndexHtmlWithStatus(template: string, req: Request): Promise<RenderResult> {
   const pathname = getPathname(req);
+
+  // 0. Edge case legacy: /news?article=N. L'handler in routes.ts normalmente
+  // fa il 301 prima di arrivare qui, ma se qualcosa salta quell'handler
+  // (es. modifica futura, race condition) iniettiamo il canonical verso lo
+  // slug dell'articolo. Va PRIMA del check static perché /news è anche una
+  // route statica e bypasserebbe questo blocco.
+  if (pathname === "/news") {
+    const articleQuery = req.query?.article;
+    const articleIdRaw = Array.isArray(articleQuery) ? articleQuery[0] : articleQuery;
+    const articleId = articleIdRaw != null ? Number(articleIdRaw) : NaN;
+    if (Number.isFinite(articleId) && articleId > 0) {
+      try {
+        const article = await storage.getNewsArticle(articleId);
+        if (article) {
+          const slug = article.slug || slugifyName(article.title) || `articolo-${article.id}`;
+          const articleHref = `${SITE_URL}/news/${slug}`;
+          const meta = buildArticleMeta(article, articleHref);
+          return { html: injectProfessionalMeta(template, meta), notFound: false };
+        }
+      } catch (err) {
+        console.error("[static] news article meta injection failed:", err);
+      }
+    }
+  }
 
   // 1. Path statici SPA noti → 200 + canonical normale
   if (isStaticSpaRoute(pathname)) {
@@ -150,7 +185,20 @@ async function renderIndexHtml(template: string, req: Request): Promise<RenderRe
   return { html: makeNotFoundHtml(template), notFound: true };
 }
 
-export { renderIndexHtml };
+/**
+ * Versione "string-only" usata da server/vite.ts (file forbidden to edit) che
+ * fa `res.status(200).end(renderIndexHtml(...))`. In dev mode lo status sarà
+ * sempre 200 (Vite non può sapere del 404), ma l'HTML restituito contiene
+ * comunque canonical→home + meta robots noindex per i path inesistenti, che
+ * è ciò che importa per la SEO. In production usiamo direttamente
+ * `renderIndexHtmlWithStatus` dentro la catch-all di `serveStatic`.
+ */
+async function renderIndexHtml(template: string, req: Request): Promise<string> {
+  const result = await renderIndexHtmlWithStatus(template, req);
+  return result.html;
+}
+
+export { renderIndexHtml, renderIndexHtmlWithStatus };
 
 export function serveStatic(app: Express) {
   const distPath = path.resolve(__dirname, "public");
@@ -188,7 +236,7 @@ export function serveStatic(app: Express) {
   );
 
   app.use("/{*path}", async (req: Request, res: Response) => {
-    const { html, notFound } = await renderIndexHtml(indexHtml, req);
+    const { html, notFound } = await renderIndexHtmlWithStatus(indexHtml, req);
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");

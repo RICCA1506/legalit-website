@@ -134,7 +134,7 @@ export async function registerRoutes(
     "/professionisti-milano": "/professionisti?office=Milano",
     "/professionisti-palermo": "/professionisti?office=Palermo",
     "/professionisti-latina": "/professionisti?office=Latina",
-    "/professionisti-napoli": "/professionisti",
+    "/professionisti-napoli": "/professionisti?office=Napoli",
   };
   for (const [from, to] of Object.entries(LEGACY_OFFICE_REDIRECTS)) {
     app.get(from, (_req, res) => res.redirect(301, to));
