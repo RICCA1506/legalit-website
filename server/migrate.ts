@@ -246,10 +246,14 @@ export async function ensureSchema() {
         await pool.query(`UPDATE professionals SET slug = $1 WHERE id = $2`, [finalSlug, row.id]);
         console.log(`[migrate] backfilled slug for professional ${row.id} → ${finalSlug}`);
       }
-      await pool.query(`ALTER TABLE professionals ALTER COLUMN slug SET NOT NULL`);
     } catch (err) {
       console.warn("[migrate] slug backfill skipped/partial:", err);
     }
+    // shared/schema.ts declares professionals.slug as nullable + unique. Older
+    // builds of this migration forced SET NOT NULL on every startup, which
+    // re-introduced schema drift after task #53. Realign idempotently: drop
+    // NOT NULL if a previous deploy left it on.
+    await dropNotNullIfPresent(pool, 'professionals', 'slug');
     await addUniqueConstraintIfNotExists(pool, 'professionals', 'slug', 'professionals_slug_unique');
 
     // --- news_articles.slug rollout (semantic article URLs) -------------
@@ -276,10 +280,13 @@ export async function ensureSchema() {
         await pool.query(`UPDATE news_articles SET slug = $1 WHERE id = $2`, [finalSlug, row.id]);
         console.log(`[migrate] backfilled slug for news article ${row.id} → ${finalSlug}`);
       }
-      await pool.query(`ALTER TABLE news_articles ALTER COLUMN slug SET NOT NULL`);
     } catch (err) {
       console.warn("[migrate] news slug backfill skipped/partial:", err);
     }
+    // shared/schema.ts declares news_articles.slug as nullable + unique. Same
+    // reasoning as professionals.slug above: drop NOT NULL if a previous
+    // deploy left it on.
+    await dropNotNullIfPresent(pool, 'news_articles', 'slug');
     await addUniqueConstraintIfNotExists(pool, 'news_articles', 'slug', 'news_articles_slug_unique');
 
     console.log("Database schema verified and up to date");
@@ -318,5 +325,18 @@ async function addColumnIfNotExists(pool: Pool, table: string, column: string, d
   if (result.rows.length === 0) {
     await pool.query(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
     console.log(`Added column ${column} to ${table}`);
+  }
+}
+
+async function dropNotNullIfPresent(pool: Pool, table: string, column: string) {
+  const result = await pool.query<{ is_nullable: string }>(
+    `SELECT is_nullable FROM information_schema.columns
+     WHERE table_schema = 'public' AND table_name = $1 AND column_name = $2`,
+    [table, column]
+  );
+  if (result.rows.length === 0) return;
+  if (result.rows[0].is_nullable === 'NO') {
+    await pool.query(`ALTER TABLE ${table} ALTER COLUMN ${column} DROP NOT NULL`);
+    console.log(`[migrate] dropped NOT NULL on ${table}.${column} (drift fix)`);
   }
 }
