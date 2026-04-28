@@ -164,6 +164,7 @@ export default function Professionisti() {
     const params = new URLSearchParams(search);
     const professionalId = params.get('id');
     const areaParam = params.get('area');
+    const officeParam = params.get('office');
     const routeSlug = slugRouteParams?.slug || null;
 
     if (routeSlug) {
@@ -195,6 +196,18 @@ export default function Professionisti() {
 
     if (areaParam) {
       setSelectedArea(areaParam);
+    }
+
+    // /professionisti?office=Roma — pre-popola il filtro ufficio (target dei
+    // 301 dalle URL legacy /professionisti-{città}). Validato contro la lista
+    // ufficiale offices, case-insensitive, per evitare valori arbitrari.
+    if (officeParam) {
+      const matched = offices.find(
+        o => o.city.toLowerCase() === officeParam.toLowerCase()
+      );
+      if (matched) {
+        setSelectedOffice(matched.city);
+      }
     }
   }, [search, professionals, slugRouteParams?.slug, navigate]);
 

@@ -12,6 +12,7 @@ import { sendContactEmail, sendJobApplicationEmail } from "./email";
 import { syncDevDataToCurrentDb, exportDbToDevData } from "./syncData";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { slugifyName } from "@shared/slugify";
+import { PRACTICE_AREA_SLUGS } from "./routeMap";
 
 function parseIntId(raw: string): number | null {
   const n = parseInt(raw, 10);
@@ -71,16 +72,6 @@ function detectPracticeAreaTags(title: string, content: string, excerpt: string 
 
 const SITE_URL = "https://legalit.it";
 
-const PRACTICE_AREA_SLUGS = [
-  "diritto-lavoro", "diritto-penale", "diritto-civile-commerciale",
-  "corporate-compliance", "diritto-societario-ma", "banking-finance",
-  "diritto-assicurazioni", "crisi-impresa", "recupero-crediti-npl",
-  "diritto-amministrativo", "responsabilita-contabile", "ambiente-energia",
-  "affari-regolatori", "diritto-sport", "diritto-tributario",
-  "diritto-sanitario", "ia-privacy-cybersecurity", "real-estate",
-  "tutela-patrimoni-famiglia", "terzo-settore"
-];
-
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -126,9 +117,28 @@ export async function registerRoutes(
     res.redirect(301, "/professionisti");
   });
 
+  // URL legacy del vecchio sito WordPress (cittadinanza italiana per
+  // stranieri). Topicalmente più vicina a /attivita (catalogo aree pratica)
+  // che alla homepage; in attesa di una pagina EN dedicata.
   app.get("/italian-citizenship-naturalization-law", (_req, res) => {
-    res.redirect(301, "/");
+    res.redirect(301, "/attivita");
   });
+
+  // URL legacy geo-targeted del vecchio sito WordPress. Redirect 301 verso
+  // /professionisti con il filtro ufficio precompilato (per Roma, Milano,
+  // Palermo, Latina dove c'è una sede effettiva). Per Napoli — citata nel
+  // marketing ma senza ufficio attivo — atterriamo sulla lista completa
+  // senza filtro pre-applicato per evitare un risultato vuoto.
+  const LEGACY_OFFICE_REDIRECTS: Record<string, string> = {
+    "/professionisti-roma": "/professionisti?office=Roma",
+    "/professionisti-milano": "/professionisti?office=Milano",
+    "/professionisti-palermo": "/professionisti?office=Palermo",
+    "/professionisti-latina": "/professionisti?office=Latina",
+    "/professionisti-napoli": "/professionisti",
+  };
+  for (const [from, to] of Object.entries(LEGACY_OFFICE_REDIRECTS)) {
+    app.get(from, (_req, res) => res.redirect(301, to));
+  }
 
   app.get("/robots.txt", (_req, res) => {
     res.setHeader("Cache-Control", "public, max-age=86400");
