@@ -1757,7 +1757,7 @@ export default function Admin() {
 
               {/* Message Detail Dialog */}
               <Dialog open={!!selectedMessage} onOpenChange={(open) => !open && setSelectedMessage(null)}>
-                <DialogContent className="max-w-2xl">
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   {!selectedMessage && <VisuallyHidden><DialogTitle>Dettaglio Messaggio</DialogTitle></VisuallyHidden>}
                   {selectedMessage && (
                     <>
@@ -1828,7 +1828,7 @@ export default function Admin() {
                             <h5 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">Messaggio</h5>
                           </div>
                           <div className="p-4 bg-muted/30 rounded-lg border">
-                            <p className="whitespace-pre-wrap text-sm leading-relaxed">{selectedMessage.message}</p>
+                            <p className="whitespace-pre-wrap break-words text-sm leading-relaxed">{selectedMessage.message}</p>
                           </div>
                         </div>
 
